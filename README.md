@@ -1,1 +1,1 @@
-# Gatwey de pagamento via PIX
+# Gateway de pagamento via PIX
