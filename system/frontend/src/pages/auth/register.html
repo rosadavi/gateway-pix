@@ -101,19 +101,19 @@
             margin: auto;
         }
 
-        .container > .div1, .div2 {
+        .container > section {
             width: 100%;
             display: flex;
             gap: 20px;
         }
 
-        .div1 > span, .div2 > span {
+        .container > section > span {
             width: 100%;
             display: flex;
             flex-direction: column;
         }
 
-        .div1 span > input, .div2 > span > input {
+        .container span > input, .container span > select {
             width: 100%;
             border: none;
             border-radius: 30px;
@@ -125,6 +125,10 @@
             border: 2px solid var(--colorB);
             color: var(--colorB);
             margin: 10px;
+        }
+
+        .container select {
+            cursor: pointer;
         }
 
         .robot > span {
@@ -241,17 +245,81 @@
         <h1>Criar uma nova conta</h1>
         <form action="" method="" id="formLoginUp">
             <div class="container">
-                <section class="div1">
-                    <span><input type="text" name="nome-estab" placeholder="Nome do Estabelecimento" autocomplete="off"></span>
-                    <span><input type="number" name="telefone-estab" placeholder="Telefone Celular do Estabelecimento" autocomplete="off"></span>
-                    <span><input type="email" name="email-estab" placeholder="Email do Estabelecimento" autocomplete="off"></span>
-                </section>
-                <section class="div2">
+                <section>
                     <span>
+                        <label for="">Nome do Estabelecimento</label>
+                        <input type="text" name="nome-estab" placeholder="Nome do Estabelecimento" autocomplete="off">
+                    </span>
+                    <span>
+                        <label for="">Telefone do Estabelecimento</label>
+                        <input type="number" name="telefone-estab" placeholder="Telefone Celular do Estabelecimento" autocomplete="off">
+                    </span>
+                    <span>
+                        <label for="">Email do Estabelecimento</label>
+                        <input type="email" name="email-estab" placeholder="Email do Estabelecimento" autocomplete="off">
+                    </span>
+                </section>
+                <section>
+                    <span>
+                        <label for="">UF</label>
+                        <select name="estado">
+                            <option value="AC">Acre (AC)</option>
+                            <option value="AL">Alagoas (AL)</option>
+                            <option value="AP">Amapá (AP)</option>
+                            <option value="AM">Amazonas (AM)</option>
+                            <option value="BA">Bahia (BA)</option>
+                            <option value="CE">Ceará (CE)</option>
+                            <option value="DF">Distrito Federal (DF)</option>
+                            <option value="ES">Espírito Santo (ES)</option>
+                            <option value="GO">Goiás (GO)</option>
+                            <option value="MA">Maranhão (MA)</option>
+                            <option value="MT">Mato Grosso (MT)</option>
+                            <option value="MS">Mato Grosso do Sul (MS)</option>
+                            <option value="MG">Minas Gerais (MG)</option>
+                            <option value="PA">Pará (PA)</option>
+                            <option value="PB">Paraíba (PB)</option>
+                            <option value="PR">Paraná (PR)</option>
+                            <option value="PE">Pernambuco (PE)</option>
+                            <option value="PI">Piauí (PI)</option>
+                            <option value="RJ">Rio de Janeiro (RJ)</option>
+                            <option value="RN">Rio Grande do Norte (RN)</option>
+                            <option value="RS">Rio Grande do Sul (RS)</option>
+                            <option value="RO">Rondônia (RO)</option>
+                            <option value="RR">Roraima (RR)</option>
+                            <option value="SC">Santa Catarina (SC)</option>
+                            <option value="SP">São Paulo (SP)</option>
+                            <option value="SE">Sergipe (SE)</option>
+                            <option value="TO">Tocantins (TO)</option>
+                        </select>
+                    </span>
+                    <span>
+                        <label for="">Cidade</label>
+                        <input type="text" name="cidade" placeholder="Cidade" autocomplete="off">
+                    </span>
+                    <span>
+                        <label for="">Tipo PIX</label>
+                        <select name="tipo_pix" id="tipo_pix">
+                            <option value="cpf">CPF</option>
+                            <option value="cnpj">CNPJ</option>
+                            <option value="email">E-mail</option>
+                            <option value="telefone">Telefone</option>
+                            <option value="chave_aleatoria">Chave Aleatória</option>
+                        </select>
+                    </span>
+                </section>
+                <section>
+                    <span>
+                        <label for="">Chave PIX</label>
+                        <input type="text" name="chave-pix" placeholder="Chvave para receber o PIX" required autocomplete="off">
+                    </span>
+                    <span>
+                        <label for="">Senha</label>
                         <input type="password" name="senha-perfil" placeholder="Senha" autocomplete="off">
                     </span>
-                    <span><input type="password" placeholder="Confirme a Senha"></span>
-                    <span><input type="text" name="cupom" placeholder="Cupom"></span>
+                    <span>
+                        <label for="">Confirme sua Senha</label>
+                        <input type="password" placeholder="Confirme a Senha">
+                    </span>
                 </section>
             </div>
             <div class="confirmBtn">
