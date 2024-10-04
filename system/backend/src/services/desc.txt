@@ -1,0 +1,1 @@
+# Servicos para comunicacao com APIs externas.
