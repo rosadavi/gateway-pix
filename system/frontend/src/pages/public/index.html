@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" href="../../style/root.css">
+    <style>
+        header {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+            background-color: var(--color4);
+            color: var(--colorW);
+            font-family: sans-serif;
+        }
+
+        .links-pages {
+            display: flex;
+            gap: 30px;
+        }
+
+        .links-pages a {
+            color: var(--colorW);
+            text-decoration: none;
+            font-weight: bold;
+            font-family: sans-serif;
+        }
+
+        main {
+            margin: 50px 0px;
+        }
+
+        #logout {
+            padding: 5px 20px;
+            background-color: var(--colorR);
+            border: none;
+            border-radius: 10px;
+            font-size: 20px;
+            color: var(--colorW);
+            font-weight: bold;
+            cursor: pointer;
+            transition: all .5s;
+        }
+
+        #logout:hover {
+            border-radius: 30px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h3>Seja bem vindo, ~nome-empresa~</h3>
+        <div class="links-pages">
+            <a href="#" style="text-decoration: underline;">Home</a>
+            <a href="extract.html">Extrato</a>
+            <a href="monthly-fee.html">Mensalidade</a>
+            <a href="#">Perfil</a>
+        </div>
+    </header>
+    <main>
+        <button id="logout">Sair</button>
+    </main>
+</body>
+</html>
