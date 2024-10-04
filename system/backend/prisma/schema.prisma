@@ -1,0 +1,42 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Empresa {
+  Id_Empresa            Int      @id @default(autoincrement())
+  Nome_Empresa          String   @db.VarChar(100)
+  Celular_Empresa       String   @db.VarChar(11)
+  Email_Empresa         String   @db.VarChar(100)
+  UF_Empresa            String   @db.Char(2)
+  Cidade_Empresa        String   @db.VarChar(100)
+  Tipo_PIX_Empresa      String   @db.VarChar(20)
+  Chave_PIX_Empresa     String   @db.VarChar(100)
+  CNPJ_CPF_Empresa      String   @db.VarChar(14)
+  Senha_Empresa         String   @db.VarChar(100)
+  
+  // Relacionamento com Cobranca
+  Cobrancas             Cobranca[]
+
+}
+
+model Cobranca {
+  Id_Pedido                 Int      @id @default(autoincrement())
+  Empresa_Id_Empresa        Int      @db.Int
+  Valor_Cobranca            Decimal  @db.Decimal(10, 2)
+  Status_Cobranca           String   @db.VarChar(45)
+  CPF_Cliente_Cobranca      String   @db.VarChar(11)
+  Nome_Cliente_Cobranca     String   @db.VarChar(100)
+  Telefone_Cliente_Cobranca String   @db.VarChar(11)
+  Descricao_Cobranca        String   @db.VarChar(100)
+  Parcelas_Cobranca         Int      @db.Int @default(1)
+  Vencimento_Cobranca       DateTime @db.Date
+  Codigo_PIX_Cobranca       String   @db.VarChar(100)
+  
+  // Relacionamento com Empresa
+  Empresa                   Empresa  @relation(fields: [Empresa_Id_Empresa], references: [Id_Empresa])
+}
