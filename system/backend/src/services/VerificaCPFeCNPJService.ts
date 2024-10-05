@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { response } from 'express';
 
 interface VerificacaoProps {
     numero: number;
@@ -13,22 +14,34 @@ class VerificaCPFeCNPJService{
         if(numero.toString().length === 11){
             //utilizar api de cpf abaixo
             
-            return `CPF, Verificacao pendente`
-
-
+            try {
+                const response = await axios.get(`https://scpa-backend.prod.saude.gov.br/public/scpa-usuario/validacao-cpf/${numero}`);
+                console.log('CPF válido:', response.data);
+              
+              
+                return 'cpf: ' + response.data;
+              } catch (error) {
+                console.error('Erro ao validar CPF:', error);
+                return 'CPF Invalido'
+              }
+              
         }else if(numero.toString().length === 14){
             //consumir a api https://receitaws.com.br/v1/cnpj/{cnpj}
 
             try {
                 const response = await axios.get<CnpjResponse>(`https://receitaws.com.br/v1/cnpj/${numero}`);
-                console.log('CNPJ válido:', response.data);
+                console.log(response.data);
               
                 // Agora o TypeScript sabe que response.data tem o tipo CnpjResponse
                 const nomeFantasia = response.data.fantasia;
+                if ( nomeFantasia == undefined ){
+                    return 'CNPJ invalido'
+                }
               
                 return `Nome fantasia: ${nomeFantasia}`;
               } catch (error) {
                 console.error('Erro ao validar CNPJ:', error);
+                return 'Erro ao validar CNPJ'
               }
 
     }else{
