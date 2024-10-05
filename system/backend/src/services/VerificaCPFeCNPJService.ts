@@ -13,7 +13,7 @@ class VerificaCPFeCNPJService{
         if(numero.toString().length === 11){
             //utilizar api de cpf abaixo
             
-
+            return `CPF, Verificacao pendente`
 
 
         }else if(numero.toString().length === 14){
@@ -31,6 +31,8 @@ class VerificaCPFeCNPJService{
                 console.error('Erro ao validar CNPJ:', error);
               }
 
+    }else{
+        return `Número inválido`
     }
 }
 }
