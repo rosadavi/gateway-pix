@@ -27,16 +27,35 @@ model Empresa {
 model Cobranca {
   Id_Pedido                 Int      @id @default(autoincrement())
   Empresa_Id_Empresa        Int      @db.Int
+  Metodo_Pagamento          String   @db.VarChar(45)
+  Cliente_Id_Cliente        Int      @db.Int
   Valor_Cobranca            Decimal  @db.Decimal(10, 2)
   Status_Cobranca           String   @db.VarChar(45)
-  CPF_Cliente_Cobranca      String   @db.VarChar(11)
-  Nome_Cliente_Cobranca     String   @db.VarChar(100)
-  Telefone_Cliente_Cobranca String   @db.VarChar(11)
   Descricao_Cobranca        String   @db.VarChar(100)
-  Parcelas_Cobranca         Int      @db.Int @default(1)
+  Num_Parcela_Cobranca      Int      @db.Int @default(1)
+  Total_Parcelas_Cobranca   Int      @db.Int @default(1)
   Vencimento_Cobranca       DateTime @db.Date
   Codigo_PIX_Cobranca       String   @db.VarChar(100)
   
   // Relacionamento com Empresa
   Empresa                   Empresa  @relation(fields: [Empresa_Id_Empresa], references: [Id_Empresa])
+  // Relacionamento com Cliente
+  Cliente                   Cliente @relation(fields: [Cliente_Id_Cliente], references: [Id_Cliente])
 }
+model Cliente{
+  Id_Cliente                Int      @id @default(autoincrement())
+  CPF_CNPJ_Cliente          String   @db.VarChar(11)
+  Nome_Cliente              String   @db.VarChar(100)
+  Telefone_Cliente          String   @db.VarChar(11)
+
+  // Relacionamento com Cobranca
+  Cobrancas                 Cobranca[]
+}
+
+//tabela de pedido
+
+
+//tabela item do pedido
+
+
+//tabela de produto
