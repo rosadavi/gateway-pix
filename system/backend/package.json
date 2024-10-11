@@ -2,6 +2,7 @@
   "name": "backend",
   "version": "1.0.0",
   "main": "server.js",
+  "type": "module",
   "directories": {
     "test": "tests"
   },
@@ -15,7 +16,12 @@
   "description": "",
   "devDependencies": {
     "@types/axios": "^0.9.36",
+    "@types/connect-flash": "^0.0.40",
     "@types/express": "^5.0.0",
+    "@types/express-flash": "^0.0.5",
+    "@types/express-handlebars": "^5.3.1",
+    "@types/express-session": "^1.18.0",
+    "@types/jsonwebtoken": "^9.0.7",
     "@types/node": "^22.7.4",
     "prisma": "^5.20.0",
     "ts-node": "^10.9.2",
@@ -25,7 +31,13 @@
     "@prisma/client": "^5.20.0",
     "axios": "^1.7.7",
     "backend": "file:",
+    "connect-flash": "^0.1.1",
+    "dotenv": "^16.4.5",
     "express": "^4.21.0",
+    "express-flash": "^0.0.2",
+    "express-handlebars": "^8.0.1",
+    "express-session": "^1.18.1",
+    "jsonwebtoken": "^9.0.2",
     "tsx": "^4.19.1"
   }
 }

@@ -6,6 +6,76 @@
     <title>Extrato</title>
     <link rel="stylesheet" href="../../style/root.css">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Agbalumo&family=Roboto:wght@100;300;400;500;700;900&display=swap');
+
+        :root {
+            --color1: #0FC2C0;
+            --color2: #0CABA8;
+            --color3: #008F8C;
+            --color4: #015958;
+            --color5: #023535;
+            --colorW: #FFFFFF;
+            --colorB: #000000;
+            --colorT: #3C999634;
+            --colorR: #ff0000;
+            --font1: 'Roboto';
+            --font2: 'Agbalumo';
+            --switch-bg-url: url(../image/switch-bg/moon-stars.svg);
+        }
+
+        .dark {
+            --color1: #023535;
+            --color2: #015958;
+            --color3: #008F8C;
+            --color4: #0CABA8;
+            --color5: #0FC2C0;
+            --colorW: #000000;
+            --colorB: #FFFFFF;
+            --colorT: #3C999634;
+            --switch-bg-url: url(../image/switch-bg/sun.svg);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        #switch{
+            position: relative;
+            width: 100px;
+        }
+
+        .dark #switch button {
+            right: 12px;
+            left: initial;
+        }
+
+        #switch button {
+            width: 42px;
+            height: 42px;
+            border: 0;
+            border-radius: 50%;
+            background: white var(--switch-bg-url) no-repeat center;
+            position: absolute;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+            cursor: pointer;
+            z-index: 1;
+        }
+        
+        #switch span {
+            display: block;
+            width: 84px;
+            height: 34px;
+            background: var(--color1);
+            border: 1px solid var(--color5);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            border-radius: 9999px;
+        }
+
         header {
             display: flex;
             justify-content: space-between;

@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { VerificaCPFeCNPJService } from "../services/VerificaCPFeCNPJService";
+import { VerificaCPFeCNPJService } from "../services/VerificaCPFeCNPJService.js";
 
 class VerificaCPFeCNPJController {
     async handle(request: Request, response: Response) {

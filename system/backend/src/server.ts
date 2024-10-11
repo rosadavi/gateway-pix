@@ -1,8 +1,11 @@
 import express from 'express';
-import routes from './routes';
+import routes from './routes.js';
 
 const app = express();
-const port = 3000;
+const port = 3002;
+
+app.use(express.json());
+app.use(express.urlencoded({extended: true}));
 
 // Use as rotas importadas
 app.use(express.json());
