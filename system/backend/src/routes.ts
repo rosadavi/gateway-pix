@@ -37,8 +37,8 @@ router.post('/verifica',(req: Request, res: Response) => {
 
 router.post('/criar', async (req: Request, res: Response) => {
   try {
-    const createUser = usuario.criar(req.body);
-    res.json( {createUser} );
+    const createUser = await usuario.criar(req.body);
+    res.send(createUser);
   } catch(error) {
     res.status(500).json({
       message: 'Erro ao criar usuario!',
