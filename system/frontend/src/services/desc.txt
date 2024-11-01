@@ -1,1 +1,0 @@
-# Comunicacao com a API (fetch de dados do backend).

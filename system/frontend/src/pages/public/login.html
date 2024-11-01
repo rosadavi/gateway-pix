@@ -144,7 +144,7 @@
             color: var(--colorB)
         }
 
-        .confirmBtn > input[type=button] {
+        .confirmBtn > input[type=submit] {
             border: 2px solid var(--color5);
             border-radius: 25px;
             background-color: var(--color5);
@@ -157,7 +157,7 @@
             width: 40%;
         }
 
-        .confirmBtn > input[type=button]:hover {
+        .confirmBtn > input[type=submit]:hover {
             border: 2px solid var(--color5);
             color: var(--colorB);
             background-color: transparent;
@@ -213,19 +213,19 @@
 <body>
     <section class="loginAccount">
         <h1>Acesse com seu login</h1>
-        <form action="" method="post" id="formLoginIn">
+        <form action="/login" method="post" id="formLoginIn">
             <div class="container">
                 <section class="div1">
-                    <input type="number" name="number" placeholder="Numero do estabelecimento" autocomplete="off" required>
+                    <input type="number" name="CNPJ_CPF_Empresa" id="cnpj_cpf" placeholder="Numero do estabelecimento" autocomplete="off" required>
                     <p id="number-value"></p>
                 </section>
                 <section class="div2">
-                    <input type="password" name="password" placeholder="Senha" required>
+                    <input type="password" name="Senha_Empresa" id="senha" placeholder="Senha" required>
                     <p id="password-value"></p>
                 </section>
             </div>
             <div class="confirmBtn">
-                <input type="button" value="Entrar">
+                <input type="submit" value="Entrar">
             </div>
         </form>
     </section>
@@ -234,5 +234,51 @@
         <p>Cadastre-se e faca parte da nossa impresa!</p>
         <a href="/register">Cadastrar</a>
     </section>
+    <script>
+        const form = document.querySelector('#formLoginIn');
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const cnpj_cpf = document.querySelector('#cnpj_cpf').value;
+            const senha = document.querySelector('#senha').value;
+
+            try {
+                const response = await fetch('http://localhost:3002/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ cnpj_cpf, senha }),
+                });
+                const data = await response.json();
+                if (!response.ok) {
+                    alert('Credenciais Invalidas!');
+                } else {
+                    localStorage.setItem('authToken', data);
+                    const token = data;
+                    receberDados(token);
+                }
+            } catch (error) {
+                console.error('Erro durante o login:', error);
+            }
+        });
+        async function receberDados(token) {
+            try {
+                const response = await fetch('http://localhost:3002/dados', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
+                const data = await response.json();
+                if(!response.ok) {
+                    console.log(data);  
+                } else {
+                    console.log(data);
+                }
+            } catch(error) {
+                console.error('Erro ao buscar dados!');
+            }
+        }
+    </script>
 </body>
 </html>

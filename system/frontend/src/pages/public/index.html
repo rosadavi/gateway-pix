@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Extrato</title>
+    <title>Home</title>
     <link rel="stylesheet" href="../../style/root.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Agbalumo&family=Roboto:wght@100;300;400;500;700;900&display=swap');
@@ -101,32 +101,25 @@
             margin: 50px 0px;
         }
 
-        .title {
-            padding: 10px;
-        }
-
-        #extract {
-            display: flex;
-            flex-direction: column;
-            margin-top: 20px;
-        }
-
-        .header-extract, .container-extract {
-            display: flex;
-            justify-content: space-around;
-        }
-
-        .header-extract {
-            background-color: var(--color1);
-            padding: 20px 0px;
-        }
-
-        .container-extract {
-            background-color: var(--color3);
-            padding: 20px 0px;
+        #logout {
+            padding: 5px 20px;
+            background-color: var(--colorR);
+            border: none;
+            border-radius: 10px;
+            font-size: 20px;
             color: var(--colorW);
             font-weight: bold;
-            font-family: sans-serif;
+            cursor: pointer;
+            transition: all .5s;
+        }
+
+        #logout:hover {
+            border-radius: 30px;
+        }
+
+        #logout a {
+            color: var(--colorW);
+            text-decoration: none;
         }
     </style>
 </head>
@@ -134,32 +127,36 @@
     <header>
         <h3>Seja bem vindo, ~nome-empresa~</h3>
         <div class="links-pages">
-            <a href="index.html">Home</a>
-            <a href="#" style="text-decoration: underline;">Extrato</a>
-            <a href="monthly-fee.html">Mensalidade</a>
-            <a href="#">Perfil</a>
+            <a href="#" style="text-decoration: underline;">Home</a>
+            <a href="/extract">Extrato</a>
+            <a href="/profile">Perfil</a>
         </div>
     </header>
     <main>
-        <div class="title">
-            <h1>Extrato Pagamentos: </h1>
-        </div>
-        <div id="extract">
-            <div class="header-extract">
-                <h4 id="date-extract">Data</h4>
-                <h4 id="order-extract">Pedido</h4>
-                <h4 id="descripiton-extract">Descricao</h4>
-                <h4 id="value-extract">Valor</h4>
-                <h4 id="situation-extract">Situacao</h4>
-            </div>
-            <div class="container-extract">
-                <p>25/09/2024</p>
-                <p>20370</p>
-                <p>Bolo - Chocolate - 4x</p>
-                <p>50,00</p>
-                <p>PAGO</p>
-            </div>
-        </div>
+        <button id="logout"><a href="/login">Sair</a></button>
     </main>
+    <script>
+async function fetchProtectedData() {
+    const token = localStorage.getItem('token'); // Recuperar o token do localStorage
+
+    const response = await fetch('http://localhost:3002/index', {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`, // Incluindo o token como Bearer Token
+        },
+    });
+
+    if (response.ok) {
+        const data = await response.json();
+        console.log('Dados protegidos:', data);
+    } else {
+        console.error('Erro ao acessar dados protegidos:', response.status);
+    }
+}
+
+// Chame a função quando a página carregar
+window.onload = fetchProtectedData;
+
+    </script>
 </body>
 </html>

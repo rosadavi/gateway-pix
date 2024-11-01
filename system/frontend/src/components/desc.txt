@@ -1,1 +1,0 @@
-# Componentes reutilizaveis (botoes, tabelas, etc).

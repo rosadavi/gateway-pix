@@ -4,6 +4,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { VerificaCPFeCNPJController } from './controllers/VerificaCPFeCNPJController.js';
 import { UserController } from './controllers/userController.js';
+import { authMiddleware } from './middlewares/authJWT.js';
 
 const app = express();
 
@@ -20,15 +21,19 @@ router.get('/', (req: Request, res: Response) => {
 });
 
 router.get('/register', (req: Request, res: Response) => {
-  res.sendFile(path.join(__dirname, '../../frontend/src/pages/auth/register.html'));
+  res.sendFile(path.join(__dirname, '../../frontend/src/pages/public/register.html'));
 });
 
 router.get('/login', (req: Request, res: Response) => {
-  res.sendFile(path.join(__dirname, '../../frontend/src/pages/auth/login.html'));
+  res.sendFile(path.join(__dirname, '../../frontend/src/pages/public/login.html'));
 });
 
-router.get('/about', (req: Request, res: Response) => {
-  res.send('About page');
+router.get('/index', (req: Request, res: Response) => {
+  res.sendFile(path.join(__dirname, '../../frontend/src/pages/public/index.html'));
+});
+
+router.get('/extract', (req: Request, res: Response) => {
+  res.sendFile(path.join(__dirname, '../../frontend/src/pages/public/extract.html'));
 });
 
 router.post('/verifica',(req: Request, res: Response) => {
@@ -38,13 +43,23 @@ router.post('/verifica',(req: Request, res: Response) => {
 router.post('/criar', async (req: Request, res: Response) => {
   try {
     const createUser = await usuario.criar(req.body);
-    res.send(createUser);
+    if(createUser) {
+      res.redirect('/login');
+    } else {
+      res.status(500).json({message: "Erro ao criar usuario"});
+    }
   } catch(error) {
     res.status(500).json({
       message: 'Erro ao criar usuario!',
-      error: error,
+      error,
     });
   }
 });
+
+router.get('/dados', authMiddleware, (req: Request, res: Response) => {
+  res.status(200).json({message: "Dados de uma rota que precisa de autorizacao"});
+});
+
+router.post('/login', usuario.login);
 
 export default router;

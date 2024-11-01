@@ -1,3 +1,6 @@
+import { Request, Response } from "express";
+import { JwtPayload } from '../configs/token.js';
+import { generateToken } from '../middlewares/jwt.js';
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
@@ -11,6 +14,15 @@ interface EmpresaInterface {
     chave_pix: string;
     senha: string;
     cpf_cnpj: string;
+}
+
+
+function createToken(dados: JwtPayload, ) {
+    const token = generateToken({
+        CNPJ_CPF_Empresa: dados.CNPJ_CPF_Empresa,
+        Id_Empresa: dados.Id_Empresa
+    });
+    return token;
 }
 
 export class UserController {
@@ -35,4 +47,29 @@ export class UserController {
             console.error("Erro ao criar usuario: ", error);
         }
     }
+
+    async login(req: Request, res: Response) {
+        try {
+            const fetchUser = await prisma.empresa.findFirst({
+                where: {
+                    CNPJ_CPF_Empresa: req.body.cnpj_cpf,
+                    Senha_Empresa: req.body.senha
+                },
+                select: {
+                    Id_Empresa: true,
+                    CNPJ_CPF_Empresa: true
+                }
+            });
+
+            if(fetchUser) {
+                const token = createToken(fetchUser);
+                res.status(200).json(token);
+            } else {
+                res.status(404).json({message: 'Credenciais Invalidas!'});
+            }
+        } catch(error) {
+            res.status(500).json({message: "Erro ao realizar login", error});
+        }
+    }
+
 }
