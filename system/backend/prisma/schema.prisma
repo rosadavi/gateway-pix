@@ -7,43 +7,88 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Empresa {
-  Id_Empresa        Int        @id @default(autoincrement())
-  Nome_Empresa      String     @db.VarChar(100)
-  Celular_Empresa   String     @db.VarChar(11)
-  Email_Empresa     String     @db.VarChar(100)
-  UF_Empresa        String     @db.Char(2)
-  Cidade_Empresa    String     @db.VarChar(100)
-  Tipo_PIX_Empresa  String     @db.VarChar(20)
-  Chave_PIX_Empresa String     @db.VarChar(100)
-  CNPJ_CPF_Empresa  String     @db.VarChar(14)
-  Senha_Empresa     String     @db.VarChar(100)
-  Cobrancas         Cobranca[]
+model vw_cliente {
+  id_cliente       Int           @id @default(autoincrement())
+  cpf_cnpj         String?       @db.VarChar(14)
+  nome_cliente     String?       @db.VarChar(75)
+  telefone_cliente String        @db.Char(13)
+  vw_cobranca      vw_cobranca[]
 }
 
-model Cobranca {
-  Id_Pedido               Int      @id @default(autoincrement())
-  Empresa_Id_Empresa      Int
-  Metodo_Pagamento        String   @db.VarChar(45)
-  Cliente_Id_Cliente      Int
-  Valor_Cobranca          Decimal  @db.Decimal(10, 2)
-  Status_Cobranca         String   @db.VarChar(45)
-  Descricao_Cobranca      String   @db.VarChar(100)
-  Num_Parcela_Cobranca    Int      @default(1)
-  Total_Parcelas_Cobranca Int      @default(1)
-  Vencimento_Cobranca     DateTime @db.Date
-  Codigo_PIX_Cobranca     String   @db.VarChar(100)
-  Cliente                 Cliente  @relation(fields: [Cliente_Id_Cliente], references: [Id_Cliente])
-  Empresa                 Empresa  @relation(fields: [Empresa_Id_Empresa], references: [Id_Empresa])
+model vw_cobranca {
+  id_cobranca            Int         @id @default(autoincrement())
+  pedido_id_pedido       Int
+  empresa_id_empresa     Int
+  cliente_id_cliente     Int?
+  data_cobranca          DateTime    @db.Timestamp(0)
+  metodo_pagamento       String      @db.VarChar(45)
+  valor_cobranca         Decimal     @db.Decimal(10, 2)
+  status_cobranca        String      @db.Char(1)
+  descricao_cobranca     String      @db.VarChar(45)
+  num_parcela            Int
+  vencimento_cobranca    DateTime?   @db.DateTime(0)
+  codigo_pix_transaction String?     @db.VarChar(255)
+  codigo_pix_cobranca    String?     @db.VarChar(255)
+  vw_cliente             vw_cliente? @relation(fields: [cliente_id_cliente], references: [id_cliente], onDelete: NoAction, onUpdate: NoAction, map: "fk_VW_Cobranca_VW_Cliente1")
+  vw_empresa             vw_empresa  @relation(fields: [empresa_id_empresa], references: [id_empresa], onDelete: NoAction, onUpdate: NoAction, map: "fk_VW_Cobranca_VW_Empresa1")
+  vw_pedido              vw_pedido   @relation(fields: [pedido_id_pedido], references: [id_pedido], onDelete: NoAction, onUpdate: NoAction, map: "fk_VW_Cobranca_VW_Pedido1")
 
-  @@index([Cliente_Id_Cliente], map: "Cobranca_Cliente_Id_Cliente_fkey")
-  @@index([Empresa_Id_Empresa], map: "Cobranca_Empresa_Id_Empresa_fkey")
+  @@index([cliente_id_cliente], map: "fk_VW_Cobranca_VW_Cliente1_idx")
+  @@index([empresa_id_empresa], map: "fk_VW_Cobranca_VW_Empresa1_idx")
+  @@index([pedido_id_pedido], map: "fk_VW_Cobranca_VW_Pedido1_idx")
 }
 
-model Cliente {
-  Id_Cliente       Int        @id @default(autoincrement())
-  CPF_CNPJ_Cliente String     @db.VarChar(11)
-  Nome_Cliente     String     @db.VarChar(100)
-  Telefone_Cliente String     @db.VarChar(11)
-  Cobrancas        Cobranca[]
+model vw_empresa {
+  id_empresa       Int              @id @default(autoincrement())
+  nome_empresa     String           @db.VarChar(45)
+  celular_empresa  String           @db.Char(13)
+  email_empresa    String           @db.VarChar(75)
+  uf_empresa       String?          @db.Char(2)
+  cidade_empresa   String?          @db.VarChar(45)
+  tipo_pix_empresa String?          @db.VarChar(15)
+  cpf_cnpj_empresa String?          @db.Char(14)
+  senha_empresa    String?          @db.VarChar(45)
+  vw_cobranca      vw_cobranca[]
+  vw_item_pedido   vw_item_pedido[]
+  vw_pedido        vw_pedido[]
+  vw_produto       vw_produto[]
+}
+
+model vw_item_pedido {
+  VW_Pedido_id_pedido   Int
+  VW_Empresa_id_empresa Int
+  VW_Produto_id_produto Int
+  quantidade_produto    Int
+  valor_pedido          Decimal    @db.Decimal(10, 2)
+  vw_empresa            vw_empresa @relation(fields: [VW_Empresa_id_empresa], references: [id_empresa], onDelete: NoAction, onUpdate: NoAction, map: "fk_VW_Item_Pedido_VW_Empresa1")
+  vw_pedido             vw_pedido  @relation(fields: [VW_Pedido_id_pedido], references: [id_pedido], onDelete: NoAction, onUpdate: NoAction, map: "fk_VW_Produto_has_VW_Pedido_VW_Pedido1")
+  vw_produto            vw_produto @relation(fields: [VW_Produto_id_produto], references: [id_produto], onDelete: NoAction, onUpdate: NoAction, map: "fk_VW_Produto_has_VW_Pedido_VW_Produto1")
+
+  @@id([VW_Pedido_id_pedido, VW_Produto_id_produto])
+  @@index([VW_Empresa_id_empresa], map: "fk_VW_Item_Pedido_VW_Empresa1_idx")
+  @@index([VW_Pedido_id_pedido], map: "fk_VW_Produto_has_VW_Pedido_VW_Pedido1_idx")
+  @@index([VW_Produto_id_produto], map: "fk_VW_Produto_has_VW_Pedido_VW_Produto1_idx")
+}
+
+model vw_pedido {
+  id_pedido          Int              @id @default(autoincrement())
+  empresa_id_empresa Int
+  valor_total        Decimal          @db.Decimal(10, 2)
+  vw_cobranca        vw_cobranca[]
+  vw_item_pedido     vw_item_pedido[]
+  vw_empresa         vw_empresa       @relation(fields: [empresa_id_empresa], references: [id_empresa], onDelete: NoAction, onUpdate: NoAction, map: "fk_VW_Pedido_VW_Empresa1")
+
+  @@index([empresa_id_empresa], map: "fk_VW_Pedido_VW_Empresa1_idx")
+}
+
+model vw_produto {
+  id_produto         Int              @id @default(autoincrement())
+  empresa_id_empresa Int
+  nome_produto       String           @db.VarChar(45)
+  descricao_produto  String           @db.VarChar(45)
+  valor_produto      Decimal          @db.Decimal(10, 2)
+  vw_item_pedido     vw_item_pedido[]
+  vw_empresa         vw_empresa       @relation(fields: [empresa_id_empresa], references: [id_empresa], onDelete: NoAction, onUpdate: NoAction, map: "fk_VW_Produto_VW_Empresa")
+
+  @@index([empresa_id_empresa], map: "fk_VW_Produto_VW_Empresa_idx")
 }
