@@ -249,19 +249,19 @@
                 });
                 const data = await response.json();
                 if (!response.ok) {
-                    alert('Credenciais Invalidas!');
-		    console.log(data);
+                    alert('Erro ao realizar login!');
+		            console.log(data);
                 } else {
-                    localStorage.setItem('authToken', data);
-                   receberDados(data);
+                    localStorage.setItem('token', data);
+                    autorizarToken(data);
                 }
             } catch (error) {
                 console.error('Erro durante o login:', error);
             }
         });
-        async function receberDados(token) {
+        async function autorizarToken(token) {
             try {
-                const response = await fetch('http://localhost:3001/dados', {
+                const response = await fetch('http://localhost:3001/validar', {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -269,12 +269,13 @@
                 });
                 const data = await response.json();
                 if(!response.ok) {
-                    console.log(data);  
+                    alert('Credenciais Invalidas!');
+                    localStorage.removeItem('token');
                 } else {
-                    console.log(data);
+                    window.location.href = '/index';
                 }
             } catch(error) {
-                console.error('Erro ao buscar dados!');
+                console.error('Erro ao validar login!');
             }
         }
     </script>

@@ -20,7 +20,7 @@ model vw_cobranca {
   pedido_id_pedido       Int
   empresa_id_empresa     Int
   cliente_id_cliente     Int?
-  data_cobranca          DateTime    @db.Timestamp(0) @default(now())
+  data_cobranca          DateTime    @default(now()) @db.Timestamp(0)
   metodo_pagamento       String      @db.VarChar(45)
   valor_cobranca         Decimal     @db.Decimal(10, 2)
   status_cobranca        String      @db.Char(1)
@@ -39,20 +39,20 @@ model vw_cobranca {
 }
 
 model vw_empresa {
-  id_empresa       Int              @id @default(autoincrement())
-  nome_empresa     String           @db.VarChar(45)
-  celular_empresa  String           @db.Char(13)
-  email_empresa    String           @db.VarChar(75)
-  uf_empresa       String?          @db.Char(2)
-  cidade_empresa   String?          @db.VarChar(45)
-  tipo_pix_empresa String?          @db.VarChar(15)
-  chave_pix_empresa String?         @db.VarChar(45)
-  cpf_cnpj_empresa String?          @db.Char(14)
-  senha_empresa    String?          @db.VarChar(45)
-  vw_cobranca      vw_cobranca[]
-  vw_item_pedido   vw_item_pedido[]
-  vw_pedido        vw_pedido[]
-  vw_produto       vw_produto[]
+  id_empresa        Int              @id @default(autoincrement())
+  nome_empresa      String           @db.VarChar(45)
+  celular_empresa   String           @db.Char(13)
+  email_empresa     String           @db.VarChar(75)
+  uf_empresa        String?          @db.Char(2)
+  cidade_empresa    String?          @db.VarChar(45)
+  tipo_pix_empresa  String?          @db.VarChar(15)
+  chave_pix_empresa String?          @db.VarChar(45)
+  cpf_cnpj_empresa  String?          @db.Char(14)
+  senha_empresa     String?          @db.VarChar(45)
+  vw_cobranca       vw_cobranca[]
+  vw_item_pedido    vw_item_pedido[]
+  vw_pedido         vw_pedido[]
+  vw_produto        vw_produto[]
 }
 
 model vw_item_pedido {
