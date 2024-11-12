@@ -1,20 +1,18 @@
 import { Router, Request, Response } from 'express';
 import express from 'express';
 import path from 'path';
-import { fileURLToPath } from 'url';
 import { VerificaCPFeCNPJController } from './controllers/VerificaCPFeCNPJController.js';
-import { UserController } from './controllers/userController.js';
+import { CriarUsuarioController } from './controllers/CriarUsuarioController.js';
+import {LoginController} from './controllers/LoginController.js';
 import { authMiddleware } from './middlewares/authJWT.js';
 
 const app = express();
 
-const __filename = fileURLToPath(import.meta.url);
+const __filename = path.join(process.cwd(), 'src', 'routes.ts');
 const __dirname = path.dirname(__filename);
 app.use(express.static(path.join(__dirname, '../frontend')));
 
 const router = Router();
-
-const usuario = new UserController();
 
 router.get('/', (req: Request, res: Response) => {
   res.send('Hello from the main route!');
@@ -36,30 +34,20 @@ router.get('/extract', (req: Request, res: Response) => {
   res.sendFile(path.join(__dirname, '../../frontend/src/pages/public/extract.html'));
 });
 
-router.post('/verifica',(req: Request, res: Response) => {
+router.post('/verifica', (req: Request, res: Response) => {
    new VerificaCPFeCNPJController().handle(req, res);
 });
 
-router.post('/criar', async (req: Request, res: Response) => {
-  try {
-    const createUser = await usuario.criar(req.body);
-    if(createUser) {
-      res.redirect('/login');
-    } else {
-      res.status(500).json({message: "Erro ao criar usuario"});
-    }
-  } catch(error) {
-    res.status(500).json({
-      message: 'Erro ao criar usuario!',
-      error,
-    });
-  }
+router.post('/criar', (req: Request, res: Response) => {
+  new CriarUsuarioController().handle(req, res);
 });
 
 router.get('/dados', authMiddleware, (req: Request, res: Response) => {
   res.status(200).json({message: "Dados de uma rota que precisa de autorizacao"});
 });
 
-router.post('/login', usuario.login);
+router.post('/login', (req: Request, res: Response) => {
+  new LoginController().handle(req, res);
+});
 
 export default router;

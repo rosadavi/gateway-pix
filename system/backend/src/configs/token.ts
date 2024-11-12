@@ -1,4 +1,4 @@
 export interface JwtPayload {
-    Id_Empresa: number;
-    CNPJ_CPF_Empresa: string;
+    id_empresa: number;
+    cpf_cnpj_empresa: string;
 }
