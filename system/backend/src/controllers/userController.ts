@@ -1,5 +1,3 @@
-import { Request, Response } from "express";
-import { JwtPayload } from '../configs/token.js';
 import { generateToken } from '../middlewares/jwt.js';
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
@@ -60,15 +58,15 @@ export class UserController {
                     CNPJ_CPF_Empresa: true
                 }
             });
-
+	    
             if(fetchUser) {
-                const token = createToken(fetchUser);
-                res.status(200).json(token);
+	       const token = generateToken(createToken);
+               return res.status(200).json(token);
             } else {
-                res.status(404).json({message: 'Credenciais Invalidas!'});
+                return res.status(404).json({message: 'Credenciais Invalidas!'});
             }
         } catch(error) {
-            res.status(500).json({message: "Erro ao realizar login", error});
+           return res.status(500).json({message: "Erro ao realizar login.", error: error});
         }
     }
 
