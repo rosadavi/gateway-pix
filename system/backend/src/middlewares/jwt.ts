@@ -6,7 +6,7 @@ dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET!;
 
 export function generateToken(payload: JwtPayload): string {
-    return jwt.sign(payload, JWT_SECRET, { expiresIn: "1h"});
+    return jwt.sign(payload, JWT_SECRET);
 }
 
 export function validateToken(token: string): JwtPayload | null {
