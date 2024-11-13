@@ -4,6 +4,7 @@ import { VerificaCPFeCNPJController } from './controllers/VerificaCPFeCNPJContro
 import { CriarUsuarioController } from './controllers/CriarUsuarioController.js';
 import { GeraCobrancaUnicaController } from './controllers/GeraCobrancaUnicaController.js';
 import {LoginController} from './controllers/LoginController.js';
+import { GeraExtratoController } from './controllers/GeraExtratoController.js';
 import { authMiddleware } from './middlewares/authJWT.js';
 
 const app = express();
@@ -53,6 +54,10 @@ router.post('/cobranca', authMiddleware,(req: Request, res: Response) => {
 router.get('/validar', authMiddleware, (req: Request, res: Response) => {
   res.status(200).json({message: "Autorizado"});
 
+});
+
+router.post('/extrato', authMiddleware, (req: Request, res: Response) => {
+  new GeraExtratoController().handle(req, res);
 });
 
 export default router;
