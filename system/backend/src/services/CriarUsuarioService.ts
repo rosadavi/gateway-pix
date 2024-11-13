@@ -1,3 +1,4 @@
+import { hashSenha } from "../configs/bcrypt";
 import prismaClient from "../prisma";
 
 interface CriarUsuarioProps {
@@ -15,6 +16,8 @@ interface CriarUsuarioProps {
 export class CriarUsuarioService {
     async execute({ nome, telefone, email, estado, cidade, tipo_pix, chave_pix, senha, cpf_cnpj }: CriarUsuarioProps) {
         try {
+            const senhaHash = await hashSenha(senha);
+            
             const novoUsuario = await prismaClient.vw_empresa.create({
                 data: {
                     nome_empresa: nome,
@@ -24,7 +27,7 @@ export class CriarUsuarioService {
                     cidade_empresa: cidade,
                     tipo_pix_empresa: tipo_pix,
                     chave_pix_empresa: chave_pix,
-                    senha_empresa: senha,
+                    senha_empresa: senhaHash,
                     cpf_cnpj_empresa: cpf_cnpj
                 }
             });
