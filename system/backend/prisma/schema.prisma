@@ -17,7 +17,7 @@ model vw_cliente {
 
 model vw_cobranca {
   id_cobranca            Int         @id @default(autoincrement())
-  pedido_id_pedido       Int
+  pedido_id_pedido       Int?
   empresa_id_empresa     Int
   cliente_id_cliente     Int?
   data_cobranca          DateTime    @db.Timestamp(0) @default(now())
@@ -31,7 +31,7 @@ model vw_cobranca {
   codigo_pix_cobranca    String?     @db.VarChar(255)
   vw_cliente             vw_cliente? @relation(fields: [cliente_id_cliente], references: [id_cliente], onDelete: NoAction, onUpdate: NoAction, map: "fk_VW_Cobranca_VW_Cliente1")
   vw_empresa             vw_empresa  @relation(fields: [empresa_id_empresa], references: [id_empresa], onDelete: NoAction, onUpdate: NoAction, map: "fk_VW_Cobranca_VW_Empresa1")
-  vw_pedido              vw_pedido   @relation(fields: [pedido_id_pedido], references: [id_pedido], onDelete: NoAction, onUpdate: NoAction, map: "fk_VW_Cobranca_VW_Pedido1")
+  vw_pedido              vw_pedido?  @relation(fields: [pedido_id_pedido], references: [id_pedido], onDelete: NoAction, onUpdate: NoAction, map: "fk_VW_Cobranca_VW_Pedido1")
 
   @@index([cliente_id_cliente], map: "fk_VW_Cobranca_VW_Cliente1_idx")
   @@index([empresa_id_empresa], map: "fk_VW_Cobranca_VW_Empresa1_idx")

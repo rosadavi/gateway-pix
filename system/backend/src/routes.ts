@@ -1,8 +1,8 @@
-import { Router, Request, Response } from 'express';
-import express from 'express';
+import express, { Router, Request, Response } from 'express';
 import path from 'path';
 import { VerificaCPFeCNPJController } from './controllers/VerificaCPFeCNPJController.js';
 import { CriarUsuarioController } from './controllers/CriarUsuarioController.js';
+import { GeraCobrancaUnicaController } from './controllers/GeraCobrancaUnicaController.js';
 import {LoginController} from './controllers/LoginController.js';
 import { authMiddleware } from './middlewares/authJWT.js';
 
@@ -48,6 +48,10 @@ router.get('/dados', authMiddleware, (req: Request, res: Response) => {
 
 router.post('/login', (req: Request, res: Response) => {
   new LoginController().handle(req, res);
+});
+
+router.post('/cobranca', (req: Request, res: Response) => {
+  new GeraCobrancaUnicaController().handle(req, res);
 });
 
 export default router;
