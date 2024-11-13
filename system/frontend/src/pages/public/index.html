@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home</title>
-    <link rel="stylesheet" href="../../style/root.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Agbalumo&family=Roboto:wght@100;300;400;500;700;900&display=swap');
 
@@ -133,30 +132,40 @@
         </div>
     </header>
     <main>
-        <button id="logout"><a href="/login">Sair</a></button>
+        <button id="logout"><a href="/">Sair</a></button>
     </main>
     <script>
-async function fetchProtectedData() {
-    const token = localStorage.getItem('token'); // Recuperar o token do localStorage
+        window.onload = fetchProtectedData("Acesso expirado, faca login novamete!");
 
-    const response = await fetch('http://localhost:3002/index', {
-        method: 'GET',
-        headers: {
-            'Authorization': `Bearer ${token}`, // Incluindo o token como Bearer Token
-        },
-    });
+        async function fetchProtectedData(frase) {
+            const token = localStorage.getItem('token');
 
-    if (response.ok) {
-        const data = await response.json();
-        console.log('Dados protegidos:', data);
-    } else {
-        console.error('Erro ao acessar dados protegidos:', response.status);
-    }
-}
+            try {
+                const response = await fetch('http://localhost:3001/validar', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
+                const data = await response.json();
+                if(!response.ok) {
+                    alert(frase);
+                    localStorage.removeItem('token');
+                    window.location.href = '/login'; 
+                } else {
+                    // alert('bem vindo!');
+                }
+            } catch(error) {
+                alert('Erro, sistema fora do ar!');
+            }
+    
+        }
 
-// Chame a função quando a página carregar
-window.onload = fetchProtectedData;
-
+        const logoutButton = document.querySelector('#logout');
+        logoutButton.addEventListener('click', () => {
+            localStorage.removeItem('token');
+            fetchProtectedData('Adeus');
+        });
     </script>
 </body>
 </html>

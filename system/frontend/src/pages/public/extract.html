@@ -159,5 +159,32 @@
             </div>
         </div>
     </main>
+    <script>
+        window.onload = fetchProtectedData("Acesso expirado, faca login novamete!");
+    
+        async function fetchProtectedData(frase) {
+            const token = localStorage.getItem('token');
+        
+            try {
+                const response = await fetch('http://localhost:3001/validar', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
+                const data = await response.json();
+                if(!response.ok) {
+                    alert(frase);
+                    localStorage.removeItem('token');
+                    window.location.href = '/login'; 
+                } else {
+                    // alert('bem vindo!');
+                }
+            } catch(error) {
+                alert('Erro, sistema fora do ar!');
+            }
+        
+        }
+    </script>
 </body>
 </html>

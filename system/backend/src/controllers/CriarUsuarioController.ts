@@ -9,7 +9,7 @@ class CriarUsuarioController {
 
         const usuario = await criarUsuarioService.execute({ nome, telefone, email, estado, cidade, tipo_pix, chave_pix, senha, cpf_cnpj });
 
-        return response.json(usuario);
+        return response.redirect('/login');
     }
 }
 export {CriarUsuarioController};

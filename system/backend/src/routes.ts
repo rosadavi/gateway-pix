@@ -42,16 +42,17 @@ router.post('/criar', (req: Request, res: Response) => {
   new CriarUsuarioController().handle(req, res);
 });
 
-router.get('/dados', authMiddleware, (req: Request, res: Response) => {
-  res.status(200).json({message: "Dados de uma rota que precisa de autorizacao"});
-});
-
 router.post('/login', (req: Request, res: Response) => {
   new LoginController().handle(req, res);
 });
 
-router.post('/cobranca', (req: Request, res: Response) => {
+router.post('/cobranca', authMiddleware,(req: Request, res: Response) => {
   new GeraCobrancaUnicaController().handle(req, res);
+});
+
+router.get('/validar', authMiddleware, (req: Request, res: Response) => {
+  res.status(200).json({message: "Autorizado"});
+
 });
 
 export default router;
