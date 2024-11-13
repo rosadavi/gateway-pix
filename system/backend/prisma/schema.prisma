@@ -48,7 +48,7 @@ model vw_empresa {
   tipo_pix_empresa  String?          @db.VarChar(15)
   chave_pix_empresa String?          @db.VarChar(45)
   cpf_cnpj_empresa  String?          @db.Char(14)
-  senha_empresa     String?          @db.VarChar(45)
+  senha_empresa     String?          @db.VarChar(60)
   vw_cobranca       vw_cobranca[]
   vw_item_pedido    vw_item_pedido[]
   vw_pedido         vw_pedido[]
