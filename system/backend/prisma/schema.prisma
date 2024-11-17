@@ -7,89 +7,568 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model vw_cliente {
-  id_cliente       Int           @id @default(autoincrement())
-  cpf_cnpj         String?       @db.VarChar(14)
-  nome_cliente     String?       @db.VarChar(75)
-  telefone_cliente String        @db.Char(13)
-  vw_cobranca      vw_cobranca[]
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model TipoTransacao {
+  idTipoTransacao    Int        @id @default(autoincrement())
+  siglaTipoTransacao String     @unique(map: "siglaTipoTransacao_UNIQUE") @db.Char(3)
+  nomeTipoTransacao  String     @unique(map: "nomeTipoTransacao_UNIQUE") @db.VarChar(45)
+  descTipoTransacao  String     @db.Text
+  bolAtivo           Int        @default(1) @db.SmallInt
+  cash_out           cash_out[]
+  pedido             pedido[]
 }
 
-model vw_cobranca {
-  id_cobranca            Int         @id @default(autoincrement())
-  pedido_id_pedido       Int?
-  empresa_id_empresa     Int
-  cliente_id_cliente     Int?
-  data_cobranca          DateTime    @default(now()) @db.Timestamp(0)
-  metodo_pagamento       String      @db.VarChar(45)
-  valor_cobranca         Decimal     @db.Decimal(10, 2)
-  status_cobranca        String      @db.Char(1)
-  descricao_cobranca     String      @db.VarChar(45)
-  num_parcela            Int
-  vencimento_cobranca    DateTime?   @db.DateTime(0)
-  codigo_pix_transaction String?     @db.VarChar(255)
-  codigo_pix_cobranca    String?     @db.VarChar(255)
-  vw_cliente             vw_cliente? @relation(fields: [cliente_id_cliente], references: [id_cliente], onDelete: NoAction, onUpdate: NoAction, map: "fk_VW_Cobranca_VW_Cliente1")
-  vw_empresa             vw_empresa  @relation(fields: [empresa_id_empresa], references: [id_empresa], onDelete: NoAction, onUpdate: NoAction, map: "fk_VW_Cobranca_VW_Empresa1")
-  vw_pedido              vw_pedido?  @relation(fields: [pedido_id_pedido], references: [id_pedido], onDelete: NoAction, onUpdate: NoAction, map: "fk_VW_Cobranca_VW_Pedido1")
-
-  @@index([cliente_id_cliente], map: "fk_VW_Cobranca_VW_Cliente1_idx")
-  @@index([empresa_id_empresa], map: "fk_VW_Cobranca_VW_Empresa1_idx")
-  @@index([pedido_id_pedido], map: "fk_VW_Cobranca_VW_Pedido1_idx")
+model UF {
+  siglaUF String @id @db.Char(2)
+  descUF  String @db.VarChar(45)
 }
 
-model vw_empresa {
-  id_empresa        Int              @id @default(autoincrement())
-  nome_empresa      String           @db.VarChar(45)
-  celular_empresa   String           @db.Char(13)
-  email_empresa     String           @db.VarChar(75)
-  uf_empresa        String?          @db.Char(2)
-  cidade_empresa    String?          @db.VarChar(45)
-  tipo_pix_empresa  String?          @db.VarChar(15)
-  chave_pix_empresa String?          @db.VarChar(45)
-  cpf_cnpj_empresa  String?          @db.Char(14)
-  senha_empresa     String?          @db.VarChar(60)
-  vw_cobranca       vw_cobranca[]
-  vw_item_pedido    vw_item_pedido[]
-  vw_pedido         vw_pedido[]
-  vw_produto        vw_produto[]
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model acesso {
+  empresa_idEmpresa Int
+  pessoa_idPessoa   Int
+  aceTipo           Int
+  aceCreated        DateTime @default(now()) @db.Timestamp(0)
+  aceCreatedPor     String   @db.Char(1)
+  aceCreatedId      Int
+  aceExpiredDate    DateTime @db.Date
+  aceComentario     String?  @db.Text
+  aceAtivo          Boolean
+  empresa           empresa  @relation(fields: [empresa_idEmpresa], references: [idEmpresa], onDelete: NoAction, onUpdate: NoAction, map: "fk_acesso_empresa_has_pessoa_empresa1")
+  pessoa            pessoa   @relation(fields: [pessoa_idPessoa], references: [idPessoa], onDelete: NoAction, onUpdate: NoAction, map: "fk_acesso_empresa_has_pessoa_pessoa1")
+
+  @@id([empresa_idEmpresa, pessoa_idPessoa])
+  @@index([empresa_idEmpresa], map: "fk_empresa_has_pessoa_empresa1_idx")
+  @@index([pessoa_idPessoa], map: "fk_empresa_has_pessoa_pessoa1_idx")
 }
 
-model vw_item_pedido {
-  VW_Pedido_id_pedido   Int
-  VW_Empresa_id_empresa Int
-  VW_Produto_id_produto Int
-  quantidade_produto    Int
-  valor_pedido          Decimal    @db.Decimal(10, 2)
-  vw_empresa            vw_empresa @relation(fields: [VW_Empresa_id_empresa], references: [id_empresa], onDelete: NoAction, onUpdate: NoAction, map: "fk_VW_Item_Pedido_VW_Empresa1")
-  vw_pedido             vw_pedido  @relation(fields: [VW_Pedido_id_pedido], references: [id_pedido], onDelete: NoAction, onUpdate: NoAction, map: "fk_VW_Produto_has_VW_Pedido_VW_Pedido1")
-  vw_produto            vw_produto @relation(fields: [VW_Produto_id_produto], references: [id_produto], onDelete: NoAction, onUpdate: NoAction, map: "fk_VW_Produto_has_VW_Pedido_VW_Produto1")
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model campanha {
+  idCampanha        Int               @id @default(autoincrement())
+  camTitulo         String            @db.VarChar(20)
+  camMensagem       String            @db.VarChar(140)
+  camDtCadastro     DateTime          @db.DateTime(0)
+  camDtEnvio        DateTime?         @db.DateTime(0)
+  camSituacao       String            @default("1") @db.Char(1)
+  pessoa_idPessoa   Int
+  empresa_idEmpresa Int
+  camDtEnviado      DateTime?         @db.DateTime(0)
+  empresa           empresa           @relation(fields: [empresa_idEmpresa], references: [idEmpresa], onDelete: NoAction, onUpdate: NoAction, map: "fk_campanha_empresa1")
+  pessoa            pessoa            @relation(fields: [pessoa_idPessoa], references: [idPessoa], onDelete: NoAction, onUpdate: NoAction, map: "fk_campanha_pessoa1")
+  mensagemenviada   mensagemenviada[]
 
-  @@id([VW_Pedido_id_pedido, VW_Produto_id_produto])
-  @@index([VW_Empresa_id_empresa], map: "fk_VW_Item_Pedido_VW_Empresa1_idx")
-  @@index([VW_Pedido_id_pedido], map: "fk_VW_Produto_has_VW_Pedido_VW_Pedido1_idx")
-  @@index([VW_Produto_id_produto], map: "fk_VW_Produto_has_VW_Pedido_VW_Produto1_idx")
+  @@index([empresa_idEmpresa], map: "fk_campanha_empresa1_idx")
+  @@index([pessoa_idPessoa], map: "fk_campanha_pessoa1_idx")
 }
 
-model vw_pedido {
-  id_pedido          Int              @id @default(autoincrement())
-  empresa_id_empresa Int
-  valor_total        Decimal          @db.Decimal(10, 2)
-  vw_cobranca        vw_cobranca[]
-  vw_item_pedido     vw_item_pedido[]
-  vw_empresa         vw_empresa       @relation(fields: [empresa_id_empresa], references: [id_empresa], onDelete: NoAction, onUpdate: NoAction, map: "fk_VW_Pedido_VW_Empresa1")
+model cartaofidelidade {
+  idCartaoFidelidade Int          @id @default(autoincrement())
+  Empresa_idEmpresa  Int
+  Pessoa_idPessoa    Int
+  dataCadastro       DateTime     @default(now()) @db.Timestamp(0)
+  saldoProduto       Decimal      @default(0.00) @db.Decimal(10, 2)
+  saldoValor         Decimal      @default(0.00) @db.Decimal(10, 2)
+  empresa            empresa      @relation(fields: [Empresa_idEmpresa], references: [idEmpresa], onDelete: NoAction, onUpdate: NoAction, map: "fk_Empresa_has_Pessoa_Empresa1")
+  pessoa             pessoa       @relation(fields: [Pessoa_idPessoa], references: [idPessoa], onDelete: NoAction, onUpdate: NoAction, map: "fk_Empresa_has_Pessoa_Pessoa1")
+  lancamento         lancamento[]
 
-  @@index([empresa_id_empresa], map: "fk_VW_Pedido_VW_Empresa1_idx")
+  @@index([Empresa_idEmpresa], map: "fk_Empresa_has_Pessoa_Empresa1_idx")
+  @@index([Pessoa_idPessoa], map: "fk_Empresa_has_Pessoa_Pessoa1_idx")
 }
 
-model vw_produto {
-  id_produto         Int              @id @default(autoincrement())
-  empresa_id_empresa Int
-  nome_produto       String           @db.VarChar(45)
-  descricao_produto  String           @db.VarChar(45)
-  valor_produto      Decimal          @db.Decimal(10, 2)
-  vw_item_pedido     vw_item_pedido[]
-  vw_empresa         vw_empresa       @relation(fields: [empresa_id_empresa], references: [id_empresa], onDelete: NoAction, onUpdate: NoAction, map: "fk_VW_Produto_VW_Empresa")
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model cash_out {
+  id_cash_out                       BigInt        @id @default(autoincrement())
+  co_dt_registro                    DateTime      @default(now()) @db.Timestamp(0)
+  co_dt_last_update                 DateTime      @default(now()) @db.Timestamp(0)
+  co_status                         String        @db.VarChar(45)
+  TipoTransacao_idTipoTransacao     Int           @default(1)
+  pag_idpagamento                   BigInt?
+  pag_dtpagamento                   DateTime?     @db.DateTime(0)
+  pag_method                        String?       @db.VarChar(45)
+  pag_valor                         Decimal?      @db.Decimal(15, 2)
+  pag_status                        String?       @db.Char(1)
+  pedido_idPedido                   BigInt?
+  pedido_status                     String?       @db.Char(1)
+  emp_idempresa                     BigInt?
+  emp_nome                          String?       @db.VarChar(45)
+  emp_razao_social                  String?       @db.VarChar(100)
+  emp_telefone                      String?       @db.Char(13)
+  emp_cpfCnpj                       String?       @db.VarChar(14)
+  emp_pixType                       String?       @db.VarChar(15)
+  emp_pixKey                        String?       @db.VarChar(75)
+  spg_cod_pagamento                 String?       @db.VarChar(75)
+  spg_status_pagamento              String?       @db.VarChar(75)
+  spg_numero_lote                   BigInt?
+  spg_numero_lancamento             BigInt?
+  spg_tipo_pagamento                String?       @db.VarChar(15)
+  spg_data_pagamento                DateTime?     @db.DateTime(0)
+  spg_valor_pagamento               Decimal?      @db.Decimal(15, 2)
+  spg_referencia_empresa            String?       @db.VarChar(45)
+  spg_identificacao_comprovante     String?       @db.VarChar(255)
+  spg_informacoes_entre_usuarios    String?       @db.VarChar(255)
+  spg_pagador_tipo_conta            String?       @db.VarChar(45)
+  spg_pagador_agencia               String?       @db.VarChar(15)
+  spg_pagador_conta                 String?       @db.VarChar(45)
+  spg_pagador_tipo_pessoa           String?       @db.Char(1)
+  spg_pagador_documento             String?       @db.VarChar(45)
+  spg_pagador_modulo_sispag         String?       @db.VarChar(45)
+  spg_recebedor_banco               String?       @db.VarChar(75)
+  spg_recebedor_ispb                String?       @db.VarChar(45)
+  spg_recebedor_documento           String?       @db.VarChar(45)
+  spg_recebedor_nome                String?       @db.VarChar(75)
+  spg_recebedor_tipo_conta          String?       @db.VarChar(45)
+  spg_recebedor_tipo_pessoa         String?       @db.Char(1)
+  spg_recebedor_identificacao_chave String?       @db.VarChar(75)
+  spg_error_codigo                  String?       @db.VarChar(45)
+  spg_error_mensagem                String?       @db.Text
+  TipoTransacao                     TipoTransacao @relation(fields: [TipoTransacao_idTipoTransacao], references: [idTipoTransacao], onDelete: NoAction, onUpdate: NoAction, map: "fk_cash_out_TipoTransacao1")
 
-  @@index([empresa_id_empresa], map: "fk_VW_Produto_VW_Empresa_idx")
+  @@index([TipoTransacao_idTipoTransacao], map: "fk_cash_out_TipoTransacao1_idx")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model cash_out_notificacao {
+  id_cash_out_notificacao BigInt   @id @default(autoincrement())
+  dataRegistro            DateTime @default(now()) @db.Timestamp(0)
+  evento                  String   @db.VarChar(45)
+  id_cash_out             BigInt
+  descricao               String   @db.Text
+  telefoneEnviado         String   @db.VarChar(45)
+  tipoNotificacao         String   @db.Char(1)
+  detalhe                 String?  @db.Text
+  pag_idPedido            BigInt
+  pag_valor               Decimal  @db.Decimal(12, 2)
+  pag_descricao           String   @db.VarChar(255)
+}
+
+model categoria {
+  idCategoria   Int       @id @default(autoincrement())
+  nomeCategoria String    @unique(map: "nomeCategoria_UNIQUE") @db.VarChar(45)
+  ativo         Boolean   @default(dbgenerated("b'1'")) @db.Bit(1)
+  produto       produto[]
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model config_type_pix {
+  siglaTypePIX String @id @db.Char(10)
+  descTypePIX  String @db.VarChar(45)
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model configuracartao {
+  idConfiguraCartao Int     @id @default(autoincrement())
+  Empresa_idEmpresa Int
+  pontuaProduto     Boolean @db.Bit(1)
+  pontuaPorValor    Boolean @db.Bit(1)
+  premioQtdProduto  Int     @default(0)
+  premioQtdValor    Decimal @default(0.00) @db.Decimal(10, 2)
+  empresa           empresa @relation(fields: [Empresa_idEmpresa], references: [idEmpresa], onDelete: NoAction, onUpdate: NoAction, map: "fk_ConfiguraCartao_Empresa1")
+
+  @@index([Empresa_idEmpresa], map: "fk_ConfiguraCartao_Empresa1_idx")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model empresa {
+  idEmpresa             Int                 @id @default(autoincrement())
+  nomeFantasia          String              @db.VarChar(45)
+  hashEmpresa           String?             @db.VarChar(45)
+  razaoSocial           String?             @db.VarChar(75)
+  telefoneEmpresa       String              @unique(map: "telefoneEmpresa_UNIQUE") @db.Char(13)
+  CNPJ                  String?             @db.Char(14)
+  endereco              String?             @db.VarChar(95)
+  bairro                String?             @db.VarChar(45)
+  cidade                String?             @db.VarChar(45)
+  uf                    String?             @db.Char(2)
+  cep                   String?             @db.Char(10)
+  locLogitude           String?             @db.VarChar(45)
+  locLatitude           String?             @db.VarChar(45)
+  sigla                 String?             @unique(map: "sigla_UNIQUE") @db.Char(7)
+  email                 String              @db.VarChar(75)
+  senha                 String?             @db.VarChar(45)
+  ativo                 Boolean             @default(dbgenerated("b'1'")) @db.Bit(1)
+  dataRegistro          DateTime            @default(now()) @db.Timestamp(0)
+  proprietario          Int                 @default(1)
+  hashNovaSenha         String?             @db.VarChar(75)
+  hashNovaSenhaData     DateTime?           @db.DateTime(0)
+  dataUltimaAtualizacao DateTime            @default(now()) @db.Timestamp(0)
+  codAfiliado           String?             @unique(map: "codAfiliado_UNIQUE") @db.VarChar(45)
+  codAfiliadoUtilizado  String?             @db.VarChar(45)
+  pixType               String?             @db.VarChar(15)
+  pixKey                String?             @db.VarChar(45)
+  pixDuration           Int                 @default(1800)
+  empCpfCnpj            String?             @db.VarChar(14)
+  gatSurrogateKey       String?             @db.VarChar(45)
+  pixEstatico           Boolean             @default(dbgenerated("b'1'")) @db.Bit(1)
+  vlPixTransacao        Decimal             @default(0.25) @db.Decimal(5, 2)
+  empImgCapa            String?             @db.VarChar(100)
+  taxaReter             Boolean?            @default(dbgenerated("b'0'")) @db.Bit(1)
+  taxaReterDtInicio     DateTime            @default(now()) @db.Timestamp(0)
+  taxaReterQtdGratuita  Int?                @default(10) @db.SmallInt
+  emp_repasse_interno   Int                 @default(1) @db.SmallInt
+  pag_home              String              @default("PADRAO") @db.VarChar(100)
+  acesso                acesso[]
+  campanha              campanha[]
+  cartaofidelidade      cartaofidelidade[]
+  configuracartao       configuracartao[]
+  pessoa                pessoa              @relation(fields: [proprietario], references: [idPessoa], onDelete: NoAction, onUpdate: NoAction, map: "fk_empresa_pessoa1")
+  evento                evento[]
+  gateway_pagamento     gateway_pagamento[]
+  pedido                pedido[]
+  produto               produto[]
+  tasks                 tasks[]
+
+  @@index([proprietario], map: "fk_empresa_pessoa1_idx")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model evento {
+  idEvento                     Int         @id @default(autoincrement())
+  eveTitulo                    String      @unique(map: "eveTitulo_UNIQUE") @db.VarChar(100)
+  eveTituloHash                String?     @db.VarChar(100)
+  eveDescricao                 String?     @db.Text
+  eveLocal                     String?     @db.VarChar(100)
+  eveData                      DateTime    @db.DateTime(0)
+  eveDtIniInscricao            DateTime    @db.DateTime(0)
+  eveDtFimInscricao            DateTime    @db.DateTime(0)
+  eveVlIngresso                Decimal     @db.Decimal(10, 2)
+  eveVlComDesconto             Decimal     @db.Decimal(10, 2)
+  eveAtivo                     Boolean     @db.Bit(1)
+  empresa_idEmpresa            Int
+  eveImgCapa                   String?     @db.VarChar(100)
+  eveVagas                     Int?
+  eveVagasTolerancia           Int?
+  eveVagasQtdInscritos         Int?        @default(0)
+  eveVagasQtdConfirmados       Int?        @default(0)
+  eveVagasQtdPagos             Int?        @default(0)
+  eveInscricaoLimitePorVagas   Boolean?    @db.Bit(1)
+  eveInscricaoLimitePorHorario Boolean?    @db.Bit(1)
+  eveRequisitarInstagram       Boolean?    @db.Bit(1)
+  eveRequisitarObs1            Boolean?    @db.Bit(1)
+  eveRequisitarObs2            Boolean?    @db.Bit(1)
+  eveLabelNomeCompleto         String?     @db.VarChar(45)
+  eveLabelObs1                 String?     @db.VarChar(45)
+  eveLabelObs2                 String?     @db.VarChar(45)
+  eveVariasInscricoesPorPessoa Boolean?    @db.Bit(1)
+  eveQtdHorasExpiraPgto        Int?
+  eveIdadeMin                  Int?
+  eveIdadeMax                  Int?
+  empresa                      empresa     @relation(fields: [empresa_idEmpresa], references: [idEmpresa], onDelete: NoAction, onUpdate: NoAction, map: "fk_evento_empresa1")
+  inscricao                    inscricao[]
+
+  @@index([empresa_idEmpresa], map: "fk_evento_empresa1_idx")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model gateway_pagamento {
+  idGatewayPagamento         Int       @id @default(autoincrement())
+  gat_nome                   String?   @db.VarChar(45)
+  gat_url_site               String?   @db.VarChar(45)
+  gat_url_process_payment    String?   @db.VarChar(100)
+  gat_url_callback           String?   @db.VarChar(100)
+  gat_client_id              String?   @db.VarChar(100)
+  gat_client_key             String?   @db.VarChar(100)
+  gat_client_secret          String?   @db.VarChar(100)
+  gat_pix_tipo               String?   @db.VarChar(15)
+  gat_pix_chave              String?   @db.VarChar(45)
+  gat_access_token           String?   @db.Text
+  gat_access_token_expire_in DateTime? @db.Timestamp(0)
+  empresa_idEmpresa          Int
+  bankCode                   String?   @db.Char(3)
+  bankAgency                 String?   @db.Char(4)
+  bankAccount                String?   @db.VarChar(45)
+  bankCpfCnpj                String?   @db.VarChar(14)
+  status                     Boolean   @db.Bit(1)
+  gat_data_registro          DateTime  @default(now()) @db.Timestamp(0)
+  gat_dat_last_update        DateTime  @default(now()) @db.Timestamp(0)
+  gat_account_id             String?   @db.VarChar(100)
+  empresa                    empresa   @relation(fields: [empresa_idEmpresa], references: [idEmpresa], onDelete: NoAction, onUpdate: NoAction, map: "fk_gateway_pagamento_empresa1")
+
+  @@index([empresa_idEmpresa], map: "fk_gateway_pagamento_empresa1_idx")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model inscricao {
+  idInscricao                       Int       @id @default(autoincrement())
+  insDataRegistro                   DateTime  @default(now()) @db.DateTime(0)
+  evento_idEvento                   Int
+  pedido_idPedido                   Int
+  user_nome_utilizado               String?   @db.VarChar(100)
+  user_telefone_utilizado           String?   @db.Char(13)
+  user_email_utilizado              String?   @db.VarChar(100)
+  user_instagram                    String?   @db.VarChar(100)
+  user_obs1                         String?   @db.VarChar(200)
+  user_obs2                         String?   @db.VarChar(200)
+  ins_confirmada                    Boolean   @default(dbgenerated("b'0'")) @db.Bit(1)
+  ins_confirmada_data               DateTime? @db.DateTime(0)
+  ins_confirmada_metodo             String?   @db.Char(1)
+  ins_confirmada_user               String?   @db.VarChar(100)
+  ins_confirmada_obs                String?   @db.Text
+  ins_presente                      Boolean   @default(dbgenerated("b'0'")) @db.Bit(1)
+  ins_presente_data                 DateTime? @db.DateTime(0)
+  ins_presente_metodo               String?   @db.Char(1)
+  ins_presente_user                 String?   @db.VarChar(100)
+  ins_confirmado_notificado_estab   Int       @default(0) @db.SmallInt
+  ins_confirmado_notificado_pagador Int       @default(0) @db.SmallInt
+  evento                            evento    @relation(fields: [evento_idEvento], references: [idEvento], onDelete: NoAction, onUpdate: NoAction, map: "fk_inscricao_evento1")
+  pedido                            pedido    @relation(fields: [pedido_idPedido], references: [idPedido], onDelete: NoAction, onUpdate: NoAction, map: "fk_inscricao_pedido1")
+
+  @@index([evento_idEvento], map: "fk_inscricao_evento1_idx")
+  @@index([pedido_idPedido], map: "fk_inscricao_pedido1_idx")
+}
+
+model item_pedido {
+  pedido_idPedido            Int
+  produto_item_idProdutoItem Int
+  quantidade                 Int
+  valor_item                 Decimal      @db.Decimal(10, 2)
+  produto_item               produto_item @relation(fields: [produto_item_idProdutoItem], references: [idProdutoItem], onDelete: NoAction, onUpdate: NoAction, map: "fk_item_pedido_produto_item1")
+  pedido                     pedido       @relation(fields: [pedido_idPedido], references: [idPedido], onDelete: NoAction, onUpdate: NoAction, map: "fk_pedido_has_item_do_produto_pedido1")
+
+  @@id([pedido_idPedido, produto_item_idProdutoItem])
+  @@index([produto_item_idProdutoItem], map: "fk_item_pedido_produto_item1_idx")
+  @@index([pedido_idPedido], map: "fk_pedido_has_item_do_produto_pedido1_idx")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model lancamento {
+  idLancamento                        Int              @id @default(autoincrement())
+  Produto_idProduto                   Int
+  CartaoFidelidade_idCartaoFidelidade Int
+  tipoLancamento                      String           @db.Char(1)
+  dataLancamento                      DateTime         @default(now()) @db.Timestamp(0)
+  quantidade                          Decimal          @db.Decimal(5, 2)
+  produto_nome                        String?          @db.VarChar(45)
+  produto_valor                       Decimal?         @db.Decimal(10, 2)
+  produto_pontuaFidelidade            Boolean?         @db.Bit(1)
+  produto_tipoProduto                 String?          @db.Char(1)
+  produto_premioQtdProduto            Int?
+  produto_premioQtdValor              Decimal?         @db.Decimal(10, 2)
+  data_expiracao                      DateTime         @default(now()) @db.DateTime(0)
+  expiraDiasProduto                   Int?
+  cartaofidelidade                    cartaofidelidade @relation(fields: [CartaoFidelidade_idCartaoFidelidade], references: [idCartaoFidelidade], onDelete: NoAction, onUpdate: NoAction, map: "fk_Produto_has_CartaoFidelidade_CartaoFidelidade1")
+  produto                             produto          @relation(fields: [Produto_idProduto], references: [idProduto], onDelete: NoAction, onUpdate: NoAction, map: "fk_Produto_has_CartaoFidelidade_Produto1")
+
+  @@index([CartaoFidelidade_idCartaoFidelidade], map: "fk_Produto_has_CartaoFidelidade_CartaoFidelidade1_idx")
+  @@index([Produto_idProduto], map: "fk_Produto_has_CartaoFidelidade_Produto1_idx")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model loglogon {
+  idLogLogon     Int      @id @default(autoincrement())
+  usuario_id     Int
+  usuario_login  String   @db.VarChar(45)
+  usuario_perfil String   @db.Char(1)
+  usuario_ip     String   @db.VarChar(45)
+  dataLogon      DateTime @default(now()) @db.Timestamp(0)
+  hashSession    String   @db.VarChar(45)
+  historico      String?  @db.Text
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model mensagemenviada {
+  idMsgEnviada                Int       @id @default(autoincrement())
+  msgTexto                    String    @db.Text
+  msgDtEnvio                  DateTime  @db.DateTime(0)
+  pessoa_idPessoa             Int
+  campanha_idCampanha         Int
+  msgRetornoEnviado           String?   @db.Char(1)
+  msgRetornoStatusCode        String?   @db.VarChar(11)
+  msgRetornoStatusDescription String?   @db.VarChar(45)
+  msgRetornoDetailCode        String?   @db.VarChar(11)
+  msgRetornoDetailDescription String?   @db.VarChar(45)
+  msgRetornoIdSMSenviado      String?   @db.VarChar(45)
+  msgRetornoDtRecebido        DateTime? @db.DateTime(0)
+  campanha                    campanha  @relation(fields: [campanha_idCampanha], references: [idCampanha], onDelete: NoAction, onUpdate: NoAction, map: "fk_mensagemEnviada_campanha1")
+  pessoa                      pessoa    @relation(fields: [pessoa_idPessoa], references: [idPessoa], onDelete: NoAction, onUpdate: NoAction, map: "fk_mensagemEnviada_pessoa1")
+
+  @@index([campanha_idCampanha], map: "fk_mensagemEnviada_campanha1_idx")
+  @@index([pessoa_idPessoa], map: "fk_mensagemEnviada_pessoa1_idx")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model pagamento {
+  idPagamento                 Int       @id @default(autoincrement())
+  pag_data_registro           DateTime  @default(now()) @db.Timestamp(0)
+  pag_data_last_update        DateTime  @default(now()) @db.Timestamp(0)
+  pag_tipo                    String    @db.VarChar(45)
+  pag_method                  String    @db.VarChar(45)
+  pag_valor                   Decimal   @db.Decimal(10, 2)
+  pag_descricao               String    @db.VarChar(45)
+  pag_status                  String    @db.Char(1)
+  parcela_numero              Int
+  pedido_idPedido             Int
+  parcela_dt_vencimento       DateTime? @db.DateTime(0)
+  parcela_dt_pagamento        DateTime? @db.DateTime(0)
+  url_callback                String?   @db.VarChar(100)
+  cliente_nome                String?   @db.VarChar(45)
+  cliente_telefone            String?   @db.VarChar(45)
+  cliente_documento           String?   @db.VarChar(45)
+  cliente_documento_valor     String?   @db.VarChar(100)
+  cliente_ip                  String?   @db.VarChar(45)
+  cliente_session             String?   @db.VarChar(255)
+  cliente_device              String?   @db.VarChar(255)
+  transaction_uuid            String?   @db.VarChar(255)
+  transaction_order_id        String?   @db.VarChar(255)
+  transaction_status_cod      String?   @db.VarChar(255)
+  transaction_status_desc     String?   @db.VarChar(45)
+  pix_type                    String?   @db.VarChar(15)
+  pix_key                     String?   @db.VarChar(45)
+  pix_merchant_name           String?   @db.VarChar(25)
+  pix_merchant_city           String?   @db.VarChar(15)
+  pix_tx_id                   String?   @db.VarChar(25)
+  pix_qrcode_cod_payment      String?   @db.VarChar(255)
+  pix_qrcode_image64          String?   @db.VarChar(45)
+  pix_gateway_emv             String?   @db.VarChar(255)
+  pix_gateway_qrcodeLocation  String?   @db.VarChar(255)
+  pix_gateway_status          String?   @db.VarChar(45)
+  pix_gateway_duration        Int?
+  pix_gateway_date_expiration DateTime? @db.DateTime(0)
+  pag_notificado_estab        String?   @db.Char(1)
+  pag_notificado_pagador      String?   @db.Char(1)
+  pag_repasse                 Boolean   @default(dbgenerated("b'0'")) @db.Bit(1)
+  pag_repasse_status          Int       @default(1) @db.SmallInt
+  pag_repasse_forma           Int       @default(1) @db.SmallInt
+  pedido                      pedido    @relation(fields: [pedido_idPedido], references: [idPedido], onDelete: NoAction, onUpdate: NoAction, map: "fk_pagamento_pedido")
+
+  @@index([pedido_idPedido], map: "idx_fk_pagamento_pedido")
+  @@index([pag_data_registro], map: "idx_pagamento_pag_data_registro")
+  @@index([pix_gateway_status], map: "idx_pagamento_pix_gateway_status")
+  @@index([pix_tx_id], map: "idx_pagamento_pix_tx_id")
+  @@index([transaction_order_id], map: "idx_pagamento_transaction_order_id")
+  @@index([pag_repasse], map: "pag_repasse")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model pagamento_erro {
+  idPagamento       Int
+  pge_data_registro DateTime @default(now()) @db.DateTime(0)
+  pge_descricao     String?  @db.VarChar(255)
+
+  @@ignore
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model pedido {
+  idPedido                                        Int           @id @default(autoincrement())
+  dataRegistro                                    DateTime      @default(now()) @db.Timestamp(0)
+  valorTotal                                      Decimal       @db.Decimal(10, 2)
+  status                                          String        @db.Char(1)
+  totalParcelas                                   Int
+  pessoa_idPessoa_cliente                         Int?
+  vencimentoPrimeiraParcela                       DateTime?     @db.DateTime(0)
+  cliente_nome                                    String?       @db.VarChar(75)
+  pessoa_idPessoa_registrou                       Int
+  empresa_idEmpresa                               Int
+  TipoTransacao_idTipoTransacao                   Int           @default(1)
+  inscricao                                       inscricao[]
+  item_pedido                                     item_pedido[]
+  pagamento                                       pagamento[]
+  TipoTransacao                                   TipoTransacao @relation(fields: [TipoTransacao_idTipoTransacao], references: [idTipoTransacao], onDelete: NoAction, onUpdate: NoAction, map: "fk_pedido_TipoTransacao1")
+  empresa                                         empresa       @relation(fields: [empresa_idEmpresa], references: [idEmpresa], onDelete: NoAction, onUpdate: NoAction, map: "fk_pedido_empresa1")
+  pessoa_pedido_pessoa_idPessoa_clienteTopessoa   pessoa?       @relation("pedido_pessoa_idPessoa_clienteTopessoa", fields: [pessoa_idPessoa_cliente], references: [idPessoa], onDelete: NoAction, onUpdate: NoAction, map: "fk_pedido_pessoa_cliente")
+  pessoa_pedido_pessoa_idPessoa_registrouTopessoa pessoa        @relation("pedido_pessoa_idPessoa_registrouTopessoa", fields: [pessoa_idPessoa_registrou], references: [idPessoa], onDelete: NoAction, onUpdate: NoAction, map: "fk_pedido_pessoa_registrou")
+
+  @@index([TipoTransacao_idTipoTransacao], map: "fk_pedido_TipoTransacao1_idx")
+  @@index([empresa_idEmpresa], map: "fk_pedido_empresa1_idx")
+  @@index([pessoa_idPessoa_cliente], map: "fk_pedido_pessoa_cliente_idx")
+  @@index([pessoa_idPessoa_registrou], map: "fk_pedido_pessoa_registrou_idx")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model pessoa {
+  idPessoa                                        Int                @id @default(autoincrement())
+  nomeCompleto                                    String?            @db.VarChar(75)
+  CPF_CNPJ                                        String?            @db.VarChar(14)
+  telefone                                        String             @unique(map: "telefone_UNIQUE") @db.Char(13)
+  email                                           String?            @db.VarChar(75)
+  senha                                           String?            @db.VarChar(75)
+  ativo                                           Boolean            @default(dbgenerated("b'0'")) @db.Bit(1)
+  dataRegistro                                    DateTime           @db.DateTime(0)
+  dataCadastrou                                   DateTime?          @db.DateTime(0)
+  hashNovaSenha                                   String?            @db.VarChar(75)
+  hashNovaSenhaData                               DateTime?          @db.DateTime(0)
+  dataUltimaAtualizacao                           DateTime           @default(now()) @db.Timestamp(0)
+  codAfiliado                                     String?            @unique(map: "codAfiliado_UNIQUE") @db.VarChar(45)
+  social_ig_uuid                                  String?            @db.VarChar(100)
+  social_ig_user                                  String?            @db.VarChar(100)
+  acesso                                          acesso[]
+  campanha                                        campanha[]
+  cartaofidelidade                                cartaofidelidade[]
+  empresa                                         empresa[]
+  mensagemenviada                                 mensagemenviada[]
+  pedido_pedido_pessoa_idPessoa_clienteTopessoa   pedido[]           @relation("pedido_pessoa_idPessoa_clienteTopessoa")
+  pedido_pedido_pessoa_idPessoa_registrouTopessoa pedido[]           @relation("pedido_pessoa_idPessoa_registrouTopessoa")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model produto {
+  idProduto                       Int            @id @default(autoincrement())
+  Categoria_idCategoria           Int
+  Empresa_idEmpresa               Int
+  nomeProduto                     String         @db.VarChar(45)
+  valor                           Decimal        @db.Decimal(10, 2)
+  valor_perc_equivalente_pontos   Decimal        @default(1.00) @db.Decimal(5, 2)
+  valor_perc_equivalente_cashback Decimal        @default(0.00) @db.Decimal(5, 2)
+  ativo                           Int            @default(1) @db.SmallInt
+  pontuaFidelidade                Int            @default(1) @db.SmallInt
+  pontuaCashback                  Int            @default(1) @db.SmallInt
+  tipoProduto                     String         @db.Char(1)
+  premioQtdProduto                Int            @default(0) @db.SmallInt
+  premioQtdValor                  Decimal        @default(0.00) @db.Decimal(10, 2)
+  dataRegistro                    DateTime       @default(now()) @db.Timestamp(0)
+  expira_pontos_qtd_dias          Int?           @db.SmallInt
+  expira_cashback_qtd_dias        Int?           @db.SmallInt
+  lancamento                      lancamento[]
+  categoria                       categoria      @relation(fields: [Categoria_idCategoria], references: [idCategoria], onDelete: NoAction, onUpdate: NoAction, map: "fk_Produto_Categoria")
+  empresa                         empresa        @relation(fields: [Empresa_idEmpresa], references: [idEmpresa], onDelete: NoAction, onUpdate: NoAction, map: "fk_Produto_Empresa1")
+  produto_item                    produto_item[]
+
+  @@index([Categoria_idCategoria], map: "fk_Produto_Categoria_idx")
+  @@index([Empresa_idEmpresa], map: "fk_Produto_Empresa1_idx")
+}
+
+model produto_item {
+  idProdutoItem     Int           @id @default(autoincrement())
+  produto_idProduto Int
+  descricao_item    String        @db.VarChar(45)
+  valor_item        Decimal       @db.Decimal(10, 2)
+  item_ativo        Int           @db.SmallInt
+  item_pedido       item_pedido[]
+  produto           produto       @relation(fields: [produto_idProduto], references: [idProduto], onDelete: NoAction, onUpdate: NoAction, map: "fk_produto_item_produto1")
+
+  @@index([produto_idProduto], map: "fk_produto_item_produto1_idx")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model tasks {
+  idtasks           Int       @id @default(autoincrement())
+  descricao         String    @db.VarChar(255)
+  categoria         String    @db.VarChar(95)
+  funcao            String    @db.VarChar(45)
+  dtRegistrado      DateTime  @default(now()) @db.Timestamp(0)
+  dtAgendado        DateTime  @db.DateTime(0)
+  dtRealizado       DateTime? @db.DateTime(0)
+  status            String    @db.Char(1)
+  empresa_idEmpresa Int
+  empresa           empresa   @relation(fields: [empresa_idEmpresa], references: [idEmpresa], onDelete: NoAction, onUpdate: NoAction, map: "fk_tasks_empresa1")
+
+  @@index([empresa_idEmpresa], map: "fk_tasks_empresa1_idx")
+}
+
+model webhookPix {
+  idWebhookPix BigInt   @id @default(autoincrement())
+  data         DateTime @default(now()) @db.Timestamp(0)
+  event_pix    String   @db.VarChar(45)
+  id_pix       String   @db.VarChar(45)
+  descricao    String?  @db.VarChar(255)
+
+  @@index([id_pix], map: "idx_webhookpix_id_pix")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model webhook_pix_message {
+  id            Int      @id @default(autoincrement())
+  data_registro DateTime @default(now()) @db.Timestamp(0)
+  mensagem      String   @db.Text
 }
