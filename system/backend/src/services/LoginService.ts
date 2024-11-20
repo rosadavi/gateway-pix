@@ -20,23 +20,23 @@ function createToken(dados: JwtPayload, ) {
 export class LoginService {
     async execute({ cnpj_cpf, senha }: LoginProps) {
         try {
-            const fetchUser = await prismaClient.vw_empresa.findFirst({
+            const fetchUser = await prismaClient.empresa.findFirst({
                 where: {
-                    cpf_cnpj_empresa: cnpj_cpf,
+                    empCpfCnpj: cnpj_cpf,
                 },
                 select: {
-                    id_empresa: true,
-                    cpf_cnpj_empresa: true,
-                    senha_empresa: true
+                    idEmpresa: true,
+                    empCpfCnpj: true,
+                    senha: true
                 }
             });
             if(fetchUser) {
-                const senhaValida = await compareHashSenha(senha, fetchUser.senha_empresa!);
+                const senhaValida = await compareHashSenha(senha, fetchUser.senha!);
 
                 if(senhaValida) {
                     const token = createToken({
-                        cpf_cnpj_empresa: fetchUser.cpf_cnpj_empresa ?? '',
-                        id_empresa: fetchUser.id_empresa ??''
+                        cpf_cnpj_empresa: fetchUser.empCpfCnpj ?? '',
+                        id_empresa: fetchUser.idEmpresa ??''
                     });
                     return token;
                 } else {

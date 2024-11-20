@@ -18,17 +18,17 @@ export class CriarUsuarioService {
         try {
             const senhaHash = await hashSenha(senha);
             
-            const novoUsuario = await prismaClient.vw_empresa.create({
+            const novoUsuario = await prismaClient.empresa.create({
                 data: {
-                    nome_empresa: nome,
-                    celular_empresa: telefone,
-                    email_empresa: email,
-                    uf_empresa: estado,
-                    cidade_empresa: cidade,
-                    tipo_pix_empresa: tipo_pix,
-                    chave_pix_empresa: chave_pix,
-                    senha_empresa: senhaHash,
-                    cpf_cnpj_empresa: cpf_cnpj
+                    nomeFantasia: nome,
+                    telefoneEmpresa: telefone,
+                    email: email,
+                    uf: estado,
+                    cidade: cidade,
+                    pixType: tipo_pix,
+                    pixKey: chave_pix,
+                    senha: senhaHash,
+                    empCpfCnpj: cpf_cnpj
                 }
             });
             console.log("usuario criado", novoUsuario);

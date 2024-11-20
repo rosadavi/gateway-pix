@@ -1,15 +1,26 @@
 import prismaClient from "../prisma";
 
 interface GeraExtratoProps {
-    empresa_id_empresa: number;
+    empresa_idEmpresa: number;
     }
 
 class GeraExtratoService {
-    async execute({ empresa_id_empresa }: GeraExtratoProps) {
-        const extrato = await prismaClient.vw_cobranca.findMany({
+    async execute({ empresa_idEmpresa }: GeraExtratoProps) {
+        const extrato = await prismaClient.pagamento.findMany({
             where: {
-                empresa_id_empresa
-            }
+                pedido: {
+                    empresa_idEmpresa: empresa_idEmpresa
+                }
+            },
+            select: {
+                pag_data_registro: true,
+                pag_tipo: true,
+                pag_valor: true,
+                pag_descricao: true,
+                pag_status: true,
+                parcela_numero: true,
+                cliente_telefone:true,
+            } 
         });
 
         return extrato;

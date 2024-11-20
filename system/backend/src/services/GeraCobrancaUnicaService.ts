@@ -9,6 +9,7 @@ interface GeraCobrancaUnicaProps {
     status_cobranca: string;
     descricao_cobranca: string;
     num_parcela: number;
+    //adicionar numero total de parcelas
 }
 
 class GeraCobrancaUnicaService {
