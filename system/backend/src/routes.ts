@@ -2,7 +2,7 @@ import express, { Router, Request, Response } from 'express';
 import path from 'path';
 import { VerificaCPFeCNPJController } from './controllers/VerificaCPFeCNPJController.js';
 import { CriarUsuarioController } from './controllers/CriarUsuarioController.js';
-import { GeraCobrancaUnicaController } from './controllers/GeraCobrancaUnicaController.js';
+import { GeraCobrancaController } from './controllers/GeraCobrancaController.js';
 import {LoginController} from './controllers/LoginController.js';
 import { GeraExtratoController } from './controllers/GeraExtratoController.js';
 import { authMiddleware } from './middlewares/authJWT.js';
@@ -48,7 +48,7 @@ router.post('/login', (req: Request, res: Response) => {
 });
 
 router.post('/cobranca', authMiddleware,(req: Request, res: Response) => {
-  new GeraCobrancaUnicaController().handle(req, res);
+  new GeraCobrancaController().handle(req, res);
 });
 
 router.get('/validar', authMiddleware, (req: Request, res: Response) => {
