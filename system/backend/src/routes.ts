@@ -1,5 +1,4 @@
-import express, { Router, Request, Response } from 'express';
-import path from 'path';
+import { Router, Request, Response } from 'express';
 import { VerificaCPFeCNPJController } from './controllers/VerificaCPFeCNPJController.js';
 import { CriarUsuarioController } from './controllers/CriarUsuarioController.js';
 import { GeraCobrancaController } from './controllers/GeraCobrancaController.js';
@@ -7,32 +6,23 @@ import {LoginController} from './controllers/LoginController.js';
 import { GeraExtratoController } from './controllers/GeraExtratoController.js';
 import { authMiddleware } from './middlewares/authJWT.js';
 
-const app = express();
-
-const __filename = path.join(process.cwd(), 'src', 'routes.ts');
-const __dirname = path.dirname(__filename);
-app.use(express.static(path.join(__dirname, '../frontend')));
-
 const router = Router();
 
-router.get('/', (req: Request, res: Response) => {
-  res.send('Hello from the main route!');
-});
-
 router.get('/register', (req: Request, res: Response) => {
-  res.sendFile(path.join(__dirname, '../../frontend/src/pages/public/register.html'));
+  res.render('register.handlebars');
 });
 
 router.get('/login', (req: Request, res: Response) => {
-  res.sendFile(path.join(__dirname, '../../frontend/src/pages/public/login.html'));
+  res.render('login.handlebars');
 });
 
-router.get('/index', (req: Request, res: Response) => {
-  res.sendFile(path.join(__dirname, '../../frontend/src/pages/public/index.html'));
+router.get('/', (req: Request, res: Response) => {
+  res.render('index.handlebars', {empresa: 'Nome Empresa!'});
 });
 
 router.get('/extract', (req: Request, res: Response) => {
-  res.sendFile(path.join(__dirname, '../../frontend/src/pages/public/extract.html'));
+
+  res.render('extract.handlebars');
 });
 
 router.post('/verifica', (req: Request, res: Response) => {
