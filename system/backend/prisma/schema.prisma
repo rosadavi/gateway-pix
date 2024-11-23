@@ -185,7 +185,7 @@ model empresa {
   locLatitude           String?             @db.VarChar(45)
   sigla                 String?             @unique(map: "sigla_UNIQUE") @db.Char(7)
   email                 String              @db.VarChar(75)
-  senha                 String?             @db.VarChar(45)
+  senha                 String?             @db.VarChar(60)
   ativo                 Boolean             @default(dbgenerated("b'1'")) @db.Bit(1)
   dataRegistro          DateTime            @default(now()) @db.Timestamp(0)
   proprietario          Int                 @default(1)
