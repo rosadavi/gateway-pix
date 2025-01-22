@@ -4,6 +4,8 @@ import { CriarUsuarioController } from './controllers/CriarUsuarioController.js'
 import { GeraCobrancaController } from './controllers/GeraCobrancaController.js';
 import {LoginController} from './controllers/LoginController.js';
 import { GeraExtratoController } from './controllers/GeraExtratoController.js';
+import { RegistrarProdutoController } from './controllers/RegistrarProdutoController.js';
+import { RegistrarPedidoController } from './controllers/RegistrarPedidoController.js';
 import { authMiddleware } from './middlewares/authJWT.js';
 
 const router = Router();
@@ -48,6 +50,14 @@ router.get('/validar', authMiddleware, (req: Request, res: Response) => {
 
 router.post('/extrato', authMiddleware, (req: Request, res: Response) => {
   new GeraExtratoController().handle(req, res);
+});
+
+router.post('/produto/registrar', authMiddleware, (req: Request, res: Response) => {
+  new RegistrarProdutoController().handle(req, res);
+});
+
+router.post('/pedido/registrar', authMiddleware, (req: Request, res: Response) => {
+  new RegistrarPedidoController().handle(req, res);
 });
 
 export default router;
