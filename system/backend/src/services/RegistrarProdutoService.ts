@@ -38,7 +38,7 @@ export class RegistrarProdutoService {
                     Empresa_idEmpresa,
                     nomeProduto,
                     valor,
-                    tipoProduto
+                    tipoProduto,
                 },
             });
 
@@ -53,10 +53,13 @@ export class RegistrarProdutoService {
                 }
             })
 
-            return {produto: novoProduto, produtoItem: novoProdutoItem};
+            return {status: 201, data: {
+                produto: novoProduto, 
+                produtoItem: novoProdutoItem
+            }};
         } catch (error) {
             console.error("Erro ao registrar produto:", error);
-            throw new Error("Erro ao registrar produto");
+            return { status: 500, message: "Erro ao registrar produto", error: (error as any).message };
         }
     }
 }

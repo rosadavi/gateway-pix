@@ -18,35 +18,34 @@ class VerificaCPFeCNPJService{
                 console.log('CPF válido:', response.data);
               
               
-                return 'cpf: ' + response.data;
+                return {status: 200, message: 'CPF Válido'};
               } catch (error) {
                 console.error('Erro ao validar CPF:', error);
-                return 'CPF Invalido'
-              }
+                return { status: 400, message: 'CPF inválido' }             
+               }
               
-        }else if(numero.toString().length === 14){
-            //consumir a api https://receitaws.com.br/v1/cnpj/{cnpj}
-
+        } else if (numero.toString().length === 14) {
+            // Consumir a API https://receitaws.com.br/v1/cnpj/{cnpj}
             try {
                 const response = await axios.get<CnpjResponse>(`https://receitaws.com.br/v1/cnpj/${numero}`);
                 console.log(response.data);
-              
+
                 // Agora o TypeScript sabe que response.data tem o tipo CnpjResponse
                 const nomeFantasia = response.data.fantasia;
-                if ( nomeFantasia == undefined ){
-                    return 'CNPJ invalido'
+                if (nomeFantasia == undefined) {
+                    return { status: 400, message: 'CNPJ Inválido' };
                 }
-              
-                return `Nome fantasia: ${nomeFantasia}`;
-              } catch (error) {
-                console.error('Erro ao validar CNPJ:', error);
-                return 'Erro ao validar CNPJ'
-              }
 
-    }else{
-        return `Número inválido`
+                return { status: 200, message: `Nome fantasia: ${nomeFantasia}` };
+            } catch (error) {
+                console.error('Erro ao validar CNPJ:', error);
+                return { status: 500, message: 'Erro ao validar CNPJ', error: (error as any).message };
+            }
+        } else {
+            return { status: 400, message: 'Número inválido' };
+        }
     }
 }
-}
 
-export {VerificaCPFeCNPJService};
+
+export { VerificaCPFeCNPJService };

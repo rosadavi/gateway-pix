@@ -45,10 +45,10 @@ export class CriarUsuarioService {
             });
 
             console.log("Usuario criado com sucesso:", novoUsuario);
-            return novoUsuario;
+            return { status: 201, data: novoUsuario };
         } catch (error) {
             console.error("Erro ao criar usuario:", error);
-            throw new Error('Erro ao criar usuário');
+            return { status: 500, message: "Erro ao criar usuário", error: (error as any).message};
         }
     }
 }
