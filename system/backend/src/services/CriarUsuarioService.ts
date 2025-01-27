@@ -19,24 +19,25 @@ export class CriarUsuarioService {
             const senhaHash = await hashSenha(senha);
             
             const novoUsuario = await prismaClient.empresa.create({
-                data: {
-                    nomeFantasia: nome,
-                    telefoneEmpresa: telefone,
-                    email: email,
-                    uf: estado,
-                    cidade: cidade,
-                    pixType: tipo_pix,
-                    pixKey: chave_pix,
-                    senha: senhaHash,
-                    empCpfCnpj: cpf_cnpj
-                }
+            data: {
+                nomeFantasia: nome,
+                telefoneEmpresa: telefone,
+                email: email,
+                uf: estado,
+                cidade: cidade,
+                pixType: tipo_pix,
+                pixKey: chave_pix,
+                senha: senhaHash,
+                empCpfCnpj: cpf_cnpj
+            }
             });
             console.log("usuario criado", novoUsuario);
-            return novoUsuario;
-        } catch(error) {
+            return { status: 201, data: novoUsuario };
+        } catch (error) {
             console.error("Erro ao criar usuario: ", error);
+            return { status: 500, message: "Erro ao criar usuário", error: (error as any).message};
         }
     }
 }
 
-export {CriarUsuarioProps}
+export { CriarUsuarioProps }

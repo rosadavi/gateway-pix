@@ -75,10 +75,10 @@ export class RegistrarProdutoService {
                 },
             });
 
-            return novoProduto;
+            return { status: 201, data: novoProduto };
         } catch (error) {
             console.error("Erro ao registrar produto:", error);
-            throw new Error("Erro ao registrar produto");
+            return { status: 500, message: "Erro ao registrar produto", error: (error as any).message };
         }
     }
 }

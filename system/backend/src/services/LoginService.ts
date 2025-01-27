@@ -30,25 +30,25 @@ export class LoginService {
                     senha: true
                 }
             });
-            if(fetchUser) {
+
+            if (fetchUser) {
                 const senhaValida = await compareHashSenha(senha, fetchUser.senha!);
 
-                if(senhaValida) {
+                if (senhaValida) {
                     const token = createToken({
                         cpf_cnpj_empresa: fetchUser.empCpfCnpj ?? '',
-                        id_empresa: fetchUser.idEmpresa ??''
+                        id_empresa: fetchUser.idEmpresa ?? ''
                     });
-                    return token;
+                    return { status: 200, token };
                 } else {
-                    return  'Credenciais Invalidas!';
-                    
+                    return { status: 401, message: 'Credenciais Inválidas!' };
                 }
             } else {
-                return 'Credenciais Invalidas!';
+                return { status: 401, message: 'Credenciais Inválidas!' };
             }
-
-        } catch(error) {
+        } catch (error) {
             console.error("Erro ao realizar login: ", error);
+            return { status: 500, message: "Erro ao realizar login", error: (error as any).message };
         }
     }
 }

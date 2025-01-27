@@ -13,6 +13,7 @@ interface GeraCobrancaProps {
 
 class GeraCobrancaService {
     async execute({ empresa_id_empresa, telefone_cliente, metodo_pagamento, valor_cobranca, status_cobranca, descricao_cobranca, num_parcela, num_parcelas }: GeraCobrancaProps) {
+       try{
         const cliente = await prismaClient.pessoa.findFirst({
             where: {
                 telefone: telefone_cliente
@@ -59,8 +60,12 @@ class GeraCobrancaService {
             }
         });
 
-        return cobranca;
+        return { status: 201, data: cobranca };
+    } catch (error) {
+        console.error("Erro ao gerar cobrança: ", error);
+        return { status: 500, message: "Erro ao gerar cobrança", error: (error as any).message };
     }
+}
 }
 
 export { GeraCobrancaService };
