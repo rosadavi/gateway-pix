@@ -6,36 +6,12 @@ interface CriarProdutoProps {
     nomeProduto: string;
     valor: number;
     tipoProduto: string;
-    valor_perc_equivalente_pontos?: number;
-    valor_perc_equivalente_cashback?: number;
-    ativo?: number;
-    pontuaFidelidade?: number;
-    pontuaCashback?: number;
-    premioQtdProduto?: number;
-    premioQtdValor?: number;
-    expira_pontos_qtd_dias?: number;
-    expira_cashback_qtd_dias?: number;
+    descricao_item: string;
+    valor_item?: number;
 }
 
 export class RegistrarProdutoService {
-    async execute(data: CriarProdutoProps) {
-        const {
-            Categoria_idCategoria,
-            Empresa_idEmpresa,
-            nomeProduto,
-            valor,
-            tipoProduto,
-            valor_perc_equivalente_pontos = 1.0,
-            valor_perc_equivalente_cashback = 0.0,
-            ativo = 1,
-            pontuaFidelidade = 1,
-            pontuaCashback = 1,
-            premioQtdProduto = 0,
-            premioQtdValor = 0.0,
-            expira_pontos_qtd_dias,
-            expira_cashback_qtd_dias
-        } = data;
-
+    async execute({ Categoria_idCategoria, Empresa_idEmpresa, nomeProduto, valor, tipoProduto, descricao_item, valor_item }: CriarProdutoProps) {
         try {
             // Valida se a categoria existe
             const categoria = await prismaClient.categoria.findUnique({
@@ -62,20 +38,22 @@ export class RegistrarProdutoService {
                     Empresa_idEmpresa,
                     nomeProduto,
                     valor,
-                    tipoProduto,
-                    valor_perc_equivalente_pontos,
-                    valor_perc_equivalente_cashback,
-                    ativo,
-                    pontuaFidelidade,
-                    pontuaCashback,
-                    premioQtdProduto,
-                    premioQtdValor,
-                    expira_pontos_qtd_dias,
-                    expira_cashback_qtd_dias,
+                    tipoProduto
                 },
             });
 
-            return novoProduto;
+            const valorItem = valor_item ?? valor;
+
+            const novoProdutoItem = await prismaClient.produto_item.create( {
+                data: {
+                    produto_idProduto: novoProduto.idProduto, // Associando ao produto recém-criado
+                    descricao_item,
+                    valor_item: valorItem,
+                    item_ativo: 1
+                }
+            })
+
+            return {produto: novoProduto, produtoItem: novoProdutoItem};
         } catch (error) {
             console.error("Erro ao registrar produto:", error);
             throw new Error("Erro ao registrar produto");

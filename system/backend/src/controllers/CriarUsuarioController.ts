@@ -7,9 +7,12 @@ class CriarUsuarioController {
 
         const criarUsuarioService = new CriarUsuarioService();
 
-        const usuario = await criarUsuarioService.execute({ nome, telefone, email, estado, cidade, tipo_pix, chave_pix, senha, cpf_cnpj });
-
-        return response.redirect('/login');
+        try {
+            const usuario = await criarUsuarioService.execute({ nome, telefone, email, estado, cidade, tipo_pix, chave_pix, senha, cpf_cnpj });
+            return response.json(usuario);
+        } catch (error) {
+            return response.status(500).json({ message: "Erro ao criar o usuário", error });
+        }
     }
 }
-export {CriarUsuarioController};
+export { CriarUsuarioController };

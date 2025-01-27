@@ -4,21 +4,7 @@ import { RegistrarProdutoService } from "../services/RegistrarProdutoService";
 class RegistrarProdutoController {
     async handle(request: Request, response: Response) {
         const {
-            Categoria_idCategoria,
-            Empresa_idEmpresa,
-            nomeProduto,
-            valor,
-            tipoProduto,
-            valor_perc_equivalente_pontos,
-            valor_perc_equivalente_cashback,
-            ativo,
-            pontuaFidelidade,
-            pontuaCashback,
-            premioQtdProduto,
-            premioQtdValor,
-            expira_pontos_qtd_dias,
-            expira_cashback_qtd_dias
-        } = request.body;
+            Categoria_idCategoria, Empresa_idEmpresa, nomeProduto, valor, tipoProduto, descricao_item, valor_item } = request.body;
 
         const registrarProdutoSErvice = new RegistrarProdutoService();
 
@@ -29,15 +15,8 @@ class RegistrarProdutoController {
                 nomeProduto,
                 valor,
                 tipoProduto,
-                valor_perc_equivalente_pontos,
-                valor_perc_equivalente_cashback,
-                ativo,
-                pontuaFidelidade,
-                pontuaCashback,
-                premioQtdProduto,
-                premioQtdValor,
-                expira_pontos_qtd_dias,
-                expira_cashback_qtd_dias
+                descricao_item,
+                valor_item
             });
 
             return response.status(201).json({

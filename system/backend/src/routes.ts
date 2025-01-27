@@ -5,27 +5,12 @@ import { GeraCobrancaController } from './controllers/GeraCobrancaController.js'
 import {LoginController} from './controllers/LoginController.js';
 import { GeraExtratoController } from './controllers/GeraExtratoController.js';
 import { RegistrarProdutoController } from './controllers/RegistrarProdutoController.js';
-import { RegistrarPedidoController } from './controllers/RegistrarPedidoController.js';
+
+import { CriarCategoriaController } from './controllers/CriarCategoriaController.js';
+
 import { authMiddleware } from './middlewares/authJWT.js';
 
 const router = Router();
-
-router.get('/register', (req: Request, res: Response) => {
-  res.render('register.handlebars');
-});
-
-router.get('/login', (req: Request, res: Response) => {
-  res.render('login.handlebars');
-});
-
-router.get('/', (req: Request, res: Response) => {
-  res.render('index.handlebars', {empresa: 'Nome Empresa!'});
-});
-
-router.get('/extract', (req: Request, res: Response) => {
-
-  res.render('extract.handlebars');
-});
 
 router.post('/verifica', (req: Request, res: Response) => {
    new VerificaCPFeCNPJController().handle(req, res);
@@ -56,8 +41,8 @@ router.post('/produto/registrar', authMiddleware, (req: Request, res: Response) 
   new RegistrarProdutoController().handle(req, res);
 });
 
-router.post('/pedido/registrar', authMiddleware, (req: Request, res: Response) => {
-  new RegistrarPedidoController().handle(req, res);
-});
+router.post('/produto/categoria', authMiddleware, (req: Request, res: Response) => {
+  new CriarCategoriaController().handle(req, res);
+})
 
 export default router;
