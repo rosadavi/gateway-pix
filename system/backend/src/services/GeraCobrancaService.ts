@@ -35,7 +35,7 @@ class GeraCobrancaService {
             cliente_id_cliente = cliente.idPessoa;
         }
 
-        const transaction = await prismaClient.$transaction(async (prisma) => {
+        const transaction = await prismaClient.$transaction(async () => {
         const pedido = await prismaClient.pedido.create({
             data: {
                 empresa_idEmpresa: empresa_id_empresa,
