@@ -31,9 +31,9 @@ export class RegistrarProdutoService {
                 throw new Error("Empresa não encontrada");
             }
 
-            const transaction = await prismaClient.$transaction(async () => {
+            const transaction = await prismaClient.$transaction(async (prisma) => {
             // Cria o produto no banco
-            const novoProduto = await prismaClient.produto.create({
+            const novoProduto = await prisma.produto.create({
                 data: {
                     Categoria_idCategoria,
                     Empresa_idEmpresa,
@@ -45,7 +45,7 @@ export class RegistrarProdutoService {
 
             const valorItem = valor_item ?? valor;
 
-            const novoProdutoItem = await prismaClient.produto_item.create( {
+            const novoProdutoItem = await prisma.produto_item.create( {
                 data: {
                     produto_idProduto: novoProduto.idProduto, // Associando ao produto recém-criado
                     descricao_item,

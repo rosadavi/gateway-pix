@@ -18,8 +18,8 @@ export class CriarUsuarioService {
         try {
             const senhaHash = await hashSenha(senha);
 
-            const transaction = await prismaClient.$transaction(async () => {
-            await prismaClient.pessoa.create({
+            const transaction = await prismaClient.$transaction(async (prisma) => {
+            await prisma.pessoa.create({
                 data: {
                   nomeCompleto: nome,
                   CPF_CNPJ: cpf_cnpj,
@@ -31,7 +31,7 @@ export class CriarUsuarioService {
             });
 
             // Preenchendo os valores padrão para os campos obrigatórios
-            const novoUsuario = await prismaClient.empresa.create({
+            const novoUsuario = await prisma.empresa.create({
                 data: {
                   nomeFantasia: nome,
                   telefoneEmpresa: telefone,
