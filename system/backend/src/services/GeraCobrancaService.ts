@@ -35,6 +35,7 @@ class GeraCobrancaService {
             cliente_id_cliente = cliente.idPessoa;
         }
 
+        const transaction = await prismaClient.$transaction(async (prisma) => {
         const pedido = await prismaClient.pedido.create({
             data: {
                 empresa_idEmpresa: empresa_id_empresa,
@@ -59,8 +60,10 @@ class GeraCobrancaService {
                 cliente_telefone: telefone_cliente
             }
         });
+        return cobranca;
+    });
 
-        return { status: 201, data: cobranca };
+        return { status: 201, data: transaction };
     } catch (error) {
         console.error("Erro ao gerar cobrança: ", error);
         return { status: 500, message: "Erro ao gerar cobrança", error: (error as any).message };

@@ -14,11 +14,11 @@ export class CriarCategoriaService {
                 },
             });
 
-            console.log("Usuario criado com sucesso:", novaCategoria);
-            return novaCategoria;
+            console.log("Categoria criada com sucesso:", novaCategoria);
+            return {status: 500, data: novaCategoria};
         } catch (error) {
-            console.error("Erro ao criar usuario:", error);
-            throw new Error('Erro ao criar usuário');
+            console.error("Erro ao criar categoria:", error);
+            return { status: 500, message: "Erro ao criar categoria", error: (error as any).message};
         }
     }
 }
