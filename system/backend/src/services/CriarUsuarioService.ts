@@ -18,6 +18,7 @@ export class CriarUsuarioService {
         try {
             const senhaHash = await hashSenha(senha);
 
+            const transaction = await prismaClient.$transaction(async () => {
             await prismaClient.pessoa.create({
                 data: {
                   nomeCompleto: nome,
@@ -43,9 +44,11 @@ export class CriarUsuarioService {
                   empCpfCnpj: cpf_cnpj
                 }
             });
+            return novoUsuario;
+        });
 
-            console.log("Usuario criado com sucesso:", novoUsuario);
-            return { status: 201, data: novoUsuario };
+            console.log("Usuario criado com sucesso:", transaction);
+            return { status: 201, data: transaction };
         } catch (error) {
             console.error("Erro ao criar usuario:", error);
             return { status: 500, message: "Erro ao criar usuário", error: (error as any).message};
