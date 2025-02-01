@@ -1,5 +1,4 @@
 # Gateway de pagamento via PIX
-# Gateway-Front
 
 # Gateway-Back
 Back-End do Gatway de Pagamento do BR Fideliza
