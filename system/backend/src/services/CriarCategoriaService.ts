@@ -15,7 +15,7 @@ export class CriarCategoriaService {
             });
 
             console.log("Categoria criada com sucesso:", novaCategoria);
-            return {status: 500, data: novaCategoria};
+            return {status: 201, data: novaCategoria};
         } catch (error) {
             console.error("Erro ao criar categoria:", error);
             return { status: 500, message: "Erro ao criar categoria", error: (error as any).message};

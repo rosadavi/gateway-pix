@@ -5,6 +5,7 @@ import { GeraCobrancaController } from './controllers/GeraCobrancaController.js'
 import {LoginController} from './controllers/LoginController.js';
 import { GeraExtratoController } from './controllers/GeraExtratoController.js';
 import { RegistrarProdutoController } from './controllers/RegistrarProdutoController.js';
+import { CriarTipoTransacaoController } from './controllers/CriarTipoTransacaoController.js'
 
 import { CriarCategoriaController } from './controllers/CriarCategoriaController.js';
 
@@ -43,6 +44,10 @@ router.post('/produto/registrar', authMiddleware, (req: Request, res: Response) 
 
 router.post('/produto/categoria', authMiddleware, (req: Request, res: Response) => {
   new CriarCategoriaController().handle(req, res);
-})
+});
+
+router.post('/transacao/criar', authMiddleware, (req: Request, res: Response) => {
+  new CriarTipoTransacaoController().handle(req, res);
+});
 
 export default router;

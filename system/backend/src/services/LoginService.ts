@@ -35,11 +35,11 @@ export class LoginService {
                 const senhaValida = await compareHashSenha(senha, fetchUser.senha!);
 
                 if (senhaValida) {
-                    const token = createToken({
+                    const token = await createToken({
                         cpf_cnpj_empresa: fetchUser.empCpfCnpj ?? '',
                         id_empresa: fetchUser.idEmpresa ?? ''
                     });
-                    return { status: 200, token };
+                    return { status: 200, token: token };
                 } else {
                     return { status: 401, message: 'Credenciais Inválidas!' };
                 }

@@ -1,5 +1,12 @@
 import prismaClient from "../prisma";
 
+interface ItemPedido {
+    pedido_idPedido: number;
+    produto_item_idProdutoItem: number;
+    quantidade: number;
+    valor_item: number;
+}
+
 interface GeraCobrancaProps {
     empresa_id_empresa: number;
     telefone_cliente: string;
@@ -9,10 +16,11 @@ interface GeraCobrancaProps {
     descricao_cobranca: string;
     num_parcela: number;
     num_parcelas: number;
+    itens_pedido: ItemPedido[];
 }
 
 class GeraCobrancaService {
-    async execute({ empresa_id_empresa, telefone_cliente, metodo_pagamento, valor_cobranca, status_cobranca, descricao_cobranca, num_parcela, num_parcelas }: GeraCobrancaProps) {
+    async execute({ empresa_id_empresa, telefone_cliente, metodo_pagamento, valor_cobranca, status_cobranca, descricao_cobranca, num_parcela, num_parcelas, itens_pedido }: GeraCobrancaProps) {
        try{
         const cliente = await prismaClient.pessoa.findFirst({
             where: {
@@ -46,7 +54,17 @@ class GeraCobrancaService {
                 pessoa_idPessoa_registrou: 2
             }
         });
+        
         const pedido_idPedido = pedido.idPedido;
+
+        await prisma.item_pedido.createMany({
+            data: itens_pedido.map((item: ItemPedido)=> ({
+                pedido_idPedido,
+                produto_item_idProdutoItem: item.produto_item_idProdutoItem,
+                quantidade: item.quantidade,
+                valor_item: item.valor_item
+            }))
+        });
 
         const cobranca = await prisma.pagamento.create({
             data: {

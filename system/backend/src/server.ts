@@ -9,10 +9,10 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT;
 
-const options = {
-  key: fs.readFileSync('./certs/server.key'),
-  cert: fs.readFileSync('./certs/server.cert')
-};
+// const options = {
+//   key: fs.readFileSync('./certs/server.key'),
+//   cert: fs.readFileSync('./certs/server.cert')
+// };
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
