@@ -18,6 +18,9 @@ CREATE DATABASE Gateway
 4. Criar o arquivo .env na raiz do projeto seguindo o modelo:
 ```
 DATABASE_URL="mysql://user:password@address:port/Gateway"
+JWT_SECRET="chave_secreta_1234"
+PORT="3000"
+
 ```
 5. Execute o comando `npx prisma db push` para aplicar a modelagem salva no prisma ao banco configurado
 6. Execute o comando `npx run dev` para iniciar o servidor
@@ -33,3 +36,19 @@ npx prisma db push // Exporta a modelagem do prisma para o banco
 npx prisma generate // Atualiza a modelagem interna do prisma com a externa
 npx prisma studio // Abre o prisma studio para visualizar o banco
 ```
+
+# Rodando em Docker
+
+## Pre-requisitos
+1. O arquivo .env deve estar preenchido com a URL do banco rodando no servidor.
+2. Docker
+
+## Instalação e Uso
+1. No diretorio ``` gateway-pix/system/backend ``` execute o comando
+   ```
+   docker build -t imagem-gateway .
+   ```
+2. Com a imagem buildada rode o comando
+   ```
+   docker run -d -p 3000:3000 imagem-gateway
+   ```
