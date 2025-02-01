@@ -36,7 +36,7 @@ npx prisma db push // Exporta a modelagem do prisma para o banco
 npx prisma generate // Atualiza a modelagem interna do prisma com a externa
 npx prisma studio // Abre o prisma studio para visualizar o banco
 ```
-
+---
 # Rodando em Docker
 
 ## Pre-requisitos
