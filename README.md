@@ -40,7 +40,7 @@ npx prisma studio // Abre o prisma studio para visualizar o banco
 # Rodando em Docker
 
 ## Pre-requisitos
-1. O arquivo .env deve estar preenchido com a URL do banco rodando no servidor.
+1. O arquivo **.env** deve estar preenchido com a URL do banco rodando no servidor.
 2. Docker
 
 ## Instalação e Uso
