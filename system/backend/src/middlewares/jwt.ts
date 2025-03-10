@@ -7,7 +7,9 @@ dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET!;
 
 export async function generateToken(payload: JwtPayload): Promise <string> {
+
     const payloadHash = await hashPayload(payload);
+    
     return jwt.sign({ payloadHash }, JWT_SECRET);
 }
 

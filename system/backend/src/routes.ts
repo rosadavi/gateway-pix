@@ -6,12 +6,17 @@ import {LoginController} from './controllers/LoginController.js';
 import { GeraExtratoController } from './controllers/GeraExtratoController.js';
 import { RegistrarProdutoController } from './controllers/RegistrarProdutoController.js';
 import { CriarTipoTransacaoController } from './controllers/CriarTipoTransacaoController.js'
+import { CriarItemProdutoController } from './controllers/CriarItemProdutoController.js'
 
 import { CriarCategoriaController } from './controllers/CriarCategoriaController.js';
 
 import { authMiddleware } from './middlewares/authJWT.js';
 
 const router = Router();
+
+router.get('/', (req: Request, res: Response) => {
+  res.send("api rodando!");
+});
 
 router.post('/verifica', (req: Request, res: Response) => {
    new VerificaCPFeCNPJController().handle(req, res);
@@ -31,7 +36,6 @@ router.post('/cobranca', authMiddleware,(req: Request, res: Response) => {
 
 router.get('/validar', authMiddleware, (req: Request, res: Response) => {
   res.status(200).json({message: "Autorizado"});
-
 });
 
 router.post('/extrato', authMiddleware, (req: Request, res: Response) => {
@@ -40,6 +44,10 @@ router.post('/extrato', authMiddleware, (req: Request, res: Response) => {
 
 router.post('/produto/registrar', authMiddleware, (req: Request, res: Response) => {
   new RegistrarProdutoController().handle(req, res);
+});
+
+router.post('/produto/item/registrar', authMiddleware, (req: Request, res: Response) => {
+  new CriarItemProdutoController().handle(req, res);
 });
 
 router.post('/produto/categoria', authMiddleware, (req: Request, res: Response) => {

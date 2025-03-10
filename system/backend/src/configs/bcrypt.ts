@@ -1,5 +1,8 @@
 import bcrypt from 'bcrypt';
 import { JwtPayload } from 'jsonwebtoken';
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const salt = 10;
 
