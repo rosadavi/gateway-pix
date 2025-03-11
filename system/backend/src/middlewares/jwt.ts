@@ -8,9 +8,9 @@ const JWT_SECRET = process.env.JWT_SECRET!;
 
 export async function generateToken(payload: JwtPayload): Promise <string> {
 
-    const payloadHash = await hashPayload(payload);
+    const hash = await hashPayload(payload)
     
-    return jwt.sign({ payloadHash }, JWT_SECRET);
+    return jwt.sign({ hash }, JWT_SECRET);
 }
 
 export function validateToken(token: string): JwtPayload | null {

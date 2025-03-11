@@ -12,7 +12,7 @@ interface CriarItemProdutoProps {
 }
 
 export class CriarItemProdutoService {
-    async execute({ cnpj_cpf, descricao_item, valor_item, item_ativo, cpf_cnpj_empresa, nomeProduto }: CriarItemProdutoProps) {
+    async execute({ cnpj_cpf, descricao_item, valor_item, item_ativo, nomeProduto, cpf_cnpj_empresa }: CriarItemProdutoProps) {
         try {
             const cnpj_cpfValido = compareHashSenha(cnpj_cpf, cpf_cnpj_empresa);
 

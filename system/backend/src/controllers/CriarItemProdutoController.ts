@@ -1,30 +1,16 @@
 import { Request, Response } from "express";
 import { CriarItemProdutoService } from "../services/CriarItemProdutoService";
-import { validateToken } from "../middlewares/jwt";
 
 class CriarItemProdutoController {
     async handle(req: Request, res: Response) {
-
-        const authHeader = req.headers.authorization;
-        if (!authHeader) {
-            return res.status(401).json({ message: "Token not found" });
-        }
-
-        const token = authHeader.split(" ")[1];
-
-        const decodedToken = validateToken(token);
-        if (!decodedToken) {
-            return res.status(401).json({ message: "Invalid token" });
-        }
-
-        const { cpf_cnpj_empresa } = decodedToken;
 
         const {
             cnpj_cpf,
             descricao_item,
             valor_item,
             item_ativo,
-            nomeProduto
+            nomeProduto,
+            cpf_cnpj_empresa
         } = req.body;
 
         const criarItemProdutoService = new CriarItemProdutoService();
@@ -35,8 +21,8 @@ class CriarItemProdutoController {
                 descricao_item,
                 valor_item,
                 item_ativo,
-                cpf_cnpj_empresa,
-                nomeProduto
+                nomeProduto,
+                cpf_cnpj_empresa
             } );
 
             return res.status(201).json({
