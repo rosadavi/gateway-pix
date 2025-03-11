@@ -20,13 +20,20 @@ export class CriarItemProdutoService {
                 return { status: 500, message: "CNPJ ou CPF invalido"}
             }
 
-            const idEmpresa = prismaClient.empresa.findFirst({
-                where: {empCpfCnpj: cnpj_cpf}
+            const idEmpresaObj = await prismaClient.empresa.findFirst({
+                where: {
+                    empCpfCnpj: cnpj_cpf
+                },
+                select: {
+                    idEmpresa: true
+                }
             });
 
-            const idProduto = prismaClient.produto.findFirst({
+            const idEmpresa = idEmpresaObj?.idEmpresa;
+
+            const idProdutoObj = await prismaClient.produto.findFirst({
                 where: {
-                    Empresa_idEmpresa: Number(idEmpresa),
+                    Empresa_idEmpresa: idEmpresa,
                     nomeProduto: nomeProduto
                 },
                 select: {
@@ -34,14 +41,16 @@ export class CriarItemProdutoService {
                 }
             });
 
-            if(!idProduto) {
+            if(!idProdutoObj) {
                 return { status: 500, message: "Produto nao encontrado"}
             }
+
+            const idProduto = idProdutoObj.idProduto;
             
             const transaction = await prismaClient.$transaction(async (prisma) => {
                 const novoItem = await prisma.produto_item.create({
                     data: {
-                        produto_idProduto: Number(idProduto),
+                        produto_idProduto: idProduto,
                         descricao_item,
                         valor_item,
                         item_ativo,
