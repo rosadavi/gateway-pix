@@ -3,7 +3,7 @@ import { CriarItemProdutoService } from "../services/CriarItemProdutoService";
 
 class CriarItemProdutoController {
     async handle(req: Request, res: Response) {
-
+        console.log(req.body)
         const {
             cnpj_cpf,
             descricao_item,

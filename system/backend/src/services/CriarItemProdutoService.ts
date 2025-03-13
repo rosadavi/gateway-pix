@@ -20,6 +20,12 @@ export class CriarItemProdutoService {
                 return { status: 500, message: "CNPJ ou CPF invalido"}
             }
 
+            if(!cnpj_cpfValido) {
+                console.log("invalido")
+            } else {
+                console.log("valido")
+            }
+
             const idEmpresaObj = await prismaClient.empresa.findFirst({
                 where: {
                     empCpfCnpj: cnpj_cpf

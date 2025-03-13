@@ -1,39 +1,3 @@
-# services:
-#   app:
-#     build:
-#       context: .
-#     container_name: app-container
-#     ports:
-#       - "3000:3000"
-#     environment:
-#       DATABASE_URL: mysql://root:senha-mysql@container-mysql:3306/Gateway
-#     depends_on:
-#       - mysql
-#     networks:
-#       - app-network
-
-#   mysql:
-#     container_name: container-mysql
-#     image: mysql:latest
-#     environment:
-#       MYSQL_ROOT_PASSWORD: senha-mysql
-#       MYSQL_DATABASE: Gateway
-#     ports:
-#       - "3306:3306"
-#     networks:
-#       - app-network
-#     restart: unless-stopped
-#     volumes:
-#       - mysql-data:/var/lib/mysql
-
-# networks:
-#   app-network:
-#     driver: bridge
-
-# volumes:
-#   mysql-data:
-#     driver: local
-
 services:
   app:
     build:
