@@ -4,7 +4,6 @@ import prismaClient from "../prisma";
 interface ItemPedido {
     produto_item_idProdutoItem: number;
     quantidade: number;
-    valor_item: number;
 }
 
 interface GeraCobrancaProps {
@@ -50,9 +49,28 @@ class GeraCobrancaItensService {
                 cliente_id_cliente = cliente.idPessoa;
             }
 
-            const valorTotal = itens_pedido.reduce((total, item) => {
-                return total + (item.valor_item * item.quantidade);
-            }, 0);
+            // Função para buscar o valor do item pelo ID
+            const getItemValor = async (produto_item_idProdutoItem: number): Promise<number> => {
+                const produtoItem = await prismaClient.produto_item.findUnique({
+                    where: { idProdutoItem: produto_item_idProdutoItem },
+                    select: { valor_item: true }
+                });
+                if (!produtoItem) {
+                    throw new Error(`Item com ID ${produto_item_idProdutoItem} não encontrado`);
+                }
+                return produtoItem.valor_item.toNumber();
+            };
+
+            // Calcular o valor total do pedido com base nos itens
+            const valorTotal = await itens_pedido.reduce(async (totalPromise: Promise<number>, item: ItemPedido) => {
+                const total = await totalPromise;
+                const valorItem = await getItemValor(item.produto_item_idProdutoItem);
+                return total + (valorItem * item.quantidade);
+            }, Promise.resolve(0));
+
+            // const valorTotal = itens_pedido.reduce((total, item) => {
+            //     return total + (item.valor_item * item.quantidade);
+            // }, 0);
 
             const transaction = await prismaClient.$transaction(async (prisma) => {
                 const pedido = await prisma.pedido.create({
@@ -69,12 +87,12 @@ class GeraCobrancaItensService {
                 const pedido_idPedido = pedido.idPedido;
 
                 await prisma.item_pedido.createMany({
-                    data: itens_pedido.map((item: ItemPedido) => ({
+                    data: await Promise.all(itens_pedido.map(async (item: ItemPedido) => ({
                         pedido_idPedido,
                         produto_item_idProdutoItem: item.produto_item_idProdutoItem,
                         quantidade: item.quantidade,
-                        valor_item: item.valor_item
-                    }))
+                        valor_item: await getItemValor(item.produto_item_idProdutoItem)
+                    })))
                 });
 
                 const cobranca = await prisma.pagamento.create({
