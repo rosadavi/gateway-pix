@@ -49,7 +49,6 @@ class GeraCobrancaItensService {
                 cliente_id_cliente = cliente.idPessoa;
             }
 
-            // Função para buscar o valor do item pelo ID
             const getItemValor = async (produto_item_idProdutoItem: number): Promise<number> => {
                 const produtoItem = await prismaClient.produto_item.findUnique({
                     where: { idProdutoItem: produto_item_idProdutoItem },
@@ -61,16 +60,11 @@ class GeraCobrancaItensService {
                 return produtoItem.valor_item.toNumber();
             };
 
-            // Calcular o valor total do pedido com base nos itens
             const valorTotal = await itens_pedido.reduce(async (totalPromise: Promise<number>, item: ItemPedido) => {
                 const total = await totalPromise;
                 const valorItem = await getItemValor(item.produto_item_idProdutoItem);
                 return total + (valorItem * item.quantidade);
             }, Promise.resolve(0));
-
-            // const valorTotal = itens_pedido.reduce((total, item) => {
-            //     return total + (item.valor_item * item.quantidade);
-            // }, 0);
 
             const transaction = await prismaClient.$transaction(async (prisma) => {
                 const pedido = await prisma.pedido.create({
