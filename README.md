@@ -54,6 +54,6 @@ PORT="3000"
 ```
 
 2. Rode o comando
-   ```bash
-   docker compose up --build
-   ```
+```bash
+docker compose up --build
+```
