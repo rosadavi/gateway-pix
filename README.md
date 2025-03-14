@@ -44,11 +44,16 @@ npx prisma studio // Abre o prisma studio para visualizar o banco
 2. Docker
 
 ## Instalação e Uso
-1. No diretorio ``` gateway-pix/system/backend ``` execute o comando
-   ```
-   docker build -t imagem-gateway .
-   ```
-2. Com a imagem buildada rode o comando
-   ```
-   docker run -d -p 3000:3000 imagem-gateway
+1. No diretorio ``` gateway-pix/system/backend ``` insira do .env a seguir:
+   
+```
+DATABASE_URL="mysql://root:senha-mysql@container-mysql:3306/Gateway"
+JWT_SECRET="chave_secreta_1234"
+PORT="3000"
+
+```
+
+2. Rode o comando
+   ```bash
+   docker compose up --build
    ```
