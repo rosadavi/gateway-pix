@@ -18,8 +18,8 @@ export function authMiddleware ( req: Request, res: Response, next: NextFunction
             res.status(401).json({ message: "Invalid token" });
             return;
         }
-        req.body.CNPJ_CPF_Empresa = decodedToken.cpf_cnpj_empresa;
-        req.body.Id_Empresa = decodedToken.id_empresa;
+        req.body.cpf_cnpj_empresa = decodedToken.hash.hash_cpf_cnpj;
+        req.body.id_empresa ??= decodedToken.hash.hash_id;
         next();
     } catch (error) {
         res.status(401).json({ message: "Invalid token" });

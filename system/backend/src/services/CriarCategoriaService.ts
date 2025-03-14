@@ -13,7 +13,6 @@ export class CriarCategoriaService {
                   nomeCategoria
                 },
             });
-
             console.log("Categoria criada com sucesso:", novaCategoria);
             return {status: 201, data: novaCategoria};
         } catch (error) {
