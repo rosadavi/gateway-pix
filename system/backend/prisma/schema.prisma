@@ -318,14 +318,14 @@ model inscricao {
 }
 
 model item_pedido {
+  idItemPedido               Int           @id @default(autoincrement())
   pedido_idPedido            Int
   produto_item_idProdutoItem Int
   quantidade                 Int
-  valor_item                 Decimal      @db.Decimal(10, 2)
-  produto_item               produto_item @relation(fields: [produto_item_idProdutoItem], references: [idProdutoItem], onDelete: NoAction, onUpdate: NoAction, map: "fk_item_pedido_produto_item1")
-  pedido                     pedido       @relation(fields: [pedido_idPedido], references: [idPedido], onDelete: NoAction, onUpdate: NoAction, map: "fk_pedido_has_item_do_produto_pedido1")
+  valor_item                 Decimal       @db.Decimal(10, 2)
+  produto_item               produto_item  @relation(fields: [produto_item_idProdutoItem], references: [idProdutoItem], onDelete: NoAction, onUpdate: NoAction, map: "fk_item_pedido_produto_item1")
+  pedido                     pedido        @relation(fields: [pedido_idPedido], references: [idPedido], onDelete: NoAction, onUpdate: NoAction, map: "fk_pedido_has_item_do_produto_pedido1")
 
-  @@id([pedido_idPedido, produto_item_idProdutoItem])
   @@index([produto_item_idProdutoItem], map: "fk_item_pedido_produto_item1_idx")
   @@index([pedido_idPedido], map: "fk_pedido_has_item_do_produto_pedido1_idx")
 }

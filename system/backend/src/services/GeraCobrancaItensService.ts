@@ -1,4 +1,11 @@
+import { compareHashSenha } from "../configs/bcrypt";
 import prismaClient from "../prisma";
+
+interface ItemPedido {
+    produto_item_idProdutoItem: number;
+    quantidade: number;
+    valor_item: number;
+}
 
 interface GeraCobrancaProps {
     empresa_id_empresa: number;
@@ -9,11 +16,20 @@ interface GeraCobrancaProps {
     descricao_cobranca: string;
     num_parcela: number;
     num_parcelas: number;
+    itens_pedido: ItemPedido[];
+    id_empresa: string;
 }
 
-class GeraCobrancaService {
-    async execute({ empresa_id_empresa, telefone_cliente, metodo_pagamento, valor_cobranca, status_cobranca, descricao_cobranca, num_parcela, num_parcelas }: GeraCobrancaProps) {
+class GeraCobrancaItensService {
+    async execute({ empresa_id_empresa, telefone_cliente, metodo_pagamento, valor_cobranca, status_cobranca, descricao_cobranca, num_parcela, num_parcelas, itens_pedido, id_empresa }: GeraCobrancaProps) {
         try {
+
+            const compare_id = await compareHashSenha(empresa_id_empresa.toString(), id_empresa);
+            
+            if(!compare_id) {
+                return { status: 500, message: "Id invalido!"}
+            }
+
             const cliente = await prismaClient.pessoa.findFirst({
                 where: {
                     telefone: telefone_cliente
@@ -49,6 +65,15 @@ class GeraCobrancaService {
 
                 const pedido_idPedido = pedido.idPedido;
 
+                await prisma.item_pedido.createMany({
+                    data: itens_pedido.map((item: ItemPedido) => ({
+                        pedido_idPedido,
+                        produto_item_idProdutoItem: item.produto_item_idProdutoItem,
+                        quantidade: item.quantidade,
+                        valor_item: item.valor_item
+                    }))
+                });
+
                 const cobranca = await prisma.pagamento.create({
                     data: {
                         pedido_idPedido,
@@ -61,6 +86,7 @@ class GeraCobrancaService {
                         cliente_telefone: telefone_cliente
                     }
                 });
+
                 return cobranca;
             });
 
@@ -72,4 +98,4 @@ class GeraCobrancaService {
     }
 }
 
-export { GeraCobrancaService };
+export { GeraCobrancaItensService };
