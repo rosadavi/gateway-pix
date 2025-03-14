@@ -13,56 +13,59 @@ interface CriarProdutoProps {
 export class RegistrarProdutoService {
     async execute({ Categoria_idCategoria, Empresa_idEmpresa, nomeProduto, valor, tipoProduto, descricao_item, valor_item }: CriarProdutoProps) {
         try {
-            // Valida se a categoria existe
             const categoria = await prismaClient.categoria.findUnique({
                 where: { idCategoria: Categoria_idCategoria },
             });
 
             if (!categoria) {
-                throw new Error("Categoria não encontrada");
+                throw new Error("not found: Categoria não encontrada");
             }
 
-            // Valida se a empresa existe
             const empresa = await prismaClient.empresa.findUnique({
                 where: { idEmpresa: Empresa_idEmpresa },
             });
 
             if (!empresa) {
-                throw new Error("Empresa não encontrada");
+                throw new Error("not found: Empresa não encontrada");
             }
 
             const transaction = await prismaClient.$transaction(async (prisma) => {
-            // Cria o produto no banco
-            const novoProduto = await prisma.produto.create({
-                data: {
-                    Categoria_idCategoria,
-                    Empresa_idEmpresa,
-                    nomeProduto,
-                    valor,
-                    tipoProduto,
-                },
+                const novoProduto = await prisma.produto.create({
+                    data: {
+                        Categoria_idCategoria,
+                        Empresa_idEmpresa,
+                        nomeProduto,
+                        valor,
+                        tipoProduto,
+                    },
+                });
+
+                const valorItem = valor_item ?? valor;
+
+                const novoProdutoItem = await prisma.produto_item.create({
+                    data: {
+                        produto_idProduto: novoProduto.idProduto,
+                        descricao_item,
+                        valor_item: valorItem,
+                        item_ativo: 1
+                    }
+                });
+                return { novoProduto, novoProdutoItem };
             });
 
-            const valorItem = valor_item ?? valor;
-
-            const novoProdutoItem = await prisma.produto_item.create( {
+            return {
+                status: 201,
                 data: {
-                    produto_idProduto: novoProduto.idProduto, // Associando ao produto recém-criado
-                    descricao_item,
-                    valor_item: valorItem,
-                    item_ativo: 1
+                    produto: transaction.novoProduto,
+                    produtoItem: transaction.novoProdutoItem
                 }
-            })
-            return { novoProduto, novoProdutoItem };
-        });
-
-            return {status: 201, data: {
-                produto: transaction.novoProduto, 
-                produtoItem: transaction.novoProdutoItem
-            }};
-        } catch (error) {
+            };
+        } catch (error: any) {
             console.error("Erro ao registrar produto:", error);
-            return { status: 500, message: "Erro ao registrar produto", error: (error as any).message };
+            if (error.message.includes("not found")) {
+                throw new Error("not found: " + error.message);
+            }
+            throw new Error("Erro ao registrar produto: " + error.message);
         }
     }
 }

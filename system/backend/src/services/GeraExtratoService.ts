@@ -21,10 +21,17 @@ class GeraExtratoService {
                 }
             });
 
+            if (extrato.length === 0) {
+                throw new Error("not found: Nenhum pedido encontrado para a empresa");
+            }
+
             return { status: 200, data: extrato };
-        } catch (error) {
+        } catch (error: any) {
             console.error("Erro ao gerar extrato: ", error);
-            return { status: 500, message: "Erro ao gerar extrato", error: (error as any).message };
+            if (error.message.includes("not found")) {
+                throw new Error("not found: " + error.message);
+            }
+            throw new Error("Erro ao gerar extrato: " + error.message);
         }
     }
 }

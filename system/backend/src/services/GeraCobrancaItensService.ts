@@ -21,11 +21,10 @@ interface GeraCobrancaProps {
 class GeraCobrancaItensService {
     async execute({ empresa_id_empresa, telefone_cliente, metodo_pagamento, status_cobranca, descricao_cobranca, num_parcela, num_parcelas, itens_pedido, id_empresa }: GeraCobrancaProps) {
         try {
-
             const compare_id = await compareHashSenha(empresa_id_empresa.toString(), id_empresa);
             
-            if(!compare_id) {
-                return { status: 500, message: "Id invalido!"}
+            if (!compare_id) {
+                throw new Error("validation: Id inválido");
             }
 
             const cliente = await prismaClient.pessoa.findFirst({
@@ -55,7 +54,7 @@ class GeraCobrancaItensService {
                     select: { valor_item: true }
                 });
                 if (!produtoItem) {
-                    throw new Error(`Item com ID ${produto_item_idProdutoItem} não encontrado`);
+                    throw new Error(`not found: Item com ID ${produto_item_idProdutoItem} não encontrado`);
                 }
                 return produtoItem.valor_item.toNumber();
             };
@@ -106,9 +105,15 @@ class GeraCobrancaItensService {
             });
 
             return { status: 201, data: transaction };
-        } catch (error) {
+        } catch (error: any) {
             console.error("Erro ao gerar cobrança: ", error);
-            return { status: 500, message: "Erro ao gerar cobrança", error: (error as any).message };
+            if (error.message.includes("validation")) {
+                throw new Error("validation: " + error.message);
+            }
+            if (error.message.includes("not found")) {
+                throw new Error("not found: " + error.message);
+            }
+            throw new Error("Erro ao gerar cobrança: " + error.message);
         }
     }
 }

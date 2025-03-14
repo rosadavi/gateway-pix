@@ -29,8 +29,15 @@ class CriarItemProdutoController {
                 item,
             });
         } catch (error: any) {
-            return res.status(400).json({
-                message: error.message || "Erro ao registrar o item",
+            if (error.message.includes("validation")) {
+                return res.status(400).json({ message: "Erro de validação: " + error.message });
+            }
+            if (error.message.includes("duplicate")) {
+                return res.status(409).json({ message: "Erro de duplicidade: " + error.message });
+            }
+            return res.status(500).json({
+                message: "Erro ao registrar o item",
+                error: error.message,
             });
         }
     }
