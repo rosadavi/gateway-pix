@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 import { CriarItemProdutoService } from "../services/CriarItemProdutoService";
+import { compareHashSenha } from "./bcrypt";
 
 class CriarItemProdutoController {
     async handle(req: Request, res: Response) {
-        console.log(req.body)
         const {
             cnpj_cpf,
             descricao_item,

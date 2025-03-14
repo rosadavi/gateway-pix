@@ -14,16 +14,10 @@ interface CriarItemProdutoProps {
 export class CriarItemProdutoService {
     async execute({ cnpj_cpf, descricao_item, valor_item, item_ativo, nomeProduto, cpf_cnpj_empresa }: CriarItemProdutoProps) {
         try {
-            const cnpj_cpfValido = compareHashSenha(cnpj_cpf, cpf_cnpj_empresa);
+            const cnpj_cpfValido = await compareHashSenha(cnpj_cpf, cpf_cnpj_empresa);
 
             if(!cnpj_cpfValido) {
                 return { status: 500, message: "CNPJ ou CPF invalido"}
-            }
-
-            if(!cnpj_cpfValido) {
-                console.log("invalido")
-            } else {
-                console.log("valido")
             }
 
             const idEmpresaObj = await prismaClient.empresa.findFirst({
