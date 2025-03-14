@@ -8,25 +8,16 @@ class GeraExtratoService {
     async execute({ idEmpresa }: GeraExtratoProps) {
         try {
             console.log(idEmpresa);
-            const extrato = await prismaClient.pagamento.findMany({
-                where: {
-                    pedido: {
+            const extrato = await prismaClient.pedido.findMany({
+                where: {                    
                         empresa_idEmpresa: idEmpresa
-                    }
                 },
                 select: {
-                    pag_data_registro: true,
-                    pag_tipo: true,
-                    pag_valor: true,
-                    pag_descricao: true,
-                    pag_status: true,
-                    parcela_numero: true,
-                    cliente_telefone: true,
-                    pedido: {
-                        select: {
-                            empresa_idEmpresa: true,
-                        }
-                    }
+                    idPedido: true,
+                    dataRegistro: true,
+                    valorTotal: true,
+                    status: true,
+                    pessoa_idPessoa_cliente: true,
                 }
             });
 
