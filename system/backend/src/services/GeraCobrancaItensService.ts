@@ -11,7 +11,6 @@ interface GeraCobrancaProps {
     empresa_id_empresa: number;
     telefone_cliente: string;
     metodo_pagamento: string;
-    valor_cobranca: number;
     status_cobranca: string;
     descricao_cobranca: string;
     num_parcela: number;
@@ -21,7 +20,7 @@ interface GeraCobrancaProps {
 }
 
 class GeraCobrancaItensService {
-    async execute({ empresa_id_empresa, telefone_cliente, metodo_pagamento, valor_cobranca, status_cobranca, descricao_cobranca, num_parcela, num_parcelas, itens_pedido, id_empresa }: GeraCobrancaProps) {
+    async execute({ empresa_id_empresa, telefone_cliente, metodo_pagamento, status_cobranca, descricao_cobranca, num_parcela, num_parcelas, itens_pedido, id_empresa }: GeraCobrancaProps) {
         try {
 
             const compare_id = await compareHashSenha(empresa_id_empresa.toString(), id_empresa);
@@ -51,13 +50,17 @@ class GeraCobrancaItensService {
                 cliente_id_cliente = cliente.idPessoa;
             }
 
+            const valorTotal = itens_pedido.reduce((total, item) => {
+                return total + (item.valor_item * item.quantidade);
+            }, 0);
+
             const transaction = await prismaClient.$transaction(async (prisma) => {
                 const pedido = await prisma.pedido.create({
                     data: {
                         empresa_idEmpresa: empresa_id_empresa,
                         pessoa_idPessoa_cliente: cliente_id_cliente,
                         status: 'P',
-                        valorTotal: valor_cobranca,
+                        valorTotal: valorTotal,
                         totalParcelas: num_parcelas,
                         pessoa_idPessoa_registrou: 2
                     }
@@ -79,7 +82,7 @@ class GeraCobrancaItensService {
                         pedido_idPedido,
                         pag_tipo: metodo_pagamento,
                         pag_method: metodo_pagamento,
-                        pag_valor: valor_cobranca,
+                        pag_valor: valorTotal,
                         pag_descricao: descricao_cobranca,
                         pag_status: status_cobranca,
                         parcela_numero: num_parcela,
