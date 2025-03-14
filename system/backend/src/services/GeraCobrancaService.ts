@@ -65,9 +65,15 @@ class GeraCobrancaService {
             });
 
             return { status: 201, data: transaction };
-        } catch (error) {
+        } catch (error: any) {
             console.error("Erro ao gerar cobrança: ", error);
-            return { status: 500, message: "Erro ao gerar cobrança", error: (error as any).message };
+            if (error.message.includes("validation")) {
+                throw new Error("validation: " + error.message);
+            }
+            if (error.message.includes("not found")) {
+                throw new Error("not found: " + error.message);
+            }
+            throw new Error("Erro ao gerar cobrança: " + error.message);
         }
     }
 }

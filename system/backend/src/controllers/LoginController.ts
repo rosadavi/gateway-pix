@@ -7,9 +7,21 @@ class LoginController {
 
         const loginService = new LoginService();
 
-        const token = await loginService.execute({ cnpj_cpf, senha });
-
-        return response.json(token);
+        try {
+            const token = await loginService.execute({ cnpj_cpf, senha });
+            return response.json(token);
+        } catch (error: any) {
+            if (error.message.includes("validation")) {
+                return response.status(400).json({ message: "Erro de validação: " + error.message });
+            }
+            if (error.message.includes("invalid credentials")) {
+                return response.status(401).json({ message: "Erro de autenticação: " + error.message });
+            }
+            return response.status(500).json({
+                message: "Erro ao realizar login",
+                error: error.message,
+            });
+        }
     }
 }
 export { LoginController };

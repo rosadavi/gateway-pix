@@ -1,13 +1,13 @@
-import { compareHashSenha } from "../configs/bcrypt"
+import { compareHashSenha } from "../configs/bcrypt";
 import prismaClient from "../prisma";
 
 interface CriarItemProdutoProps {
-    cnpj_cpf: string,
-    descricao_item: string,
-    valor_item: number,
-    item_ativo: number,
-    cpf_cnpj_empresa: string,
-    nomeProduto: string
+    cnpj_cpf: string;
+    descricao_item: string;
+    valor_item: number;
+    item_ativo: number;
+    cpf_cnpj_empresa: string;
+    nomeProduto: string;
 }
 
 export class CriarItemProdutoService {
@@ -15,8 +15,8 @@ export class CriarItemProdutoService {
         try {
             const cnpj_cpfValido = await compareHashSenha(cnpj_cpf, cpf_cnpj_empresa);
 
-            if(!cnpj_cpfValido) {
-                return { status: 500, message: "CNPJ ou CPF invalido"}
+            if (!cnpj_cpfValido) {
+                throw new Error("validation: CNPJ ou CPF inválido");
             }
 
             const idEmpresaObj = await prismaClient.empresa.findFirst({
@@ -28,7 +28,11 @@ export class CriarItemProdutoService {
                 }
             });
 
-            const idEmpresa = idEmpresaObj?.idEmpresa;
+            if (!idEmpresaObj) {
+                throw new Error("not found: Empresa não encontrada");
+            }
+
+            const idEmpresa = idEmpresaObj.idEmpresa;
 
             const idProdutoObj = await prismaClient.produto.findFirst({
                 where: {
@@ -40,12 +44,12 @@ export class CriarItemProdutoService {
                 }
             });
 
-            if(!idProdutoObj) {
-                return { status: 500, message: "Produto nao encontrado"}
+            if (!idProdutoObj) {
+                throw new Error("not found: Produto não encontrado");
             }
 
             const idProduto = idProdutoObj.idProduto;
-            
+
             const transaction = await prismaClient.$transaction(async (prisma) => {
                 const novoItem = await prisma.produto_item.create({
                     data: {
@@ -55,14 +59,20 @@ export class CriarItemProdutoService {
                         item_ativo,
                     },
                 });
-    
+
                 return { novoItem };
             });
-            return {status: 201, message: transaction}
 
-        } catch (error) {
+            return { status: 201, message: "Item registrado com sucesso", data: transaction };
+        } catch (error: any) {
             console.error("Erro ao registrar item:", error);
-            return { status: 500, message: "Erro ao registrar item", error: (error as any).message };
+            if (error.message.includes("validation")) {
+                throw new Error("validation: " + error.message);
+            }
+            if (error.message.includes("not found")) {
+                throw new Error("not found: " + error.message);
+            }
+            throw new Error("Erro ao registrar item: " + error.message);
         }
     }
 }
