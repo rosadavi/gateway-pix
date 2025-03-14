@@ -48,7 +48,7 @@ router.post('/extrato', authMiddleware, (req: Request, res: Response) => {
   new GeraExtratoController().handle(req, res);
 });
 
-router.post('/extrato/geral', authMiddleware, (req: Request, res: Response) => {
+router.post('/extrato/detalhado', authMiddleware, (req: Request, res: Response) => {
   new GeraExtratoGeralController().handle(req, res);
 });
 
