@@ -1,19 +1,33 @@
+import { compareHashSenha } from "../configs/bcrypt";
 import prismaClient from "../prisma";
+
+interface ItemPedido {
+    produto_item_idProdutoItem: number;
+    quantidade: number;
+}
 
 interface GeraCobrancaProps {
     empresa_id_empresa: number;
     telefone_cliente: string;
     metodo_pagamento: string;
-    valor_cobranca: number;
     status_cobranca: string;
     descricao_cobranca: string;
     num_parcela: number;
     num_parcelas: number;
+    itens_pedido: ItemPedido[];
+    id_empresa: string;
 }
 
-class GeraCobrancaService {
-    async execute({ empresa_id_empresa, telefone_cliente, metodo_pagamento, valor_cobranca, status_cobranca, descricao_cobranca, num_parcela, num_parcelas }: GeraCobrancaProps) {
+class GeraCobrancaItensService {
+    async execute({ empresa_id_empresa, telefone_cliente, metodo_pagamento, status_cobranca, descricao_cobranca, num_parcela, num_parcelas, itens_pedido, id_empresa }: GeraCobrancaProps) {
         try {
+
+            const compare_id = await compareHashSenha(empresa_id_empresa.toString(), id_empresa);
+            
+            if(!compare_id) {
+                return { status: 500, message: "Id invalido!"}
+            }
+
             const cliente = await prismaClient.pessoa.findFirst({
                 where: {
                     telefone: telefone_cliente
@@ -35,13 +49,30 @@ class GeraCobrancaService {
                 cliente_id_cliente = cliente.idPessoa;
             }
 
+            const getItemValor = async (produto_item_idProdutoItem: number): Promise<number> => {
+                const produtoItem = await prismaClient.produto_item.findUnique({
+                    where: { idProdutoItem: produto_item_idProdutoItem },
+                    select: { valor_item: true }
+                });
+                if (!produtoItem) {
+                    throw new Error(`Item com ID ${produto_item_idProdutoItem} não encontrado`);
+                }
+                return produtoItem.valor_item.toNumber();
+            };
+
+            const valorTotal = await itens_pedido.reduce(async (totalPromise: Promise<number>, item: ItemPedido) => {
+                const total = await totalPromise;
+                const valorItem = await getItemValor(item.produto_item_idProdutoItem);
+                return total + (valorItem * item.quantidade);
+            }, Promise.resolve(0));
+
             const transaction = await prismaClient.$transaction(async (prisma) => {
                 const pedido = await prisma.pedido.create({
                     data: {
                         empresa_idEmpresa: empresa_id_empresa,
                         pessoa_idPessoa_cliente: cliente_id_cliente,
                         status: 'P',
-                        valorTotal: valor_cobranca,
+                        valorTotal: valorTotal,
                         totalParcelas: num_parcelas,
                         pessoa_idPessoa_registrou: 2
                     }
@@ -49,18 +80,28 @@ class GeraCobrancaService {
 
                 const pedido_idPedido = pedido.idPedido;
 
+                await prisma.item_pedido.createMany({
+                    data: await Promise.all(itens_pedido.map(async (item: ItemPedido) => ({
+                        pedido_idPedido,
+                        produto_item_idProdutoItem: item.produto_item_idProdutoItem,
+                        quantidade: item.quantidade,
+                        valor_item: await getItemValor(item.produto_item_idProdutoItem)
+                    })))
+                });
+
                 const cobranca = await prisma.pagamento.create({
                     data: {
                         pedido_idPedido,
                         pag_tipo: metodo_pagamento,
                         pag_method: metodo_pagamento,
-                        pag_valor: valor_cobranca,
+                        pag_valor: valorTotal,
                         pag_descricao: descricao_cobranca,
                         pag_status: status_cobranca,
                         parcela_numero: num_parcela,
                         cliente_telefone: telefone_cliente
                     }
                 });
+
                 return cobranca;
             });
 
@@ -72,4 +113,4 @@ class GeraCobrancaService {
     }
 }
 
-export { GeraCobrancaService };
+export { GeraCobrancaItensService };
