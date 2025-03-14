@@ -1,4 +1,3 @@
-import { JwtPayload } from "../configs/token";
 import { compareHashSenha } from "../configs/bcrypt"
 import prismaClient from "../prisma";
 
