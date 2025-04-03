@@ -11,7 +11,7 @@ import { CriarTipoTransacaoController } from './controllers/CriarTipoTransacaoCo
 import { CriarItemProdutoController } from './controllers/CriarItemProdutoController'
 import { CriarCategoriaController } from './controllers/CriarCategoriaController';
 import { authMiddleware } from './middlewares/authJWT';
-import { GeraCobrancaItensController } from './controllers/GeraCobrancaItensController';
+import { CriarCobrancaItensController } from './controllers/CriarCobrancaItensController';
 
 const router = Router();
 
@@ -35,8 +35,8 @@ router.post('/cobranca', authMiddleware,(req: Request, res: Response) => {
   new GeraCobrancaController().handle(req, res);
 });
 
-router.post('/cobranca/itens', authMiddleware, (req: Request, res: Response) => {
-  new GeraCobrancaItensController().handle(req, res);
+router.post('/criar/cobranca/itens', authMiddleware, (req: Request, res: Response) => {
+  new CriarCobrancaItensController().handle(req, res);
 });
 
 router.get('/validar', authMiddleware, (req: Request, res: Response) => {
@@ -63,7 +63,7 @@ router.post('/criar/produto/categoria', authMiddleware, (req: Request, res: Resp
   new CriarCategoriaController().handle(req, res);
 });
 
-router.post('/transacao/criar', authMiddleware, (req: Request, res: Response) => {
+router.post('/criar/transacao/tipo', authMiddleware, (req: Request, res: Response) => {
   new CriarTipoTransacaoController().handle(req, res);
 });
 
