@@ -51,11 +51,11 @@ router.post('/extrato/detalhado', authMiddleware, (req: Request, res: Response) 
   new GeraExtratoGeralController().handle(req, res);
 });
 
-router.post('/produto/registrar', authMiddleware, (req: Request, res: Response) => {
+router.post('/criar/produto', authMiddleware, (req: Request, res: Response) => {
   new RegistrarProdutoController().handle(req, res);
 });
 
-router.post('/produto/item/registrar', authMiddleware, (req: Request, res: Response) => {
+router.post('/criar/produto/item', authMiddleware, (req: Request, res: Response) => {
   new CriarItemProdutoController().handle(req, res);
 });
 
