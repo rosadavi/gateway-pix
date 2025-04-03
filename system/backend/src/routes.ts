@@ -59,7 +59,7 @@ router.post('/produto/item/registrar', authMiddleware, (req: Request, res: Respo
   new CriarItemProdutoController().handle(req, res);
 });
 
-router.post('/produto/categoria', authMiddleware, (req: Request, res: Response) => {
+router.post('/criar/produto/categoria', authMiddleware, (req: Request, res: Response) => {
   new CriarCategoriaController().handle(req, res);
 });
 
