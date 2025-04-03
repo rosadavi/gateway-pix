@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { VerificaCPFeCNPJController } from './controllers/VerificaCPFeCNPJController.js';
-import { CriarUsuarioController } from './controllers/CriarUsuarioController.js';
+import { CriarProprietarioController } from './controllers/CriarProprietarioController.js';
 import { GeraCobrancaController } from './controllers/GeraCobrancaController.js';
 import {LoginController} from './controllers/LoginController.js';
 import { GeraExtratoController } from './controllers/GeraExtratoController.js';
@@ -24,8 +24,8 @@ router.post('/verifica', authMiddleware, (req: Request, res: Response) => {
    new VerificaCPFeCNPJController().handle(req, res);
 });
 
-router.post('/criar', (req: Request, res: Response) => {
-  new CriarUsuarioController().handle(req, res);
+router.post('/criar/proprietario', (req: Request, res: Response) => {
+  new CriarProprietarioController().handle(req, res);
 });
 
 router.post('/login', (req: Request, res: Response) => {

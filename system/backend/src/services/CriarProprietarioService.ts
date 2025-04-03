@@ -1,7 +1,7 @@
 import { hashSenha } from "../configs/bcrypt";
 import prismaClient from "../prisma";
 
-interface CriarUsuarioProps {
+interface CriarProprietarioProps {
     nome: string;
     telefone: string;
     email: string;
@@ -13,8 +13,8 @@ interface CriarUsuarioProps {
     cpf_cnpj: string;
 }
 
-export class CriarUsuarioService {
-    async execute({ nome, telefone, email, estado, cidade, tipo_pix, chave_pix, senha, cpf_cnpj }: CriarUsuarioProps) {
+export class CriarProprietarioService {
+    async execute({ nome, telefone, email, estado, cidade, tipo_pix, chave_pix, senha, cpf_cnpj }: CriarProprietarioProps) {
         try {
             const senhaHash = await hashSenha(senha);
 
@@ -25,13 +25,12 @@ export class CriarUsuarioService {
                   CPF_CNPJ: cpf_cnpj,
                   telefone,
                   email,
-                  senha: senhaHash, // Lembre-se de hashificar a senha antes, se necessário
+                  senha: senhaHash,
                   dataRegistro: new Date()
                 },
             });
 
-            // Preenchendo os valores padrão para os campos obrigatórios
-            const novoUsuario = await prisma.empresa.create({
+            const novoProprietario = await prisma.empresa.create({
                 data: {
                   nomeFantasia: nome,
                   telefoneEmpresa: telefone,
@@ -44,16 +43,15 @@ export class CriarUsuarioService {
                   empCpfCnpj: cpf_cnpj
                 }
             });
-            return novoUsuario;
+            return novoProprietario;
         });
 
-            console.log("Usuario criado com sucesso:", transaction);
             return { status: 201, data: transaction };
         } catch (error) {
-            console.error("Erro ao criar usuario:", error);
+            console.error("Erro ao criar Proprietario:", error);
             return { status: 500, message: "Erro ao criar usuário", error: (error as any).message};
         }
     }
 }
 
-export { CriarUsuarioProps };
+export { CriarProprietarioProps };
