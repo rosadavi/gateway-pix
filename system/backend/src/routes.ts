@@ -5,7 +5,7 @@ import { CriarProprietarioController } from './controllers/CriarProprietarioCont
 import { GeraCobrancaController } from './controllers/GeraCobrancaController';
 import {LoginProprietarioController} from './controllers/LoginProprietarioController';
 import { GeraExtratoController } from './controllers/GeraExtratoController';
-import { GeraExtratoGeralController } from './controllers/GeraExtratoGeralController';
+import { CriarExtratoDetalhadoController } from './controllers/CriarExtratoDetalhadoController';
 import { RegistrarProdutoController } from './controllers/RegistrarProdutoController';
 import { CriarTipoTransacaoController } from './controllers/CriarTipoTransacaoController'
 import { CriarItemProdutoController } from './controllers/CriarItemProdutoController'
@@ -47,8 +47,8 @@ router.post('/extrato', authMiddleware, (req: Request, res: Response) => {
   new GeraExtratoController().handle(req, res);
 });
 
-router.post('/extrato/detalhado', authMiddleware, (req: Request, res: Response) => {
-  new GeraExtratoGeralController().handle(req, res);
+router.post('/criar/extrato/detalhado', authMiddleware, (req: Request, res: Response) => {
+  new CriarExtratoDetalhadoController().handle(req, res);
 });
 
 router.post('/criar/produto', authMiddleware, (req: Request, res: Response) => {
