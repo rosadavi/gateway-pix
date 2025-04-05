@@ -19,7 +19,7 @@ function createToken(dados: JwtPayload) {
 export class LoginService {
     async execute({ cnpj_cpf, senha }: LoginProps) {
         try {
-            const fetchUser = await prismaClient.empresa.findFirst({
+            const proprietarioExistente = await prismaClient.empresa.findFirst({
                 where: {
                     empCpfCnpj: cnpj_cpf,
                 },
@@ -30,8 +30,26 @@ export class LoginService {
                 }
             });
 
+<<<<<<< HEAD
             if (!fetchUser) {
                 throw new Error("invalid credentials: Credenciais Inválidas!");
+=======
+            if (proprietarioExistente) {
+                const senhaValida = await compareHashSenha(senha, proprietarioExistente.senha!);
+
+                if (senhaValida) {
+                    const token = await createToken({
+                        cpf_cnpj_empresa: proprietarioExistente.empCpfCnpj ?? '',
+                        id_empresa: proprietarioExistente.idEmpresa ?? ''
+                    });
+                    
+                    return { status: 200, message: {token} };
+                } else {
+                    return { status: 401, message: 'Credenciais Inválidas!' };
+                }
+            } else {
+                return { status: 401, message: 'Credenciais Inválidas!' };
+>>>>>>> create-extrato-detalhado
             }
 
             const senhaValida = await compareHashSenha(senha, fetchUser.senha!);

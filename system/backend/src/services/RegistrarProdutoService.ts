@@ -1,71 +1,62 @@
 import prismaClient from "../prisma";
 
 interface CriarProdutoProps {
-    Categoria_idCategoria: number;
-    Empresa_idEmpresa: number;
+    nomeCategoria: string;
+    cpf_cnpj: string;
     nomeProduto: string;
     valor: number;
     tipoProduto: string;
-    descricao_item: string;
-    valor_item?: number;
 }
 
 export class RegistrarProdutoService {
-    async execute({ Categoria_idCategoria, Empresa_idEmpresa, nomeProduto, valor, tipoProduto, descricao_item, valor_item }: CriarProdutoProps) {
+    async execute({ nomeCategoria, cpf_cnpj, nomeProduto, valor, tipoProduto }: CriarProdutoProps) {
         try {
-            const categoria = await prismaClient.categoria.findUnique({
-                where: { idCategoria: Categoria_idCategoria },
+            const categoria = await prismaClient.categoria.findFirst({
+                where: {
+                    nomeCategoria
+                }
             });
 
-            if (!categoria) {
-                throw new Error("not found: Categoria não encontrada");
-            }
+            if (!categoria) throw new Error("not_found: Categoria nao encontrada");
 
-            const empresa = await prismaClient.empresa.findUnique({
-                where: { idEmpresa: Empresa_idEmpresa },
+            const empresa = await prismaClient.empresa.findFirst({
+                where: { 
+                    empCpfCnpj: cpf_cnpj
+                }
             });
 
-            if (!empresa) {
-                throw new Error("not found: Empresa não encontrada");
-            }
+            if (!empresa) throw new Error("not_found: Empresa nao encontrada"); 
+
+            const produto = await prismaClient.produto.findFirst({
+                where: {
+                    Categoria_idCategoria: categoria.idCategoria,
+                    Empresa_idEmpresa: empresa.idEmpresa,
+                    nomeProduto
+                }
+            });
+
+            if(produto) throw new Error("duplicate: Produto ja registrado");
 
             const transaction = await prismaClient.$transaction(async (prisma) => {
-                const novoProduto = await prisma.produto.create({
-                    data: {
-                        Categoria_idCategoria,
-                        Empresa_idEmpresa,
-                        nomeProduto,
-                        valor,
-                        tipoProduto,
-                    },
-                });
-
-                const valorItem = valor_item ?? valor;
-
-                const novoProdutoItem = await prisma.produto_item.create({
-                    data: {
-                        produto_idProduto: novoProduto.idProduto,
-                        descricao_item,
-                        valor_item: valorItem,
-                        item_ativo: 1
-                    }
-                });
-                return { novoProduto, novoProdutoItem };
-            });
-
-            return {
-                status: 201,
+            const novoProduto = await prisma.produto.create({
                 data: {
-                    produto: transaction.novoProduto,
-                    produtoItem: transaction.novoProdutoItem
+                    Categoria_idCategoria: categoria.idCategoria,
+                    Empresa_idEmpresa: empresa.idEmpresa,
+                    nomeProduto,
+                    valor,
+                    tipoProduto
                 }
-            };
+            });
+            return { novoProduto };
+        });
+
+            return {status: 201, data: transaction};
         } catch (error: any) {
             console.error("Erro ao registrar produto:", error);
-            if (error.message.includes("not found")) {
-                throw new Error("not found: " + error.message);
-            }
-            throw new Error("Erro ao registrar produto: " + error.message);
+            if(error.message.includes("not_found")) return { status: 404, message: error.message}
+            if(error.message.includes("duplicate")) return { status: 409, message: error.message}
+
+            return { status: 500, message: "Erro ao registrar produto", error: (error as any).message };
         }
     }
 }

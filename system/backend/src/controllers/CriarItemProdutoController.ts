@@ -9,25 +9,14 @@ class CriarItemProdutoController {
             valor_item,
             item_ativo,
             nomeProduto,
-            cpf_cnpj_empresa
         } = req.body;
 
         const criarItemProdutoService = new CriarItemProdutoService();
 
         try {
-            const item = await criarItemProdutoService.execute( {
-                cnpj_cpf,
-                descricao_item,
-                valor_item,
-                item_ativo,
-                nomeProduto,
-                cpf_cnpj_empresa
-            } );
+            const item = await criarItemProdutoService.execute({ cnpj_cpf, descricao_item, valor_item, item_ativo, nomeProduto });
 
-            return res.status(201).json({
-                message: "Item registrado com sucesso",
-                item,
-            });
+            return res.status(item.status).json(item);
         } catch (error: any) {
             if (error.message.includes("validation")) {
                 return res.status(400).json({ message: "Erro de validação: " + error.message });

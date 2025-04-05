@@ -8,19 +8,19 @@ export class CriarCategoriaService {
     async execute({ nomeCategoria }: CriarCategoriaProps) {
         try {
             const categoriaExistente = await prismaClient.categoria.findUnique({
-                where: { nomeCategoria },
+                where: {
+                    nomeCategoria
+                }
             });
 
-            if (categoriaExistente) {
-                throw new Error("duplicate: Categoria já existe");
-            }
+            if(categoriaExistente) return {status: 409, message: "Categoria ja cadastrada."}
 
             const novaCategoria = await prismaClient.categoria.create({
                 data: {
-                    nomeCategoria
-                },
+                  nomeCategoria
+                }
             });
-            console.log("Categoria criada com sucesso:", novaCategoria);
+
             return { status: 201, data: novaCategoria };
         } catch (error: any) {
             console.error("Erro ao criar categoria:", error);
@@ -31,5 +31,3 @@ export class CriarCategoriaService {
         }
     }
 }
-
-export { CriarCategoriaProps };

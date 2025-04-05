@@ -1,18 +1,17 @@
 import { Router, Request, Response } from 'express';
-import { VerificaCPFeCNPJController } from './controllers/VerificaCPFeCNPJController.js';
-import { CriarUsuarioController } from './controllers/CriarUsuarioController.js';
-import { GeraCobrancaController } from './controllers/GeraCobrancaController.js';
-import {LoginController} from './controllers/LoginController.js';
-import { GeraExtratoController } from './controllers/GeraExtratoController.js';
-import { GeraExtratoGeralController } from './controllers/GeraExtratoGeralController.js';
-import { RegistrarProdutoController } from './controllers/RegistrarProdutoController.js';
-import { CriarTipoTransacaoController } from './controllers/CriarTipoTransacaoController.js'
-import { CriarItemProdutoController } from './controllers/CriarItemProdutoController.js'
 
-import { CriarCategoriaController } from './controllers/CriarCategoriaController.js';
-
-import { authMiddleware } from './middlewares/authJWT.js';
-import { GeraCobrancaItensController } from './controllers/GeraCobrancaItensController.js';
+import { VerificaCPFeCNPJController } from './controllers/VerificaCPFeCNPJController';
+import { CriarProprietarioController } from './controllers/CriarProprietarioController';
+import { GeraCobrancaController } from './controllers/GeraCobrancaController';
+import {LoginProprietarioController} from './controllers/LoginProprietarioController';
+import { GeraExtratoController } from './controllers/GeraExtratoController';
+import { CriarExtratoDetalhadoController } from './controllers/CriarExtratoDetalhadoController';
+import { RegistrarProdutoController } from './controllers/RegistrarProdutoController';
+import { CriarTipoTransacaoController } from './controllers/CriarTipoTransacaoController'
+import { CriarItemProdutoController } from './controllers/CriarItemProdutoController'
+import { CriarCategoriaController } from './controllers/CriarCategoriaController';
+import { authMiddleware } from './middlewares/authJWT';
+import { CriarCobrancaItensController } from './controllers/CriarCobrancaItensController';
 
 const router = Router();
 
@@ -24,20 +23,20 @@ router.post('/verifica', authMiddleware, (req: Request, res: Response) => {
    new VerificaCPFeCNPJController().handle(req, res);
 });
 
-router.post('/criar', (req: Request, res: Response) => {
-  new CriarUsuarioController().handle(req, res);
+router.post('/criar/proprietario', (req: Request, res: Response) => {
+  new CriarProprietarioController().handle(req, res);
 });
 
-router.post('/login', (req: Request, res: Response) => {
-  new LoginController().handle(req, res);
+router.post('/login/proprietario', (req: Request, res: Response) => {
+  new LoginProprietarioController().handle(req, res);
 });
 
 router.post('/cobranca', authMiddleware,(req: Request, res: Response) => {
   new GeraCobrancaController().handle(req, res);
 });
 
-router.post('/cobranca/itens', authMiddleware, (req: Request, res: Response) => {
-  new GeraCobrancaItensController().handle(req, res);
+router.post('/criar/cobranca/itens', authMiddleware, (req: Request, res: Response) => {
+  new CriarCobrancaItensController().handle(req, res);
 });
 
 router.get('/validar', authMiddleware, (req: Request, res: Response) => {
@@ -48,19 +47,19 @@ router.post('/extrato', authMiddleware, (req: Request, res: Response) => {
   new GeraExtratoController().handle(req, res);
 });
 
-router.post('/extrato/detalhado', authMiddleware, (req: Request, res: Response) => {
-  new GeraExtratoGeralController().handle(req, res);
+router.post('/criar/extrato/detalhado', authMiddleware, (req: Request, res: Response) => {
+  new CriarExtratoDetalhadoController().handle(req, res);
 });
 
-router.post('/produto/registrar', authMiddleware, (req: Request, res: Response) => {
+router.post('/criar/produto', authMiddleware, (req: Request, res: Response) => {
   new RegistrarProdutoController().handle(req, res);
 });
 
-router.post('/produto/item/registrar', authMiddleware, (req: Request, res: Response) => {
+router.post('/criar/produto/item', authMiddleware, (req: Request, res: Response) => {
   new CriarItemProdutoController().handle(req, res);
 });
 
-router.post('/produto/categoria', authMiddleware, (req: Request, res: Response) => {
+router.post('/criar/produto/categoria', authMiddleware, (req: Request, res: Response) => {
   new CriarCategoriaController().handle(req, res);
 });
 

@@ -1,78 +1,63 @@
-import { compareHashSenha } from "../configs/bcrypt";
 import prismaClient from "../prisma";
 
 interface CriarItemProdutoProps {
-    cnpj_cpf: string;
-    descricao_item: string;
-    valor_item: number;
-    item_ativo: number;
-    cpf_cnpj_empresa: string;
-    nomeProduto: string;
+    cnpj_cpf: string,
+    descricao_item: string,
+    valor_item: number,
+    item_ativo: number,
+    nomeProduto: string
 }
 
 export class CriarItemProdutoService {
-    async execute({ cnpj_cpf, descricao_item, valor_item, item_ativo, nomeProduto, cpf_cnpj_empresa }: CriarItemProdutoProps) {
+    async execute({ cnpj_cpf, descricao_item, valor_item, item_ativo, nomeProduto }: CriarItemProdutoProps) {
         try {
-            const cnpj_cpfValido = await compareHashSenha(cnpj_cpf, cpf_cnpj_empresa);
-
-            if (!cnpj_cpfValido) {
-                throw new Error("validation: CNPJ ou CPF inválido");
-            }
-
-            const idEmpresaObj = await prismaClient.empresa.findFirst({
+            const empresa = await prismaClient.empresa.findFirst({
                 where: {
                     empCpfCnpj: cnpj_cpf
-                },
-                select: {
-                    idEmpresa: true
                 }
             });
 
-            if (!idEmpresaObj) {
-                throw new Error("not found: Empresa não encontrada");
-            }
+            if(!empresa) throw new Error("not_found: Empresa nao cadastrada");
 
-            const idEmpresa = idEmpresaObj.idEmpresa;
-
-            const idProdutoObj = await prismaClient.produto.findFirst({
+            const produto = await prismaClient.produto.findFirst({
                 where: {
-                    Empresa_idEmpresa: idEmpresa,
-                    nomeProduto: nomeProduto
-                },
-                select: {
-                    idProduto: true
+                    Empresa_idEmpresa: empresa.idEmpresa,
+                    nomeProduto
                 }
             });
 
-            if (!idProdutoObj) {
-                throw new Error("not found: Produto não encontrado");
-            }
+            if(!produto) throw new Error("not_found: Produto nao cadastrado");
 
-            const idProduto = idProdutoObj.idProduto;
+            const item = await prismaClient.produto_item.findFirst({
+                where: {
+                    descricao_item
+                }
+            });
 
+            if(item) throw new Error("duplicate: Item ja cadastrado");
+            
             const transaction = await prismaClient.$transaction(async (prisma) => {
                 const novoItem = await prisma.produto_item.create({
                     data: {
-                        produto_idProduto: idProduto,
+                        produto_idProduto: produto.idProduto,
                         descricao_item,
                         valor_item,
-                        item_ativo,
-                    },
+                        item_ativo
+                    }
                 });
 
-                return { novoItem };
+                return novoItem;
             });
 
-            return { status: 201, message: "Item registrado com sucesso", data: transaction };
+            return {
+                status: 200,
+                transaction
+            }
         } catch (error: any) {
             console.error("Erro ao registrar item:", error);
-            if (error.message.includes("validation")) {
-                throw new Error("validation: " + error.message);
-            }
-            if (error.message.includes("not found")) {
-                throw new Error("not found: " + error.message);
-            }
-            throw new Error("Erro ao registrar item: " + error.message);
+            if(error.message.includes("not_found")) return { status: 404, message: error.message }
+            if(error.message.includes("duplicate")) return { status: 409, message: error.message }
+            return { status: 500, message: "Erro ao registrar item", error: (error as any).message };
         }
     }
 }
