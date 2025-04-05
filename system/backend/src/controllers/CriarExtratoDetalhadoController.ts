@@ -3,15 +3,16 @@ import { CriarExtratoDetalhadoService } from "../services/CriarExtratoDetalhadoS
 
 export class CriarExtratoDetalhadoController {
     async handle(req: Request, res: Response) {
-        const { cpf_cnpj } = req.body;
+        const { idPedido } = req.body;
 
         const criarExtratoDetalhadoService = new CriarExtratoDetalhadoService();
 
         try {
-            const extrato = await criarExtratoDetalhadoService.execute({ cpf_cnpj });
+            const extrato = await criarExtratoDetalhadoService.execute({ idPedido });
             return res.status(extrato.status).json(extrato);
         } catch (error) {
-            return res.status(500).json("Erro ao criar um extrado detalhado", error);
+            const errorMessage = error instanceof Error ? error.message : "Erro desconhecido";
+            return res.status(500).json({ message: "Erro ao criar um extrado detalhado", error: errorMessage });
         }
     }
 }

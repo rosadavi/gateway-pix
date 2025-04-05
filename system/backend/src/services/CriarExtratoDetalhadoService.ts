@@ -1,25 +1,21 @@
 import prismaClient from "../prisma";
 
 interface CriarExtratoDetalhadoProps {
-    cpf_cnpj: string;
+    idPedido: number;
 }
 
 export class CriarExtratoDetalhadoService {
-    async execute({ cpf_cnpj }: CriarExtratoDetalhadoProps) {
+    async execute({ idPedido }: CriarExtratoDetalhadoProps) {
         try {
-            const empresa = await prismaClient.empresa.findFirst({
-                where: {
-                    empCpfCnpj: cpf_cnpj
-                }
-            });
-
-            if(!empresa) throw new Error("not_found: Empresa nao cadastrada");
+            
 
             const pedido = await prismaClient.pedido.findMany({
                 where: {
-                    empresa_idEmpresa: empresa.idEmpersa
+                    idPedido
+                    
                 },
                 include: {
+                    pagamento: true,
                     item_pedido: true
                 }
             });
