@@ -11,7 +11,7 @@ export class CriarCategoriaController {
 
         try {
             const categoria = await criarCategoriaService.execute({ nomeCategoria });
-            return req.json(categoria);
+            return res.status(categoria.status).json(categoria);
         } catch (error) {
             if (error instanceof Error) {
                 if (error.message.includes("validation")) {

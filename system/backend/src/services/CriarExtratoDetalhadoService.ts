@@ -18,19 +18,13 @@ export class CriarExtratoDetalhadoService {
             const pedido = await prismaClient.pedido.findMany({
                 where: {
                     empresa_idEmpresa: empresa.idEmpersa
+                },
+                include: {
+                    item_pedido: true
                 }
             });
-
-            const pedidoItens = await prismaClient.item_pedido.findMany({
-                where: {
-                    
-                }
-            })
-
-            console.log(pedido);
-
-
-            return { status: 204, data: { pedido }};
+            
+            return { status: 200, data: { pedido }};
         } catch (error: any) {
             console.error("Erro ao gerar extrato: ", error);
             if(error.message.includes("not_found")) return { status: 404, message: error.message }

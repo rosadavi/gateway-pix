@@ -30,10 +30,6 @@ export class LoginService {
                 }
             });
 
-<<<<<<< HEAD
-            if (!fetchUser) {
-                throw new Error("invalid credentials: Credenciais Inválidas!");
-=======
             if (proprietarioExistente) {
                 const senhaValida = await compareHashSenha(senha, proprietarioExistente.senha!);
 
@@ -49,21 +45,7 @@ export class LoginService {
                 }
             } else {
                 return { status: 401, message: 'Credenciais Inválidas!' };
->>>>>>> create-extrato-detalhado
             }
-
-            const senhaValida = await compareHashSenha(senha, fetchUser.senha!);
-
-            if (!senhaValida) {
-                throw new Error("invalid credentials: Credenciais Inválidas!");
-            }
-
-            const token = await createToken({
-                cpf_cnpj_empresa: fetchUser.empCpfCnpj ?? '',
-                id_empresa: fetchUser.idEmpresa ?? ''
-            });
-
-            return { status: 200, token: token };
         } catch (error: any) {
             console.error("Erro ao realizar login: ", error);
             if (error.message.includes("invalid credentials")) {
