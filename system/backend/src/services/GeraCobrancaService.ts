@@ -18,9 +18,11 @@ class GeraCobrancaService {
                 where: {
                     telefone: telefone_cliente
                 }
+                    
             });
 
             let cliente_id_cliente = null;
+            let cliente_nome = null;
 
             if (!cliente) {
                 const novoCliente = await prismaClient.pessoa.create({
@@ -31,8 +33,11 @@ class GeraCobrancaService {
                 });
 
                 cliente_id_cliente = novoCliente.idPessoa;
+                cliente_nome = "Cliente sem identificação";
+
             } else {
                 cliente_id_cliente = cliente.idPessoa;
+                cliente_nome = cliente.nomeCompleto;
             }
 
             const transaction = await prismaClient.$transaction(async (prisma) => {
@@ -58,7 +63,8 @@ class GeraCobrancaService {
                         pag_descricao: descricao_cobranca,
                         pag_status: status_cobranca,
                         parcela_numero: num_parcela,
-                        cliente_telefone: telefone_cliente
+                        cliente_telefone: telefone_cliente,
+                        cliente_nome
                     }
                 });
                 return cobranca;
