@@ -45,10 +45,10 @@ class GeraCobrancaService {
                     data: {
                         empresa_idEmpresa: empresa_id_empresa,
                         pessoa_idPessoa_cliente: cliente_id_cliente,
-                        status: 'P',
+                        status: String(process.env.GTW_STATUS_PEDIDO),
                         valorTotal: valor_cobranca,
                         totalParcelas: num_parcelas,
-                        pessoa_idPessoa_registrou: 2
+                        pessoa_idPessoa_registrou: Number(process.env.GTW_ID_PESSOA_REGISTROU_COB)
                     }
                 });
 

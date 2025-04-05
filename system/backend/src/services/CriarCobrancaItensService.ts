@@ -39,7 +39,7 @@ export class CriarCobrancaItensService {
                 const novoCliente = await prismaClient.pessoa.create({
                     data: {
                         telefone: telefone_cliente,
-                        nomeCompleto: nome_cliente,
+                        nomeCompleto: nome_cliente || String(process.env.GTW_NOME_CLIENTE_DEFAULT),
                         dataRegistro: new Date()
                     }
                 });
@@ -79,10 +79,10 @@ export class CriarCobrancaItensService {
                     data: {
                         empresa_idEmpresa: empresa.idEmpresa,
                         pessoa_idPessoa_cliente: cliente_id_cliente,
-                        status: 'P',
+                        status:  String(process.env.GTW_STATUS_PEDIDO),
                         valorTotal: await total(),
                         totalParcelas: num_parcelas,
-                        pessoa_idPessoa_registrou: 2
+                        pessoa_idPessoa_registrou: Number(process.env.GTW_ID_PESSOA_REGISTROU_COB)
                     }
                 });
 
