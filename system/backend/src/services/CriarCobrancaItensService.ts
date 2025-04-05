@@ -79,7 +79,7 @@ export class CriarCobrancaItensService {
                     data: {
                         empresa_idEmpresa: empresa.idEmpresa,
                         pessoa_idPessoa_cliente: cliente_id_cliente,
-                        status:  String(process.env.GTW_STATUS_PEDIDO),
+                        status:  String(process.env.GTW_STATUS_PEDIDO_CREATE),
                         valorTotal: await total(),
                         totalParcelas: num_parcelas,
                         pessoa_idPessoa_registrou: Number(process.env.GTW_ID_PESSOA_REGISTROU_COB)
