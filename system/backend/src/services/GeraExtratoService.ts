@@ -18,6 +18,7 @@ class GeraExtratoService {
                     valorTotal: true,
                     status: true,
                     pessoa_idPessoa_cliente: true,
+                    pagamento: true
                 }
             });
 

@@ -44,7 +44,7 @@ router.get('/validar', authMiddleware, (req: Request, res: Response) => {
   res.status(200).json({message: "Autorizado"});
 });
 
-router.post('/extrato', authMiddleware, (req: Request, res: Response) => {
+router.post('/extrato',  (req: Request, res: Response) => {
   new GeraExtratoController().handle(req, res);
 });
 
