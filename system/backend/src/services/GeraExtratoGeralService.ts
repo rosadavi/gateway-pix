@@ -1,17 +1,18 @@
 import prismaClient from "../prisma";
 
 interface GeraExtratoProps {
-    idEmpresa: number;
+    idPedido: number;
 }
 
 class GeraExtratoGeralService {
-    async execute({ idEmpresa }: GeraExtratoProps) {
+    async execute({ idPedido }: GeraExtratoProps) {
         try {
-            const pedidos = await prismaClient.pedido.findMany({
+            const pedidos = await prismaClient.pedido.findUnique({
                 where: {
-                    empresa_idEmpresa: idEmpresa
+                    idPedido
                 },
                 include: {
+                    pagamento: true,
                     item_pedido: {
                         include: {
                             produto_item: true,
@@ -20,8 +21,8 @@ class GeraExtratoGeralService {
                 },
             });
 
-            if (pedidos.length === 0) {
-                throw new Error("not found: Nenhum pedido encontrado para a empresa");
+            if (!pedidos) {
+                throw new Error("not found: Nenhum pedido encontrado para a Pedido");
             }
 
             return { status: 200, data: { pedidos }};
