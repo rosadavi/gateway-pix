@@ -1,4 +1,7 @@
 import prismaClient from "../prisma";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 interface ItemPedido {
     descricao_item: string;
@@ -95,7 +98,7 @@ export class CriarCobrancaItensService {
 
                     if(!produto_item) throw new Error("not_found: Item do produto nao cadastrado");
 
-                    await prisma.item_pedido.createMany({
+                    await prisma.item_pedido.create({
                         data: {
                             pedido_idPedido: pedido.idPedido,
                             produto_item_idProdutoItem: produto_item.idProdutoItem,
