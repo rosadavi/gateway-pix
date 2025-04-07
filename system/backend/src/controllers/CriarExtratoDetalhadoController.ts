@@ -3,12 +3,12 @@ import { CriarExtratoDetalhadoService } from "../services/CriarExtratoDetalhadoS
 
 export class CriarExtratoDetalhadoController {
     async handle(req: Request, res: Response) {
-        const { cpf_cnpj, total } = req.body;
+        const { telefone_empresa, total } = req.body;
 
         const criarExtratoDetalhadoService = new CriarExtratoDetalhadoService();
 
         try {
-            const extrato = await criarExtratoDetalhadoService.execute({ cpf_cnpj, total });
+            const extrato = await criarExtratoDetalhadoService.execute({ telefone_empresa, total });
             return res.status(extrato.status).json(extrato);
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : "Erro desconhecido";
