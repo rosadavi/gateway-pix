@@ -9,7 +9,7 @@ interface ItemPedido {
 }
 
 interface CriarCobrancaProps {
-    telefone_empresa: number;
+    telefone_empresa: string;
     telefone_cliente: string;
     nome_cliente: string;
     metodo_pagamento: string;
@@ -24,7 +24,7 @@ export class CriarCobrancaItensService {
         try {
             const empresa = await prismaClient.empresa.findUnique({
                 where: {
-                    telefone_empresa
+                    telefoneEmpresa: telefone_empresa
                 }
             });
 
