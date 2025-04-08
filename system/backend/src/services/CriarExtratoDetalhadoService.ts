@@ -1,16 +1,16 @@
 import prismaClient from "../prisma";
 
 interface CriarExtratoDetalhadoProps {
-    cpf_cnpj: number;
+    telefone_empresa: number;
     total: number;
 }
 
 export class CriarExtratoDetalhadoService {
-    async execute({ cpf_cnpj, total }: CriarExtratoDetalhadoProps) {
+    async execute({ telefone_empresa, total }: CriarExtratoDetalhadoProps) {
         try {
-            const empresa = await prismaClient.empresa.findFirst({
+            const empresa = await prismaClient.empresa.findUnique({
                 where: {
-                    empCpfCnpj: cpf_cnpj
+                    telefone_empresa
                 }
             });
 
