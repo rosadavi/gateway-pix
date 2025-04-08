@@ -1,4 +1,7 @@
 import prismaClient from "../prisma";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 interface ItemPedido {
     descricao_item: string;
@@ -6,7 +9,7 @@ interface ItemPedido {
 }
 
 interface CriarCobrancaProps {
-    cpf_cnpj: string;
+    telefone_empresa: number;
     telefone_cliente: string;
     nome_cliente: string;
     metodo_pagamento: string;
@@ -17,11 +20,11 @@ interface CriarCobrancaProps {
 }
 
 export class CriarCobrancaItensService {
-    async execute({ cpf_cnpj, telefone_cliente, nome_cliente, metodo_pagamento, descricao_cobranca, num_parcela, num_parcelas, itens_pedido }: CriarCobrancaProps) {
+    async execute({ telefone_empresa, telefone_cliente, nome_cliente, metodo_pagamento, descricao_cobranca, num_parcela, num_parcelas, itens_pedido }: CriarCobrancaProps) {
         try {
-            const empresa = await prismaClient.empresa.findFirst({
+            const empresa = await prismaClient.empresa.findUnique({
                 where: {
-                    empCpfCnpj: cpf_cnpj
+                    telefone_empresa
                 }
             });
 
@@ -95,7 +98,7 @@ export class CriarCobrancaItensService {
 
                     if(!produto_item) throw new Error("not_found: Item do produto nao cadastrado");
 
-                    await prisma.item_pedido.createMany({
+                    await prisma.item_pedido.create({
                         data: {
                             pedido_idPedido: pedido.idPedido,
                             produto_item_idProdutoItem: produto_item.idProdutoItem,
