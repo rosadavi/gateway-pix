@@ -1,4 +1,6 @@
 import prismaClient from "../prisma";
+import { throwError } from "../errors/ErrorMap";
+import { AppError } from "../errors/AppError";
 
 interface CriarItemProdutoProps {
     cnpj_cpf: string,
@@ -26,7 +28,7 @@ export class CriarItemProdutoService {
                 }
             });
 
-            if(!produto) throw new Error("not_found: Produto nao cadastrado");
+            if(!produto) throwError("not_found:produto");
 
             const item = await prismaClient.produto_item.findFirst({
                 where: {
@@ -55,6 +57,7 @@ export class CriarItemProdutoService {
             }
         } catch (error: any) {
             console.error("Erro ao registrar item:", error);
+            if (error instanceof AppError) return { status: error.statusCode, message: error.message };
             if(error.message.includes("not_found")) return { status: 404, message: error.message }
             if(error.message.includes("duplicate")) return { status: 409, message: error.message }
             return { status: 500, message: "Erro ao registrar item", error: (error as any).message };
