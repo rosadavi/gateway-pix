@@ -1,7 +1,9 @@
+import { AppError } from "../errors/AppError";
+import { throwError } from "../errors/ErrorMap";
 import prismaClient from "../prisma";
 
 interface CriarExtratoDetalhadoProps {
-    telefone_empresa: number;
+    telefone_empresa: string;
     total: number;
 }
 
@@ -10,9 +12,11 @@ export class CriarExtratoDetalhadoService {
         try {
             const empresa = await prismaClient.empresa.findUnique({
                 where: {
-                    telefone_empresa
+                    telefoneEmpresa: telefone_empresa
                 }
             });
+
+            if(!empresa) throwError("not_found:empresa");
 
             const totalPedidos = await prismaClient.pedido.count({
                 where: {
@@ -49,8 +53,11 @@ export class CriarExtratoDetalhadoService {
             return { status: 200, data: { total_pedidos: totalPedidos, pedidos }};
         } catch (error: any) {
             console.error("Erro ao gerar extrato: ", error);
-            if(error.message.includes("not_found")) return { status: 404, message: error.message }
-            return { status: 500, message: `Erro ao criar extrato ${error.message}` };
+            if(error.instanceof(AppError)) throw Error;
+            return { 
+                status: 500, 
+                message: "Erro ao criar extrato: " + error.message 
+            };
         }
     }
 }

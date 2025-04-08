@@ -15,19 +15,10 @@ class CriarItemProdutoController {
 
         try {
             const item = await criarItemProdutoService.execute({ cnpj_cpf, descricao_item, valor_item, item_ativo, nomeProduto });
-
             return res.status(item.status).json(item);
         } catch (error: any) {
-            if (error.message.includes("validation")) {
-                return res.status(400).json({ message: "Erro de validação: " + error.message });
-            }
-            if (error.message.includes("duplicate")) {
-                return res.status(409).json({ message: "Erro de duplicidade: " + error.message });
-            }
-            return res.status(500).json({
-                message: "Erro ao registrar o item",
-                error: error.message,
-            });
+            console.error("Erro ao criar um item " + error);
+            return res.status(500).json({ error: "Erro ao criar um item: " + error });
         }
     }
 }

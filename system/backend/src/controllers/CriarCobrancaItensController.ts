@@ -16,9 +16,13 @@ export class CriarCobrancaItensController {
 
         const criarCobrancaItensService = new CriarCobrancaItensService();
 
-        const cobranca = await criarCobrancaItensService.execute({ telefone_empresa, telefone_cliente, nome_cliente, metodo_pagamento, descricao_cobranca, num_parcela, num_parcelas, itens_pedido });
-
-        return response.json(cobranca);
+        try {
+            const cobranca = await criarCobrancaItensService.execute({ telefone_empresa, telefone_cliente, nome_cliente, metodo_pagamento, descricao_cobranca, num_parcela, num_parcelas, itens_pedido });
+            return response.json(cobranca);
+        } catch(error) {
+            console.error("Erro ao criar uma cobranca com itens " + error);
+            return response.status(500).json({error: "Erro ao criar uma cobranca com itens " + error});
+        }
     }
 }
  

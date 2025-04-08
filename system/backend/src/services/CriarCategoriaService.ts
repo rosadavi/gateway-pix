@@ -1,4 +1,6 @@
 import prismaClient from "../prisma";
+import { throwError } from "../errors/ErrorMap";
+import { AppError } from "../errors/AppError";
 
 interface CriarCategoriaProps {
     nomeCategoria: string;
@@ -13,7 +15,7 @@ export class CriarCategoriaService {
                 }
             });
 
-            if(categoriaExistente) return {status: 409, message: "Categoria ja cadastrada."}
+            if(categoriaExistente) throwError("duplicate:categoria")
 
             const novaCategoria = await prismaClient.categoria.create({
                 data: {
@@ -24,10 +26,11 @@ export class CriarCategoriaService {
             return { status: 201, data: novaCategoria };
         } catch (error: any) {
             console.error("Erro ao criar categoria:", error);
-            if (error.message.includes("duplicate")) {
-                throw new Error("duplicate: Categoria já existe");
-            }
-            throw new Error("Erro ao criar categoria: " + error.message);
+            if(error.instanceof(AppError)) throw Error;
+            return {
+                status: 500,
+                error: "Erro ao criar categoria: " + error.message
+            };
         }
     }
 }

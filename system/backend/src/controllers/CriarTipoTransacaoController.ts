@@ -9,17 +9,11 @@ class  CriarTipoTransacaoController {
 
         try {
             const tipoTransacao = await criarTipoTransacaoService.execute({ siglaTipoTransacao, nomeTipoTransacao, descTipoTransacao });
-            return response.json(tipoTransacao);
-        } catch (error: any) {
-            if (error.message.includes("validation")) {
-                return response.status(400).json({ message: "Erro de validação: " + error.message });
-            }
-            if (error.message.includes("duplicate")) {
-                return response.status(409).json({ message: "Erro de duplicidade: " + error.message });
-            }
+            return response.status(tipoTransacao.status).json(tipoTransacao);
+        } catch (error) {
+            console.error("Erro ao criar tipo de transação " + error);
             return response.status(500).json({
-                message: "Erro ao criar o tipo de transação",
-                error: error.message,
+                message: "Erro ao criar o tipo de transação" + error
             });
         }
     }
