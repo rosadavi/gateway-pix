@@ -47,13 +47,28 @@ npx prisma studio // Abre o prisma studio para visualizar o banco
 1. No diretorio ``` gateway-pix/system/backend ``` insira do .env a seguir:
    
 ```
-DATABASE_URL="mysql://root:senha-mysql@container-mysql:3306/Gateway"
-JWT_SECRET="chave_secreta_1234"
-PORT="3000"
+DATABASE_URL="mysql://wwtsco_app_gateway:OwHq7lKctityI9N@50.6.192.221:3306/wwtsco_fidelidade"
+JWT_SECRET = "senha_forte_12345"
+PORT = 3000
+GTW_ID_PESSOA_REGISTROU_COB = -3 #Pessoa padrão gateway
+GTW_STATUS_PEDIDO_CREATE = "A" #Aberto
+GTW_NOME_CLIENTE_DEFAULT = "CLIENTE NÃO CADASTRADO GTW" #Nome padrão para cliente não cadastrado
 
 ```
 
-2. Rode o comando
+2. Build a imagem
 ```bash
-docker compose up --build
+docker build -t imagem-gateway .
+```
+
+3. Rode o sistema
+```bash
+docker run -p 3000:3000 --name container-gateway imagem-gateway
+```
+
+4. Bonus - para aplicacao e remover
+```bash
+docker stop container-gateway
+
+docker rm container-gateway
 ```
