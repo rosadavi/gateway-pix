@@ -53,7 +53,7 @@ export class CriarExtratoDetalhadoService {
             return { status: 200, data: { total_pedidos: totalPedidos, pedidos }};
         } catch (error: any) {
             console.error("Erro ao gerar extrato: ", error);
-            if(error.instanceof(AppError)) throw Error;
+            if(error instanceof AppError) throw Error;
             return { 
                 status: 500, 
                 error: "Erro ao criar extrato: " + error.message 
