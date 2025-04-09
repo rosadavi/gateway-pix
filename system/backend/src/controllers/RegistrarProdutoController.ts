@@ -16,8 +16,9 @@ export class RegistrarProdutoController {
             const produto = await registrarProdutoService.execute({ nomeCategoria, cpf_cnpj, nomeProduto, valor, tipoProduto });
 
             return res.status(produto.status).json(produto);
-        } catch (error: any) {
-            return res.status(500).json({ message: `Erro ao registrar o produto: ${error.message}` });
+        } catch (error) {
+            console.error(`Erro ao registar produto ${error}`);
+            return res.status(500).json({ message: `Erro ao registrar o produto: ${error}` });
         }
     }
 }

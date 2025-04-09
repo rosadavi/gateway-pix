@@ -60,7 +60,7 @@ export class CriarItemProdutoService {
             if(error.instanceof(AppError)) throw Error;
             return { 
                 status: 500, 
-                message: "Erro ao registrar item" + error.message 
+                error: "Erro ao registrar item" + error.message 
             };
         }
     }

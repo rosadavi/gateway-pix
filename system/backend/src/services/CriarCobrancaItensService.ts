@@ -133,7 +133,7 @@ export class CriarCobrancaItensService {
             if(error.instanceof(AppError)) throw Error;
             return { 
                 status: 500, 
-                message: "Erro ao gerar cobrança" + error.message 
+                error: "Erro ao gerar cobrança" + error.message 
             };
         }
     }

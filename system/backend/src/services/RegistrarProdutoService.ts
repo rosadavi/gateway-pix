@@ -1,4 +1,6 @@
 import prismaClient from "../prisma";
+import { AppError } from "../errors/AppError";
+import { throwError } from "../errors/ErrorMap";
 
 interface CriarProdutoProps {
     nomeCategoria: string;
@@ -17,7 +19,7 @@ export class RegistrarProdutoService {
                 }
             });
 
-            if (!categoria) throw new Error("not_found: Categoria nao encontrada");
+            if (!categoria) throwError("not_found:categoria");
 
             const empresa = await prismaClient.empresa.findFirst({
                 where: { 
@@ -25,7 +27,7 @@ export class RegistrarProdutoService {
                 }
             });
 
-            if (!empresa) throw new Error("not_found: Empresa nao encontrada"); 
+            if (!empresa) throwError("not_found:empresa"); 
 
             const produto = await prismaClient.produto.findFirst({
                 where: {
@@ -35,7 +37,7 @@ export class RegistrarProdutoService {
                 }
             });
 
-            if(produto) throw new Error("duplicate: Produto ja registrado");
+            if(produto) throwError("duplicate:produto");
 
             const transaction = await prismaClient.$transaction(async (prisma) => {
             const novoProduto = await prisma.produto.create({
@@ -53,10 +55,11 @@ export class RegistrarProdutoService {
             return {status: 201, data: transaction};
         } catch (error: any) {
             console.error("Erro ao registrar produto:", error);
-            if(error.message.includes("not_found")) return { status: 404, message: error.message}
-            if(error.message.includes("duplicate")) return { status: 409, message: error.message}
-
-            return { status: 500, message: "Erro ao registrar produto", error: (error as any).message };
+            if(error.instanceof(AppError)) throw Error;
+            return { 
+                status: 500, 
+                error: "Erro ao registrar produto" + error.message
+            };
         }
     }
 }

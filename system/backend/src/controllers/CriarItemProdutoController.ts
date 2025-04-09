@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { CriarItemProdutoService } from "../services/CriarItemProdutoService";
 
-class CriarItemProdutoController {
+export class CriarItemProdutoController {
     async handle(req: Request, res: Response) {
         const {
             cnpj_cpf,
@@ -22,5 +22,3 @@ class CriarItemProdutoController {
         }
     }
 }
-
-export { CriarItemProdutoController };

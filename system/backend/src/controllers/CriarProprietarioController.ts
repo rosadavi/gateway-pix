@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { CriarProprietarioService } from "../services/CriarProprietarioService.js";
 
-class CriarProprietarioController {
+export class CriarProprietarioController {
     async handle(req: Request, res: Response) {
         const {
             nome, 
@@ -26,4 +26,3 @@ class CriarProprietarioController {
         }
     }
 }
-export { CriarProprietarioController };

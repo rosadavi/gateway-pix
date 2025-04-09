@@ -15,7 +15,8 @@ export class LoginProprietarioController {
 
             return res.status(token.status).json(token);   
         } catch (error) {
-            return res.status(500).json({ message: "Credenciais Invalidas" })
+            console.error(`Erro ao realizar login ${error}`);
+            return res.status(500).json({ error: "Credenciais Invalidas" })
         }
     }
 }

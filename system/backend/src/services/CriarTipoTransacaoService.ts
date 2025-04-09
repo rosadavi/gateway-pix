@@ -8,7 +8,7 @@ interface TipoTransacaoProps {
     descTipoTransacao: string;
 }
 
-class CriarTipoTransacaoService {
+export class CriarTipoTransacaoService {
     async execute({ siglaTipoTransacao, nomeTipoTransacao, descTipoTransacao }: TipoTransacaoProps) {
         try {
             const transacaoExistente = await prismaClient.tipoTransacao.findUnique({
@@ -40,5 +40,3 @@ class CriarTipoTransacaoService {
         }
     }
 }
-
-export { CriarTipoTransacaoService };

@@ -56,7 +56,7 @@ export class CriarExtratoDetalhadoService {
             if(error.instanceof(AppError)) throw Error;
             return { 
                 status: 500, 
-                message: "Erro ao criar extrato: " + error.message 
+                error: "Erro ao criar extrato: " + error.message 
             };
         }
     }
