@@ -55,7 +55,7 @@ export class RegistrarProdutoService {
             return {status: 201, data: transaction};
         } catch (error: any) {
             console.error("Erro ao registrar produto:", error);
-            if(error instanceof AppError) throw Error;
+            if(error instanceof AppError) throw error;
             return { 
                 status: 500, 
                 error: "Erro ao registrar produto" + error.message

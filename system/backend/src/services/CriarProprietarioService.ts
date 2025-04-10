@@ -57,7 +57,7 @@ export class CriarProprietarioService {
             return { status: 201, data: transaction };
         } catch (error : any) {
             console.error("Erro ao criar Proprietario:", error);
-            if(error instanceof AppError) throw Error;
+            if(error instanceof AppError) throw error;
             return { 
                 status: 500, 
                 error: "Erro ao criar usuário" + error.message

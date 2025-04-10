@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { AppError } from "../errors/AppError";
 import { LoginService } from "../services/LoginService";
 
 export class LoginProprietarioController {
@@ -16,6 +17,7 @@ export class LoginProprietarioController {
             return res.status(token.status).json(token);   
         } catch (error) {
             console.error(`Erro ao realizar login ${error}`);
+            if(error instanceof AppError) return res.status(error.statusCode).json({error: error.message});
             return res.status(500).json({ error: "Credenciais Invalidas" })
         }
     }

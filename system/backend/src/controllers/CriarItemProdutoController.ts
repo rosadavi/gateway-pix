@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { AppError } from "../errors/AppError";
 import { CriarItemProdutoService } from "../services/CriarItemProdutoService";
 
 export class CriarItemProdutoController {
@@ -18,6 +19,7 @@ export class CriarItemProdutoController {
             return res.status(item.status).json(item);
         } catch (error: any) {
             console.error("Erro ao criar um item " + error);
+            if(error instanceof AppError) return res.status(error.statusCode).json({error: error.message});
             return res.status(500).json({ error: "Erro ao criar um item: " + error });
         }
     }

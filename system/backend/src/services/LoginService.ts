@@ -50,7 +50,7 @@ export class LoginService {
             }
         } catch (error: any) {
             console.error("Erro ao realizar login: ", error);
-            if(error instanceof AppError) throw Error;
+            if(error instanceof AppError) throw error;
             return {
                 status: 500,
                 error: "Erro ao realizar login: " + error.message
