@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { AppError } from "../errors/AppError";
 import { CriarProprietarioService } from "../services/CriarProprietarioService.js";
 
 export class CriarProprietarioController {
@@ -22,6 +23,7 @@ export class CriarProprietarioController {
             return res.status(proprietario.status).json(proprietario);
         } catch (error) {
             console.error("Erro ao criar proprietario " + error);
+            if(error instanceof AppError) return res.status(error.statusCode).json({error: error.message});
             return res.status(500).json({ error: "Erro ao criar o proprietario" + error });
         }
     }

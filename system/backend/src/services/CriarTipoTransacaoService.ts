@@ -32,7 +32,7 @@ export class CriarTipoTransacaoService {
             return { status: 201, data: transaction };
         } catch (error: any) {
             console.error("Erro ao criar transação: ", error);
-            if (error.intansceof(AppError)) throw Error;
+            if (error instanceof AppError) throw error;
             return {
                 status: 500,
                 error: "Erro ao criar transação: " + error.message

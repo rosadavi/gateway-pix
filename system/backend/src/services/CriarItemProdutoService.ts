@@ -57,7 +57,7 @@ export class CriarItemProdutoService {
             }
         } catch (error: any) {
             console.error("Erro ao registrar item:", error);
-            if(error.instanceof(AppError)) throw Error;
+            if(error instanceof AppError) throw error;
             return { 
                 status: 500, 
                 error: "Erro ao registrar item" + error.message 

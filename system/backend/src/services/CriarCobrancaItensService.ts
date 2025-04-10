@@ -130,7 +130,7 @@ export class CriarCobrancaItensService {
             return { status: 201, data: transaction };
         } catch (error: any) {
             console.error("Erro ao gerar cobrança: ", error);
-            if(error.instanceof(AppError)) throw Error;
+            if(error instanceof AppError) throw error;
             return { 
                 status: 500, 
                 error: "Erro ao gerar cobrança" + error.message 

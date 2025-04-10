@@ -26,7 +26,7 @@ export class CriarCategoriaService {
             return { status: 201, data: novaCategoria };
         } catch (error: any) {
             console.error("Erro ao criar categoria:", error);
-            if(error.instanceof(AppError)) throw Error;
+            if(error instanceof AppError) throw error;
             return {
                 status: 500,
                 error: "Erro ao criar categoria: " + error.message
