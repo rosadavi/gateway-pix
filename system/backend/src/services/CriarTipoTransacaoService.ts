@@ -1,3 +1,5 @@
+import { AppError } from "../errors/AppError";
+import { throwError } from "../errors/ErrorMap";
 import prismaClient from "../prisma";
 
 interface TipoTransacaoProps {
@@ -6,16 +8,14 @@ interface TipoTransacaoProps {
     descTipoTransacao: string;
 }
 
-class CriarTipoTransacaoService {
+export class CriarTipoTransacaoService {
     async execute({ siglaTipoTransacao, nomeTipoTransacao, descTipoTransacao }: TipoTransacaoProps) {
         try {
             const transacaoExistente = await prismaClient.tipoTransacao.findUnique({
                 where: { siglaTipoTransacao },
             });
 
-            if (transacaoExistente) {
-                throw new Error("duplicate: Tipo de transação já existe");
-            }
+            if (transacaoExistente) throwError("duplicate:tipo_transacao");
 
             const transaction = await prismaClient.$transaction(async (prisma) => {
                 const novaTransacao = await prisma.tipoTransacao.create({
@@ -32,12 +32,11 @@ class CriarTipoTransacaoService {
             return { status: 201, data: transaction };
         } catch (error: any) {
             console.error("Erro ao criar transação: ", error);
-            if (error.message.includes("duplicate")) {
-                throw new Error("duplicate: Tipo de transação já existe");
-            }
-            throw new Error("Erro ao criar transação: " + error.message);
+            if (error instanceof AppError) throw error;
+            return {
+                status: 500,
+                error: "Erro ao criar transação: " + error.message
+            };
         }
     }
 }
-
-export { CriarTipoTransacaoService };

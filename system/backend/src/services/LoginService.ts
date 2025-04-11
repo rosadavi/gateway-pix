@@ -2,6 +2,8 @@ import prismaClient from "../prisma";
 import { generateToken } from '../middlewares/jwt.js';
 import { JwtPayload } from "../configs/token";
 import { compareHashSenha } from "../configs/bcrypt";
+import { AppError } from "../errors/AppError";
+import { throwError } from "../errors/ErrorMap";
 
 interface LoginProps {
     cnpj_cpf: string;
@@ -41,17 +43,18 @@ export class LoginService {
                     
                     return { status: 200, message: {token} };
                 } else {
-                    return { status: 401, message: 'Credenciais Inválidas!' };
+                    throwError("invalid:login");
                 }
             } else {
-                return { status: 401, message: 'Credenciais Inválidas!' };
+                throwError("invalid:login");
             }
         } catch (error: any) {
             console.error("Erro ao realizar login: ", error);
-            if (error.message.includes("invalid credentials")) {
-                throw new Error("invalid credentials: " + error.message);
+            if(error instanceof AppError) throw error;
+            return {
+                status: 500,
+                error: "Erro ao realizar login: " + error.message
             }
-            throw new Error("Erro ao realizar login: " + error.message);
         }
     }
 }

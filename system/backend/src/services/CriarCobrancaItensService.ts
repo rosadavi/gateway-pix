@@ -1,4 +1,6 @@
 import prismaClient from "../prisma";
+import { throwError } from "../errors/ErrorMap";
+import { AppError } from "../errors/AppError";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -28,7 +30,7 @@ export class CriarCobrancaItensService {
                 }
             });
 
-            if(!empresa) throw new Error("not_found: Empresa nao cadastrada");
+            if(!empresa) throwError("not_found:empresa");
 
             const cliente = await prismaClient.pessoa.findUnique({
                 where: {
@@ -60,7 +62,7 @@ export class CriarCobrancaItensService {
                         }
                     });
     
-                    if(!produto_item) throw new Error("not_found: Item de produto nao cadastrado");
+                    if(!produto_item) throwError("not_found:item_produto");
     
                     const produto = await prismaClient.produto.findUnique({
                         where: {
@@ -68,7 +70,7 @@ export class CriarCobrancaItensService {
                         }
                     });
     
-                    if(!produto) throw new Error("not_found: Produto nao cadastrado");
+                    if(!produto) throwError("not_found:produto");
     
                     let valorItemTotal = Number(produto_item.valor_item) * item.quantidade;
                     
@@ -96,7 +98,7 @@ export class CriarCobrancaItensService {
                         }
                     });
 
-                    if(!produto_item) throw new Error("not_found: Item do produto nao cadastrado");
+                    if(!produto_item) throwError("not_found:item_produto");
 
                     await prisma.item_pedido.create({
                         data: {
@@ -128,8 +130,11 @@ export class CriarCobrancaItensService {
             return { status: 201, data: transaction };
         } catch (error: any) {
             console.error("Erro ao gerar cobrança: ", error);
-            if(error.message.includes("not_found")) return { status: 404, message: error.message }
-            return { status: 500, message: "Erro ao gerar cobrança", error: (error as any).message };
+            if(error instanceof AppError) throw error;
+            return { 
+                status: 500, 
+                error: "Erro ao gerar cobrança" + error.message 
+            };
         }
     }
 }
