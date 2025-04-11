@@ -4,12 +4,12 @@ import { CriarExtratoDetalhadoService } from "../services/CriarExtratoDetalhadoS
 
 export class CriarExtratoDetalhadoController {
     async handle(req: Request, res: Response) {
-        const { telefone_empresa, total } = req.body;
+        const { telefone_empresa, pedidoEspecifico } = req.body;
 
         const criarExtratoDetalhadoService = new CriarExtratoDetalhadoService();
 
         try {
-            const extrato = await criarExtratoDetalhadoService.execute({ telefone_empresa, total });
+            const extrato = await criarExtratoDetalhadoService.execute({ telefone_empresa, pedidoEspecifico });
             return res.status(extrato.status).json(extrato);
         } catch (error) {
             console.error("Erro ao criar um extrado detalhado " + error);
