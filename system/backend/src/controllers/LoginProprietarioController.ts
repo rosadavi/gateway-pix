@@ -18,7 +18,6 @@ export class LoginProprietarioController {
         } catch (error) {
             console.error(`Erro ao realizar login ${error}`);
             if(error instanceof AppError) return res.status(error.statusCode).json({error: error.message});
-            return res.status(500).json({ error: "Credenciais Invalidas" })
         }
     }
 }

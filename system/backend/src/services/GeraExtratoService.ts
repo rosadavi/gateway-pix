@@ -17,9 +17,7 @@ class GeraExtratoService {
                     dataRegistro: true,
                     valorTotal: true,
                     status: true,
-                    pessoa_idPessoa_cliente: true,
-                    pagamento: true
-                }
+                    pessoa_idPessoa_cliente: true,                }
             });
 
             if (extrato.length === 0) {

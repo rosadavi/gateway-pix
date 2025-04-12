@@ -1,4 +1,4 @@
-import { AppError } from "./AppError.ts";
+import { AppError } from "./AppError";
 
 const ErrorMap = {
     "not_found:item_produto": () => new AppError("Item do produto não cadastrado", 404),

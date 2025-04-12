@@ -37,12 +37,18 @@ export class CriarExtratoDetalhadoService {
                     item_pedido: {
                         include: {
                             produto_item: {
-                                include: {
-                                    produto: true
+                                select: {
+                                    produto_idProduto: true,
+                                        
+                                                
+                                            }
+                                        }
+                                    }
                                 }
+                                
                             }
-                        }
-                    }
+                        
+                    
                 },
                 orderBy: {
                     dataRegistro: "desc"

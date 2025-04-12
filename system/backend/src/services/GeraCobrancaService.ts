@@ -5,14 +5,12 @@ interface GeraCobrancaProps {
     telefone_cliente: string;
     metodo_pagamento: string;
     valor_cobranca: number;
-    status_cobranca: string;
     descricao_cobranca: string;
-    num_parcela: number;
     num_parcelas: number;
 }
 
 class GeraCobrancaService {
-    async execute({ empresa_id_empresa, telefone_cliente, metodo_pagamento, valor_cobranca, status_cobranca, descricao_cobranca, num_parcela, num_parcelas }: GeraCobrancaProps) {
+    async execute({ empresa_id_empresa, telefone_cliente, metodo_pagamento, valor_cobranca, descricao_cobranca, num_parcela, num_parcelas }: GeraCobrancaProps) {
         try {
             const cliente = await prismaClient.pessoa.findFirst({
                 where: {
@@ -48,7 +46,8 @@ class GeraCobrancaService {
                         status: String(process.env.GTW_STATUS_PEDIDO_CREATE),
                         valorTotal: valor_cobranca,
                         totalParcelas: num_parcelas,
-                        pessoa_idPessoa_registrou: Number(process.env.GTW_ID_PESSOA_REGISTROU_COB)
+                        pessoa_idPessoa_registrou: Number(process.env.GTW_ID_PESSOA_REGISTROU_COB),
+                        cliente_nome
                     }
                 });
 
@@ -61,7 +60,7 @@ class GeraCobrancaService {
                         pag_method: metodo_pagamento,
                         pag_valor: valor_cobranca,
                         pag_descricao: descricao_cobranca,
-                        pag_status: status_cobranca,
+                        pag_status: "A",
                         parcela_numero: num_parcela,
                         cliente_telefone: telefone_cliente,
                         cliente_nome

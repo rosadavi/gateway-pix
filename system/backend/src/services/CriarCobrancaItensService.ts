@@ -39,6 +39,7 @@ export class CriarCobrancaItensService {
             });
 
             let cliente_id_cliente;
+            let cliente_nome;
 
             if (!cliente) {
                 const novoCliente = await prismaClient.pessoa.create({
@@ -49,8 +50,10 @@ export class CriarCobrancaItensService {
                     }
                 });
                 cliente_id_cliente = novoCliente.idPessoa;
+               cliente_nome = novoCliente.nomeCompleto;
             } else {
                 cliente_id_cliente = cliente.idPessoa;
+                cliente_nome = cliente.nomeCompleto;
             }
 
             const total = async () => {
@@ -87,7 +90,8 @@ export class CriarCobrancaItensService {
                         status:  String(process.env.GTW_STATUS_PEDIDO_CREATE),
                         valorTotal: await total(),
                         totalParcelas: num_parcelas,
-                        pessoa_idPessoa_registrou: Number(process.env.GTW_ID_PESSOA_REGISTROU_COB)
+                        pessoa_idPessoa_registrou: Number(process.env.GTW_ID_PESSOA_REGISTROU_COB),
+                        cliente_nome
                     }
                 });
 
@@ -120,7 +124,7 @@ export class CriarCobrancaItensService {
                         pag_status: "P",
                         parcela_numero: num_parcela,
                         cliente_telefone: telefone_cliente,
-                        cliente_nome: nome_cliente
+                        cliente_nome
                     }
                 });
 
