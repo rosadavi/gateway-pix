@@ -17,13 +17,12 @@ interface CobrancaItensGerarProps {
     nome_cliente: string;
     metodo_pagamento: string;
     descricao_cobranca: string;
-    num_parcela: number;
     num_parcelas: number;
     itens_pedido: ItemPedido[];
 }
 
 export class CobrancaItensGerarService {
-    async execute({ telefone_empresa, telefone_cliente, nome_cliente, metodo_pagamento, descricao_cobranca, num_parcela, num_parcelas, itens_pedido }: CobrancaItensGerarProps) {
+    async execute({ telefone_empresa, telefone_cliente, nome_cliente, metodo_pagamento, descricao_cobranca, num_parcelas, itens_pedido }: CobrancaItensGerarProps) {
         try {
             const empresa = await prismaClient.empresa.findUnique({
                 where: {
@@ -122,8 +121,7 @@ export class CobrancaItensGerarService {
                         pag_method: metodo_pagamento,
                         pag_valor: await total(),
                         pag_descricao: descricao_cobranca,
-                        pag_status: "P",
-                        parcela_numero: num_parcela,
+                        parcela_numero: 1,
                         cliente_telefone: telefone_cliente,
                         cliente_nome
                     }

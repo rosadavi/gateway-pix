@@ -10,7 +10,6 @@ export class CobrancaItensGerarController {
             nome_cliente,
             metodo_pagamento, 
             descricao_cobranca, 
-            num_parcela, 
             num_parcelas, 
             itens_pedido
         } = req.body;
@@ -18,7 +17,7 @@ export class CobrancaItensGerarController {
         const cobrancaItensGerarService = new CobrancaItensGerarService();
 
         try {
-            const cobranca = await cobrancaItensGerarService.execute({ telefone_empresa, telefone_cliente, nome_cliente, metodo_pagamento, descricao_cobranca, num_parcela, num_parcelas, itens_pedido });
+            const cobranca = await cobrancaItensGerarService.execute({ telefone_empresa, telefone_cliente, nome_cliente, metodo_pagamento, descricao_cobranca, num_parcelas, itens_pedido });
             return res.json(cobranca);
         } catch(error) {
             console.error("Erro ao criar uma cobranca com itens " + error);
