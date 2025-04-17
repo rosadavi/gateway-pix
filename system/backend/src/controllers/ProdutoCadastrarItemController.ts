@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { AppError } from "../errors/AppError";
 import { CriarItemProdutoService } from "../services/CriarItemProdutoService";
 
-export class CriarItemProdutoController {
+export class ProdutoCadastrarItemController {
     async handle(req: Request, res: Response) {
         const {
             cnpj_cpf,

@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { AppError } from "../errors/AppError";
 import { LoginService } from "../services/LoginService";
 
-export class LoginProprietarioController {
+export class EmpresaLoginController {
     async handle(req: Request, res: Response) {
         const { 
             cnpj_cpf, 

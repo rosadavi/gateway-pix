@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { AppError } from "../errors/AppError";
 import { CriarExtratoDetalhadoService } from "../services/CriarExtratoDetalhadoService";
 
-export class CriarExtratoDetalhadoController {
+export class ExtratoGerarDetalhadoController {
     async handle(req: Request, res: Response) {
         const { telefone_empresa, total } = req.body;
 

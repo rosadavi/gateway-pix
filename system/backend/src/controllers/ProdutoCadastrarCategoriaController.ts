@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { AppError } from "../errors/AppError";
 import { CriarCategoriaService } from "../services/CriarCategoriaService.js";
 
-export class CriarCategoriaController {
+export class ProdutoCadastrarCategoriaController {
     async handle(req: Request, res: Response) {
         const { 
             nomeCategoria 

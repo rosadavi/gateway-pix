@@ -1,17 +1,18 @@
 import { Router, Request, Response } from 'express';
 
-import { VerificaCPFeCNPJController } from './controllers/VerificaCPFeCNPJController';
-import { CriarProprietarioController } from './controllers/CriarProprietarioController';
-import { GeraCobrancaController } from './controllers/GeraCobrancaController';
-import {LoginProprietarioController} from './controllers/LoginProprietarioController';
-import { GeraExtratoController } from './controllers/GeraExtratoController';
-import { CriarExtratoDetalhadoController } from './controllers/CriarExtratoDetalhadoController';
-import { RegistrarProdutoController } from './controllers/RegistrarProdutoController';
-import { CriarTipoTransacaoController } from './controllers/CriarTipoTransacaoController'
-import { CriarItemProdutoController } from './controllers/CriarItemProdutoController'
-import { CriarCategoriaController } from './controllers/CriarCategoriaController';
+import { EmpresaCadastrarController } from './controllers/EmpresaCadastrarController';
+import { EmpresaLoginController } from './controllers/EmpresaLoginController';
+import { CobrancaGerarController } from './controllers/CobrancaGerarController';
+import { CobrancaGerarItensController } from './controllers/CobrancaGerarItensController';
+import { ExtratoGerarController } from './controllers/ExtratoGerarController';
+import { ExtratoGerarDetalhadoController } from './controllers/ExtratoGerarDetalhadoController';
+import { ProdutoCadastrarController } from './controllers/ProdutoCadastrarController';
+import { ProdutoCadastrarItemController } from './controllers/ProdutoCadastrarItemController';
+import { ProdutoCadastrarCategoriaController } from './controllers/ProdutoCadastrarCategoriaController';
+import { TransacaoCadastrarController } from './controllers/TransacaoCadastrarController';
+
 import { authMiddleware } from './middlewares/authJWT';
-import { CriarCobrancaItensController } from './controllers/CriarCobrancaItensController';
+import { VerificaCPFeCNPJController } from './controllers/VerificaCPFeCNPJController';
 
 const router = Router();
 
@@ -24,19 +25,19 @@ router.post('/verifica', authMiddleware, (req: Request, res: Response) => {
 });
 
 router.post('/empresa/cadastrar', (req: Request, res: Response) => {
-  new CriarProprietarioController().handle(req, res);
+  new EmpresaCadastrarController().handle(req, res);
 });
 
-router.post('/empresa/cadastrar', (req: Request, res: Response) => {
-  new LoginProprietarioController().handle(req, res);
+router.post('/empresa/login', (req: Request, res: Response) => {
+  new EmpresaLoginController().handle(req, res);
 });
 
 router.post('/cobranca/gerar', authMiddleware,(req: Request, res: Response) => {
-  new GeraCobrancaController().handle(req, res);
+  new CobrancaGerarController().handle(req, res);
 });
 
 router.post('/cobranca/gerar/itens', authMiddleware, (req: Request, res: Response) => {
-  new CriarCobrancaItensController().handle(req, res);
+  new CobrancaGerarItensController().handle(req, res);
 });
 
 router.get('/validar', authMiddleware, (req: Request, res: Response) => {
@@ -44,27 +45,27 @@ router.get('/validar', authMiddleware, (req: Request, res: Response) => {
 });
 
 router.post('/extrato/gerar', authMiddleware, (req: Request, res: Response) => {
-  new GeraExtratoController().handle(req, res);
+  new ExtratoGerarController().handle(req, res);
 });
 
 router.post('/extrato/gerar/detalhado', authMiddleware, (req: Request, res: Response) => {
-  new CriarExtratoDetalhadoController().handle(req, res);
+  new ExtratoGerarDetalhadoController().handle(req, res);
 });
 
 router.post('/produto/cadastrar', authMiddleware, (req: Request, res: Response) => {
-  new RegistrarProdutoController().handle(req, res);
+  new ProdutoCadastrarController().handle(req, res);
 });
 
 router.post('/produto/cadastrar/item', authMiddleware, (req: Request, res: Response) => {
-  new CriarItemProdutoController().handle(req, res);
+  new ProdutoCadastrarItemController().handle(req, res);
 });
 
 router.post('/produto/cadastrar/categoria', authMiddleware, (req: Request, res: Response) => {
-  new CriarCategoriaController().handle(req, res);
+  new ProdutoCadastrarCategoriaController().handle(req, res);
 });
 
 router.post('/transacao/cadastrar', authMiddleware, (req: Request, res: Response) => {
-  new CriarTipoTransacaoController().handle(req, res);
+  new TransacaoCadastrarController().handle(req, res);
 });
 
 export default router;

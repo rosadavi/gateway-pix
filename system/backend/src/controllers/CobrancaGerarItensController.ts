@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { AppError } from "../errors/AppError";
 import { CriarCobrancaItensService } from "../services/CriarCobrancaItensService";
 
-export class CriarCobrancaItensController {
+export class CobrancaGerarItensController {
     async handle(req: Request, res: Response) {
         const {
             telefone_empresa,

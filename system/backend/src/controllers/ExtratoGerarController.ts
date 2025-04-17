@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { GeraExtratoService } from "../services/GeraExtratoService.js";
 
-class GeraExtratoController {
+export class ExtratoGerarController {
     async handle(request: Request, response: Response) {
         const {idEmpresa } = request.body;
 
@@ -24,4 +24,3 @@ class GeraExtratoController {
         }
     }
 }
-export {GeraExtratoController};

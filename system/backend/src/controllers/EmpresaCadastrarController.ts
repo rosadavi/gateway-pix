@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { AppError } from "../errors/AppError";
 import { CriarProprietarioService } from "../services/CriarProprietarioService.js";
 
-export class CriarProprietarioController {
+export class EmpresaCadastrarController {
     async handle(req: Request, res: Response) {
         const {
             nome, 

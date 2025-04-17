@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { AppError } from "../errors/AppError";
 import { CriarTipoTransacaoService } from "../services/CriarTipoTransacaoService.js";
 
-export class  CriarTipoTransacaoController {
+export class  TransacaoCadastrarController {
     async handle(req: Request, res: Response) {
         const { siglaTipoTransacao, nomeTipoTransacao, descTipoTransacao } = req.body;
 
