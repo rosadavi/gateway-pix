@@ -3,12 +3,12 @@ import { Router, Request, Response } from 'express';
 import { EmpresaCadastrarController } from './controllers/EmpresaCadastrarController';
 import { EmpresaLoginController } from './controllers/EmpresaLoginController';
 import { CobrancaGerarController } from './controllers/CobrancaGerarController';
-import { CobrancaGerarItensController } from './controllers/CobrancaGerarItensController';
+import { CobrancaItensGerarController } from './controllers/CobrancaItensGerarController';
 import { ExtratoGerarController } from './controllers/ExtratoGerarController';
-import { ExtratoGerarDetalhadoController } from './controllers/ExtratoGerarDetalhadoController';
+import { ExtratoDetalhadoGerarController } from './controllers/ExtratoDetalhadoGerarController';
 import { ProdutoCadastrarController } from './controllers/ProdutoCadastrarController';
-import { ProdutoCadastrarItemController } from './controllers/ProdutoCadastrarItemController';
-import { ProdutoCadastrarCategoriaController } from './controllers/ProdutoCadastrarCategoriaController';
+import { ProdutoItemCadastrarController } from './controllers/ProdutoItemCadastrarController';
+import { ProdutoCategoriaCadastrarController } from './controllers/ProdutoCategoriaCadastrarController';
 import { TransacaoCadastrarController } from './controllers/TransacaoCadastrarController';
 
 import { authMiddleware } from './middlewares/authJWT';
@@ -28,28 +28,28 @@ router.post('/cobranca/gerar', authMiddleware,(req: Request, res: Response) => {
   new CobrancaGerarController().handle(req, res);
 });
 
-router.post('/cobranca/gerar/itens', authMiddleware, (req: Request, res: Response) => {
-  new CobrancaGerarItensController().handle(req, res);
+router.post('/cobranca/itens/gerar', authMiddleware, (req: Request, res: Response) => {
+  new CobrancaItensGerarController().handle(req, res);
 });
 
 router.post('/extrato/gerar', authMiddleware, (req: Request, res: Response) => {
   new ExtratoGerarController().handle(req, res);
 });
 
-router.post('/extrato/gerar/detalhado', authMiddleware, (req: Request, res: Response) => {
-  new ExtratoGerarDetalhadoController().handle(req, res);
+router.post('/extrato/detalhado/gerar', authMiddleware, (req: Request, res: Response) => {
+  new ExtratoDetalhadoGerarController().handle(req, res);
 });
 
 router.post('/produto/cadastrar', authMiddleware, (req: Request, res: Response) => {
   new ProdutoCadastrarController().handle(req, res);
 });
 
-router.post('/produto/cadastrar/item', authMiddleware, (req: Request, res: Response) => {
-  new ProdutoCadastrarItemController().handle(req, res);
+router.post('/produto/item/cadastrar', authMiddleware, (req: Request, res: Response) => {
+  new ProdutoItemCadastrarController().handle(req, res);
 });
 
-router.post('/produto/cadastrar/categoria', authMiddleware, (req: Request, res: Response) => {
-  new ProdutoCadastrarCategoriaController().handle(req, res);
+router.post('/produto/categoria/cadastrar', authMiddleware, (req: Request, res: Response) => {
+  new ProdutoCategoriaCadastrarController().handle(req, res);
 });
 
 router.post('/transacao/cadastrar', authMiddleware, (req: Request, res: Response) => {

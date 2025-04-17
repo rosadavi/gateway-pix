@@ -11,7 +11,7 @@ interface ItemPedido {
     quantidade: number;
 }
 
-interface CobrancaGerarItensProps {
+interface CobrancaItensGerarProps {
     telefone_empresa: string;
     telefone_cliente: string;
     nome_cliente: string;
@@ -22,8 +22,8 @@ interface CobrancaGerarItensProps {
     itens_pedido: ItemPedido[];
 }
 
-export class CobrancaGerarItensService {
-    async execute({ telefone_empresa, telefone_cliente, nome_cliente, metodo_pagamento, descricao_cobranca, num_parcela, num_parcelas, itens_pedido }: CobrancaGerarItensProps) {
+export class CobrancaItensGerarService {
+    async execute({ telefone_empresa, telefone_cliente, nome_cliente, metodo_pagamento, descricao_cobranca, num_parcela, num_parcelas, itens_pedido }: CobrancaItensGerarProps) {
         try {
             const empresa = await prismaClient.empresa.findUnique({
                 where: {

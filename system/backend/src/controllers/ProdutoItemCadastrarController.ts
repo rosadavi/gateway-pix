@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import { AppError } from "../errors/AppError";
-import { ProdutoCadastrarItemService } from "../services/ProdutoCadastrarItemService.ts";
+import { ProdutoItemCadastrarService } from "../services/ProdutoItemCadastrarService";
 
-export class ProdutoCadastrarItemController {
+export class ProdutoItemCadastrarController {
     async handle(req: Request, res: Response) {
         const {
             cnpj_cpf,
@@ -12,10 +12,10 @@ export class ProdutoCadastrarItemController {
             nomeProduto,
         } = req.body;
 
-        const produtoCadastrarItemController = new ProdutoCadastrarItemService();
+        const produtoItemCadastrarService = new ProdutoItemCadastrarService();
 
         try {
-            const item = await produtoCadastrarItemController.execute({ cnpj_cpf, descricao_item, valor_item, item_ativo, nomeProduto });
+            const item = await produtoItemCadastrarService.execute({ cnpj_cpf, descricao_item, valor_item, item_ativo, nomeProduto });
             return res.status(item.status).json(item);
         } catch (error: any) {
             console.error("Erro ao criar um item " + error);

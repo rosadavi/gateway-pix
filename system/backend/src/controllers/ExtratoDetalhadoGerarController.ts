@@ -1,16 +1,16 @@
 import { Request, Response } from "express";
 
 import { AppError } from "../errors/AppError";
-import { ExtratoGerarDetalhadoService } from "../services/ExtratoGerarDetalhadoService";
+import { ExtratoDetalhadoGerarService } from "../services/ExtratoDetalhadoGerarService";
 
-export class ExtratoGerarDetalhadoController {
+export class ExtratoDetalhadoGerarController {
     async handle(req: Request, res: Response) {
         const { telefone_empresa, total } = req.body;
 
-        const extratoGerarDetalhadoService = new ExtratoGerarDetalhadoService();
+        const extratoDetalhadoGerarService = new ExtratoDetalhadoGerarService();
 
         try {
-            const extrato = await extratoGerarDetalhadoService.execute({ telefone_empresa, total });
+            const extrato = await extratoDetalhadoGerarService.execute({ telefone_empresa, total });
             return res.status(extrato.status).json(extrato);
         } catch (error) {
             console.error("Erro ao criar um extrado detalhado " + error);
