@@ -1,14 +1,33 @@
 import { Request, Response } from "express";
-import { GeraCobrancaService } from "../services/GeraCobrancaService.js";
+
+import { CobrancaGerarService } from "../services/CobrancaGerarService";
 
 export class CobrancaGerarController {
     async handle(request: Request, response: Response) {
-        const { empresa_id_empresa, telefone_cliente, metodo_pagamento, valor_cobranca, status_cobranca, descricao_cobranca, num_parcela, num_parcelas } = request.body;
+        const { 
+            empresa_id_empresa, 
+            telefone_cliente, 
+            metodo_pagamento, 
+            valor_cobranca, 
+            status_cobranca, 
+            descricao_cobranca, 
+            num_parcela, 
+            num_parcelas 
+        } = request.body;
 
-        const geraCobrancaService = new GeraCobrancaService();
+        const cobrancaGerarService = new CobrancaGerarService();
 
         try {
-            const cobranca = await geraCobrancaService.execute({ empresa_id_empresa, telefone_cliente, metodo_pagamento, valor_cobranca, status_cobranca, descricao_cobranca, num_parcela, num_parcelas });
+            const cobranca = await cobrancaGerarService.execute({ 
+                empresa_id_empresa, 
+                telefone_cliente, 
+                metodo_pagamento, 
+                valor_cobranca, 
+                status_cobranca, 
+                descricao_cobranca, 
+                num_parcela, 
+                num_parcelas 
+            });
             return response.json(cobranca);
         } catch (error: any) {
             if (error.message.includes("validation")) {

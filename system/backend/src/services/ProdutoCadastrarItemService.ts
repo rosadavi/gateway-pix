@@ -2,7 +2,7 @@ import { AppError } from "../errors/AppError";
 import { throwError } from "../errors/ErrorMap";
 import prismaClient from "../prisma";
 
-interface CriarItemProdutoProps {
+interface ProdutoCadastrarItemProps {
     cnpj_cpf: string,
     descricao_item: string,
     valor_item: number,
@@ -10,8 +10,8 @@ interface CriarItemProdutoProps {
     nomeProduto: string
 }
 
-export class CriarItemProdutoService {
-    async execute({ cnpj_cpf, descricao_item, valor_item, item_ativo, nomeProduto }: CriarItemProdutoProps) {
+export class ProdutoCadastrarItemService {
+    async execute({ cnpj_cpf, descricao_item, valor_item, item_ativo, nomeProduto }: ProdutoCadastrarItemProps) {
         try {
             const empresa = await prismaClient.empresa.findFirst({
                 where: {

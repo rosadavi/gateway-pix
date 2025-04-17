@@ -1,6 +1,6 @@
 import prismaClient from "../prisma";
 
-interface GeraCobrancaProps {
+interface CobrancaGerarProps {
     empresa_id_empresa: number;
     telefone_cliente: string;
     metodo_pagamento: string;
@@ -9,8 +9,8 @@ interface GeraCobrancaProps {
     num_parcelas: number;
 }
 
-class GeraCobrancaService {
-    async execute({ empresa_id_empresa, telefone_cliente, metodo_pagamento, valor_cobranca, descricao_cobranca, num_parcela, num_parcelas }: GeraCobrancaProps) {
+export class CobrancaGerarService {
+    async execute({ empresa_id_empresa, telefone_cliente, metodo_pagamento, valor_cobranca, descricao_cobranca, num_parcela, num_parcelas }: CobrancaGerarProps) {
         try {
             const cliente = await prismaClient.pessoa.findFirst({
                 where: {
@@ -82,5 +82,3 @@ class GeraCobrancaService {
         }
     }
 }
-
-export { GeraCobrancaService };

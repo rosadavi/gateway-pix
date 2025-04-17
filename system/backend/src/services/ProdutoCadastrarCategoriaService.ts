@@ -2,12 +2,12 @@ import prismaClient from "../prisma";
 import { throwError } from "../errors/ErrorMap";
 import { AppError } from "../errors/AppError";
 
-interface CriarCategoriaProps {
+interface ProdutoCadastrarCategoriaProps {
     nomeCategoria: string;
 }
 
-export class CriarCategoriaService {
-    async execute({ nomeCategoria }: CriarCategoriaProps) {
+export class ProdutoCadastrarCategoriaService {
+    async execute({ nomeCategoria }: ProdutoCadastrarCategoriaProps) {
         try {
             const categoriaExistente = await prismaClient.categoria.findUnique({
                 where: {

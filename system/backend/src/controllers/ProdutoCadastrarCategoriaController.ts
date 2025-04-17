@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { AppError } from "../errors/AppError";
-import { CriarCategoriaService } from "../services/CriarCategoriaService.js";
+import { ProdutoCadastrarCategoriaService } from "../services/ProdutoCadastrarCategoriaService";
 
 export class ProdutoCadastrarCategoriaController {
     async handle(req: Request, res: Response) {
@@ -8,10 +8,10 @@ export class ProdutoCadastrarCategoriaController {
             nomeCategoria 
         } = req.body;
 
-        const criarCategoriaService = new CriarCategoriaService();
+        const produtoCadastrarCategoriaService = new ProdutoCadastrarCategoriaService();
 
         try {
-            const categoria = await criarCategoriaService.execute({ nomeCategoria });
+            const categoria = await produtoCadastrarCategoriaService.execute({ nomeCategoria });
             return res.status(categoria.status).json(categoria);
         } catch (error) {
             console.error("Erro desconhecido ao criar a categoria:", error);

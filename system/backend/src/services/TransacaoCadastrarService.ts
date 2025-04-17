@@ -2,14 +2,14 @@ import { AppError } from "../errors/AppError";
 import { throwError } from "../errors/ErrorMap";
 import prismaClient from "../prisma";
 
-interface TipoTransacaoProps {
+interface TransacaoCadastrarProps {
     siglaTipoTransacao: string;
     nomeTipoTransacao: string;
     descTipoTransacao: string;
 }
 
-export class CriarTipoTransacaoService {
-    async execute({ siglaTipoTransacao, nomeTipoTransacao, descTipoTransacao }: TipoTransacaoProps) {
+export class TransacaoCadastrarService {
+    async execute({ siglaTipoTransacao, nomeTipoTransacao, descTipoTransacao }: TransacaoCadastrarProps) {
         try {
             const transacaoExistente = await prismaClient.tipoTransacao.findUnique({
                 where: { siglaTipoTransacao },

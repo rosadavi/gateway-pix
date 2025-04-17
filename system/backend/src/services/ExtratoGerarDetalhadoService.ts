@@ -2,13 +2,13 @@ import { AppError } from "../errors/AppError";
 import { throwError } from "../errors/ErrorMap";
 import prismaClient from "../prisma";
 
-interface CriarExtratoDetalhadoProps {
+interface ExtratoGerarDetalhadoProps {
     telefone_empresa: string;
     total: number;
 }
 
-export class CriarExtratoDetalhadoService {
-    async execute({ telefone_empresa, total }: CriarExtratoDetalhadoProps) {
+export class ExtratoGerarDetalhadoService {
+    async execute({ telefone_empresa, total }: ExtratoGerarDetalhadoProps) {
         try {
             const empresa = await prismaClient.empresa.findUnique({
                 where: {
@@ -38,18 +38,12 @@ export class CriarExtratoDetalhadoService {
                         include: {
                             produto_item: {
                                 select: {
-                                    produto_idProduto: true,
-                                        
-                                                
+                                    produto_idProduto: true
                                             }
                                         }
                                     }
                                 }
-                                
-                            }
-                        
-                    
-                },
+                    },
                 orderBy: {
                     dataRegistro: "desc"
                 },

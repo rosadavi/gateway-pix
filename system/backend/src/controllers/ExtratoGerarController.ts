@@ -1,14 +1,14 @@
 import { Request, Response } from "express";
-import { GeraExtratoService } from "../services/GeraExtratoService.js";
+import { ExtratoGerarService } from "../services/ExtratoGerarService";
 
 export class ExtratoGerarController {
     async handle(request: Request, response: Response) {
         const {idEmpresa } = request.body;
 
-        const geraExtratoService = new GeraExtratoService();
+        const extratoGerarService = new ExtratoGerarService();
 
         try {
-            const extrato = await geraExtratoService.execute({ idEmpresa });
+            const extrato = await extratoGerarService.execute({ idEmpresa });
             return response.json(extrato);
         } catch (error: any) {
             if (error.message.includes("validation")) {

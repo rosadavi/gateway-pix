@@ -1,15 +1,15 @@
 import { Request, Response } from "express";
 import { AppError } from "../errors/AppError";
-import { CriarTipoTransacaoService } from "../services/CriarTipoTransacaoService.js";
+import { TransacaoCadastrarService } from "../services/TransacaoCadastrarService";
 
 export class  TransacaoCadastrarController {
     async handle(req: Request, res: Response) {
         const { siglaTipoTransacao, nomeTipoTransacao, descTipoTransacao } = req.body;
 
-        const criarTipoTransacaoService = new CriarTipoTransacaoService();
+        const transacaoCadastrarService = new TransacaoCadastrarService();
 
         try {
-            const tipoTransacao = await criarTipoTransacaoService.execute({ siglaTipoTransacao, nomeTipoTransacao, descTipoTransacao });
+            const tipoTransacao = await transacaoCadastrarService.execute({ siglaTipoTransacao, nomeTipoTransacao, descTipoTransacao });
             return res.status(tipoTransacao.status).json(tipoTransacao);
         } catch (error) {
             console.error("Erro ao criar tipo de transação " + error);

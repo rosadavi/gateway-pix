@@ -3,7 +3,7 @@ import { AppError } from "../errors/AppError";
 import { throwError } from "../errors/ErrorMap";
 import prismaClient from "../prisma";
 
-interface CriarProprietarioProps {
+interface EmpresaCadastrarProps {
     nome: string;
     telefone: string;
     email: string;
@@ -15,8 +15,8 @@ interface CriarProprietarioProps {
     cpf_cnpj: string;
 }
 
-export class CriarProprietarioService {
-    async execute({ nome, telefone, email, estado, cidade, tipo_pix, chave_pix, senha, cpf_cnpj }: CriarProprietarioProps) {
+export class EmpresaCadastrarService {
+    async execute({ nome, telefone, email, estado, cidade, tipo_pix, chave_pix, senha, cpf_cnpj }: EmpresaCadastrarProps) {
         try {
             const empresa = await prismaClient.empresa.findUnique({
                 where: { telefoneEmpresa: telefone },

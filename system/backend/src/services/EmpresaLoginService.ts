@@ -5,7 +5,7 @@ import { compareHashSenha } from "../configs/bcrypt";
 import { AppError } from "../errors/AppError";
 import { throwError } from "../errors/ErrorMap";
 
-interface LoginProps {
+interface EmpresaLoginProps {
     cnpj_cpf: string;
     senha: string;
 }
@@ -18,8 +18,8 @@ function createToken(dados: JwtPayload) {
     return token;
 }
 
-export class LoginService {
-    async execute({ cnpj_cpf, senha }: LoginProps) {
+export class EmpresaLoginService {
+    async execute({ cnpj_cpf, senha }: EmpresaLoginProps) {
         try {
             const proprietarioExistente = await prismaClient.empresa.findFirst({
                 where: {

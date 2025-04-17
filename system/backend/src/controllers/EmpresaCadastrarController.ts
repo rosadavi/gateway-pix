@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { AppError } from "../errors/AppError";
-import { CriarProprietarioService } from "../services/CriarProprietarioService.js";
+import { EmpresaCadastrarService } from "../services/EmpresaCadastrarService";
 
 export class EmpresaCadastrarController {
     async handle(req: Request, res: Response) {
@@ -16,10 +16,10 @@ export class EmpresaCadastrarController {
             cpf_cnpj
         } = req.body;
 
-        const criarProprietarioService = new CriarProprietarioService();
+        const empresaCadastrarService = new EmpresaCadastrarService();
 
         try {
-            const proprietario = await criarProprietarioService.execute({ nome, telefone, email, estado, cidade, tipo_pix, chave_pix, senha, cpf_cnpj });
+            const proprietario = await empresaCadastrarService.execute({ nome, telefone, email, estado, cidade, tipo_pix, chave_pix, senha, cpf_cnpj });
             return res.status(proprietario.status).json(proprietario);
         } catch (error) {
             console.error("Erro ao criar proprietario " + error);

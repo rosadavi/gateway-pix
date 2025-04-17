@@ -1,11 +1,11 @@
 import prismaClient from "../prisma";
 
-interface GeraExtratoProps {
+interface ExtratoGerarProps {
     idEmpresa: number;
 }
 
-class GeraExtratoService {
-    async execute({ idEmpresa }: GeraExtratoProps) {
+export class ExtratoGerarService {
+    async execute({ idEmpresa }: ExtratoGerarProps) {
         try {
             console.log(idEmpresa);
             const extrato = await prismaClient.pedido.findMany({
@@ -34,5 +34,3 @@ class GeraExtratoService {
         }
     }
 }
-
-export { GeraExtratoProps, GeraExtratoService }

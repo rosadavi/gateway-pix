@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
+
 import { AppError } from "../errors/AppError";
-import { LoginService } from "../services/LoginService";
+import { EmpresaLoginService } from "../services/EmpresaLoginService";
 
 export class EmpresaLoginController {
     async handle(req: Request, res: Response) {
@@ -9,10 +10,10 @@ export class EmpresaLoginController {
             senha 
         } = req.body;
 
-        const loginService = new LoginService();
+        const empresaLoginService = new EmpresaLoginService();
 
         try {
-            const token = await loginService.execute({ cnpj_cpf, senha });
+            const token = await empresaLoginService.execute({ cnpj_cpf, senha });
 
             return res.status(token.status).json(token);   
         } catch (error) {

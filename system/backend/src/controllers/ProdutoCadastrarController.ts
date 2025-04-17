@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { AppError } from "../errors/AppError";
-import { RegistrarProdutoService } from "../services/RegistrarProdutoService";
+import { ProdutoCadastrarService } from "../services/ProdutoCadastrarService";
 
 export class ProdutoCadastrarController {
     async handle(req: Request, res: Response) {
@@ -11,10 +11,10 @@ export class ProdutoCadastrarController {
             tipoProduto
         } = req.body;
 
-        const registrarProdutoService = new RegistrarProdutoService();
+        const produtoCadastrarService = new ProdutoCadastrarService();
 
         try {
-            const produto = await registrarProdutoService.execute({ nomeCategoria, cpf_cnpj, nomeProduto, valor, tipoProduto });
+            const produto = await produtoCadastrarService.execute({ nomeCategoria, cpf_cnpj, nomeProduto, valor, tipoProduto });
 
             return res.status(produto.status).json(produto);
         } catch (error) {

@@ -1,7 +1,8 @@
 import prismaClient from "../prisma";
+import dotenv from "dotenv";
+
 import { throwError } from "../errors/ErrorMap";
 import { AppError } from "../errors/AppError";
-import dotenv from "dotenv";
 
 dotenv.config();
 
@@ -10,7 +11,7 @@ interface ItemPedido {
     quantidade: number;
 }
 
-interface CriarCobrancaProps {
+interface CobrancaGerarItensProps {
     telefone_empresa: string;
     telefone_cliente: string;
     nome_cliente: string;
@@ -21,8 +22,8 @@ interface CriarCobrancaProps {
     itens_pedido: ItemPedido[];
 }
 
-export class CriarCobrancaItensService {
-    async execute({ telefone_empresa, telefone_cliente, nome_cliente, metodo_pagamento, descricao_cobranca, num_parcela, num_parcelas, itens_pedido }: CriarCobrancaProps) {
+export class CobrancaGerarItensService {
+    async execute({ telefone_empresa, telefone_cliente, nome_cliente, metodo_pagamento, descricao_cobranca, num_parcela, num_parcelas, itens_pedido }: CobrancaGerarItensProps) {
         try {
             const empresa = await prismaClient.empresa.findUnique({
                 where: {
