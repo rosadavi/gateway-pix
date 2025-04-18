@@ -34,7 +34,7 @@ router.post('/pedido/item/gerar', authMiddleware, (req: Request, res: Response) 
 });
 
 router.post('/cobranca/item/gerar', authMiddleware, (req: Request, res: Response) => {
-  new CobrancaItemGerarController().handle(res, res);
+  new CobrancaItemGerarController().handle(req, res);
 });
 
 router.post('/extrato/gerar', authMiddleware, (req: Request, res: Response) => {

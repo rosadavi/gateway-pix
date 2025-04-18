@@ -3,27 +3,24 @@ import dotenv from "dotenv";
 
 import { throwError } from "../errors/ErrorMap";
 import { AppError } from "../errors/AppError";
-import { CobrancaItemGerarController } from "../controllers/CobrancaItemGerarController";
 
 dotenv.config();
 
 interface ItemPedido {
-    descricao_item: string;
+    descricao_item: String;
     quantidade: number;
 }
 
-interface PedidoItemCadastrarProps {
-    telefone_empresa: string;
-    telefone_cliente: string;
-    nome_cliente: string;
-    metodo_pagamento: string;
-    descricao_cobranca: string;
+interface PedidoItemGerarProps {
+    telefone_empresa: String;
+    telefone_cliente: String;
+    nome_cliente: String;
     num_parcelas: number;
     itens_pedido: ItemPedido[];
 }
 
-export class PedidoItemCadastrarService {
-    async execute({ telefone_empresa, telefone_cliente, nome_cliente, metodo_pagamento, descricao_cobranca, num_parcelas, itens_pedido }: PedidoItemCadastrarProps) {
+export class PedidoItemGerarService {
+    async execute({ telefone_empresa, telefone_cliente, nome_cliente, num_parcelas, itens_pedido }: PedidoItemGerarProps) {
         try {
             const empresa = await prismaClient.empresa.findUnique({
                 where: {
@@ -96,6 +93,8 @@ export class PedidoItemCadastrarService {
                     }
                 });
 
+                const item_pedido = [];
+
                 for(let item of itens_pedido) {
                     let produto_item = await prismaClient.produto_item.findFirst({
                         where: {
@@ -105,7 +104,7 @@ export class PedidoItemCadastrarService {
 
                     if(!produto_item) throwError("not_found:item_produto");
 
-                    await prisma.item_pedido.create({
+                    const itens = await prisma.item_pedido.create({
                         data: {
                             pedido_idPedido: pedido.idPedido,
                             produto_item_idProdutoItem: produto_item.idProdutoItem,
@@ -113,29 +112,17 @@ export class PedidoItemCadastrarService {
                             valor_item: produto_item.valor_item
                         }
                     });
+
+                    item_pedido.push(itens);
                 }
 
-                return pedido;
+                return {
+                    pedido,
+                    item_pedido
+                };
             });
 
-            const cobrancaItemGerarController = new CobrancaItemGerarController();
-
-            const dadosCobranca = {
-                idPedido: transaction.idPedido,
-                metodo_pagamento,
-                valor
-            }
-
-            const cobranca = await cobrancaItemGerarController.execute({
-                transaction.pedido.idPedido,
-                metodoPagamento: String,
-                valorPagamento: number,
-                descricaoPagamento: String,
-                clienteTelefone: String,
-                clienteNome
-            });
-
-            return { status: 201, pedido: transaction, cobranca };
+            return { status: 201, pedido: transaction };
         } catch (error: any) {
             console.error("Erro ao gerar cobrança: ", error);
             if(error instanceof AppError) throw error;

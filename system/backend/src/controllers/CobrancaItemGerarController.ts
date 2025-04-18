@@ -4,30 +4,33 @@ import { CobrancaItemGerarService } from '../services/CobrancaItemGerarService';
 import { AppError } from '../errors/AppError';
 
 export class CobrancaItemGerarController {
-    [x: string]: any;
     async handle(req: Request, res: Response) {
         const {
-            idPedido,
-            metodoPagamento,
-            valorPagamento,
-            descricaoPagamento,
-            clienteTelefone,
-            clienteNome
+            telefoneEmpresa,
+            pag_tipo,
+            pag_method,
+            pag_descricao,
+            telefone_cliente, 
+            nome_cliente, 
+            num_parcelas, 
+            itens_pedido
         } = req.body;
 
         const cobrancaItemGerarService = new CobrancaItemGerarService();
 
         try {
             const cobranca = await cobrancaItemGerarService.execute({
-                idPedido,
-                metodoPagamento,
-                valorPagamento,
-                descricaoPagamento,
-                clienteTelefone,
-                clienteNome
+                telefoneEmpresa,
+                pag_tipo,
+                pag_method,
+                pag_descricao,
+                telefone_cliente, 
+                nome_cliente, 
+                num_parcelas, 
+                itens_pedido
             });
 
-            return res.status(200).json(cobranca);
+            return res.status(cobranca.status).json(cobranca);
         } catch (error) {
             console.error("Erro ao gerar uma cobranca com itens", error);
             if(error instanceof AppError) return res.status(error.statusCode).json(error.message);

@@ -11,7 +11,8 @@ const ErrorMap = {
     "duplicate:categoria": () => new AppError("Categoria já cadastrada", 409),
     "duplicate:produto": () => new AppError("Produto já cadastrada", 409),
     "invalid:login": () => new AppError("Credenciais Inválidas", 401),
-    "invalid:id_pedido": () => new AppError("ID do pedido inválido", 401)
+    "invalid:id_pedido": () => new AppError("ID do pedido inválido", 401),
+    "internal_error:cobranca_pedido": () => new AppError("Erro ao gerar um pedido em cobrança", 500)
 };
 
 export function throwError(code: keyof typeof ErrorMap): never {
