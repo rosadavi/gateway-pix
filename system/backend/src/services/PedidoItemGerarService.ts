@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 
 import { throwError } from "../errors/ErrorMap";
 import { AppError } from "../errors/AppError";
+import { CobrancaItemGerarController } from "../controllers/CobrancaItemGerarController";
 
 dotenv.config();
 
@@ -11,7 +12,7 @@ interface ItemPedido {
     quantidade: number;
 }
 
-interface CobrancaItensGerarProps {
+interface PedidoItemCadastrarProps {
     telefone_empresa: string;
     telefone_cliente: string;
     nome_cliente: string;
@@ -21,8 +22,8 @@ interface CobrancaItensGerarProps {
     itens_pedido: ItemPedido[];
 }
 
-export class CobrancaItensGerarService {
-    async execute({ telefone_empresa, telefone_cliente, nome_cliente, metodo_pagamento, descricao_cobranca, num_parcelas, itens_pedido }: CobrancaItensGerarProps) {
+export class PedidoItemCadastrarService {
+    async execute({ telefone_empresa, telefone_cliente, nome_cliente, metodo_pagamento, descricao_cobranca, num_parcelas, itens_pedido }: PedidoItemCadastrarProps) {
         try {
             const empresa = await prismaClient.empresa.findUnique({
                 where: {
@@ -114,23 +115,27 @@ export class CobrancaItensGerarService {
                     });
                 }
 
-                const cobranca = await prisma.pagamento.create({
-                    data: {
-                        pedido_idPedido: pedido.idPedido,
-                        pag_tipo: metodo_pagamento,
-                        pag_method: metodo_pagamento,
-                        pag_valor: await total(),
-                        pag_descricao: descricao_cobranca,
-                        parcela_numero: 1,
-                        cliente_telefone: telefone_cliente,
-                        cliente_nome
-                    }
-                });
-
-                return cobranca;
+                return pedido;
             });
 
-            return { status: 201, data: transaction };
+            const cobrancaItemGerarController = new CobrancaItemGerarController();
+
+            const dadosCobranca = {
+                idPedido: transaction.idPedido,
+                metodo_pagamento,
+                valor
+            }
+
+            const cobranca = await cobrancaItemGerarController.execute({
+                transaction.pedido.idPedido,
+                metodoPagamento: String,
+                valorPagamento: number,
+                descricaoPagamento: String,
+                clienteTelefone: String,
+                clienteNome
+            });
+
+            return { status: 201, pedido: transaction, cobranca };
         } catch (error: any) {
             console.error("Erro ao gerar cobrança: ", error);
             if(error instanceof AppError) throw error;
