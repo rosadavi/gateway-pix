@@ -8,6 +8,8 @@ interface TransacaoCadastrarProps {
     descTipoTransacao: string;
 }
 
+const codigoErro = "TCS";
+
 export class TransacaoCadastrarService {
     async execute({ siglaTipoTransacao, nomeTipoTransacao, descTipoTransacao }: TransacaoCadastrarProps) {
         try {
@@ -15,7 +17,7 @@ export class TransacaoCadastrarService {
                 where: { siglaTipoTransacao },
             });
 
-            if (transacaoExistente) throwError("duplicate:tipo_transacao");
+            if (transacaoExistente) throwError("duplicate:tipo_transacao", codigoErro);
 
             const transaction = await prismaClient.$transaction(async (prisma) => {
                 const novaTransacao = await prisma.tipoTransacao.create({
