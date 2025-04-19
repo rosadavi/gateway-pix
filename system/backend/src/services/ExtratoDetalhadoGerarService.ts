@@ -17,7 +17,7 @@ export class ExtratoDetalhadoGerarService {
             });
 
             if(!empresa) throwError("not_found:empresa");
-            if(pedidoEspecifico == null) throwError("invalid:id");
+            if(pedidoEspecifico == null) throwError("invalid:id_pedido");
 
             const totalPedidos = await prismaClient.pedido.count({
                 where: {

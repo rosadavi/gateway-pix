@@ -3,7 +3,8 @@ import { Router, Request, Response } from 'express';
 import { EmpresaCadastrarController } from './controllers/EmpresaCadastrarController';
 import { EmpresaLoginController } from './controllers/EmpresaLoginController';
 import { CobrancaGerarController } from './controllers/CobrancaGerarController';
-import { CobrancaItensGerarController } from './controllers/CobrancaItensGerarController';
+import { PedidoItemGerarController } from './controllers/PedidoItemGerarController';
+import { CobrancaItemGerarController } from './controllers/CobrancaItemGerarController';
 import { ExtratoGerarController } from './controllers/ExtratoGerarController';
 import { ExtratoDetalhadoGerarController } from './controllers/ExtratoDetalhadoGerarController';
 import { ProdutoCadastrarController } from './controllers/ProdutoCadastrarController';
@@ -28,8 +29,12 @@ router.post('/cobranca/gerar', authMiddleware,(req: Request, res: Response) => {
   new CobrancaGerarController().handle(req, res);
 });
 
-router.post('/cobranca/itens/gerar', authMiddleware, (req: Request, res: Response) => {
-  new CobrancaItensGerarController().handle(req, res);
+router.post('/pedido/item/gerar', authMiddleware, (req: Request, res: Response) => {
+  new PedidoItemGerarController().handle(req, res);
+});
+
+router.post('/cobranca/item/gerar', authMiddleware, (req: Request, res: Response) => {
+  new CobrancaItemGerarController().handle(req, res);
 });
 
 router.post('/extrato/gerar', authMiddleware, (req: Request, res: Response) => {

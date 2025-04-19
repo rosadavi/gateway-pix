@@ -1,24 +1,21 @@
 import { Request, Response } from "express";
 import { AppError } from "../errors/AppError";
-import { CobrancaItensGerarService } from "../services/CobrancaItensGerarService";
+import { PedidoItemGerarService } from "../services/PedidoItemGerarService";
 
-export class CobrancaItensGerarController {
+export class PedidoItemGerarController {
     async handle(req: Request, res: Response) {
         const {
             telefone_empresa,
             telefone_cliente,
             nome_cliente,
-            metodo_pagamento, 
-            descricao_cobranca, 
-            num_parcela, 
             num_parcelas, 
             itens_pedido
         } = req.body;
 
-        const cobrancaItensGerarService = new CobrancaItensGerarService();
+        const pedidoItemGerarService = new PedidoItemGerarService();
 
         try {
-            const cobranca = await cobrancaItensGerarService.execute({ telefone_empresa, telefone_cliente, nome_cliente, metodo_pagamento, descricao_cobranca, num_parcela, num_parcelas, itens_pedido });
+            const cobranca = await pedidoItemGerarService.execute({ telefone_empresa, telefone_cliente, nome_cliente, num_parcelas, itens_pedido });
             return res.json(cobranca);
         } catch(error) {
             console.error("Erro ao criar uma cobranca com itens " + error);
