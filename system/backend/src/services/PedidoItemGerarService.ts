@@ -21,7 +21,7 @@ interface PedidoItemGerarProps {
 
 const codigoErro = "CIG";
 
-export class CobrancaItensGerarService {
+export class PedidoItemGerarService {
     async execute({ telefone_empresa, telefone_cliente, nome_cliente, num_parcelas, itens_pedido }: PedidoItemGerarProps) {
         try {
             const empresa = await prismaClient.empresa.findUnique({

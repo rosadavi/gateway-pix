@@ -33,10 +33,8 @@ export class ExtratoDetalhadoGerarService {
                 where: {
                     empresa: {
                         idEmpresa: empresa.idEmpresa
-                    }
-                },
-                orderBy: {
-                    idPedido: "asc"
+                    },
+                    idPedido: pedidoEspecifico
                 },
                 include: {
                     pagamento: true,
@@ -50,9 +48,7 @@ export class ExtratoDetalhadoGerarService {
                             
                         }
                     }
-                },
-                skip: pedidoEspecifico - 1,
-                take: 1,
+                }
             });
             
             return { status: 200, data: { total_pedidos: totalPedidos, pedido }};
