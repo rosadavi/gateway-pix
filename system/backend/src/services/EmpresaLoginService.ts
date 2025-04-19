@@ -18,6 +18,8 @@ function createToken(dados: JwtPayload) {
     return token;
 }
 
+const codigoErro = "ELS";
+
 export class EmpresaLoginService {
     async execute({ cnpj_cpf, senha }: EmpresaLoginProps) {
         try {
@@ -43,10 +45,10 @@ export class EmpresaLoginService {
                     
                     return { status: 200, message: {token} };
                 } else {
-                    throwError("invalid:login");
+                    throwError("invalid:login", codigoErro);
                 }
             } else {
-                throwError("invalid:login");
+                throwError("invalid:login", codigoErro);
             }
         } catch (error: any) {
             console.error("Erro ao realizar login: ", error);

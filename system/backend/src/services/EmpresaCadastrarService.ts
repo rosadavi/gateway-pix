@@ -15,6 +15,8 @@ interface EmpresaCadastrarProps {
     cpf_cnpj: string;
 }
 
+const codigoErro = "ECS";
+
 export class EmpresaCadastrarService {
     async execute({ nome, telefone, email, estado, cidade, tipo_pix, chave_pix, senha, cpf_cnpj }: EmpresaCadastrarProps) {
         try {
@@ -22,7 +24,7 @@ export class EmpresaCadastrarService {
                 where: { telefoneEmpresa: telefone },
             });
 
-            if(empresa) throwError("duplicate:empresa");
+            if(empresa) throwError("duplicate:empresa", codigoErro);
 
             const senhaHash = await hashSenha(senha);
 

@@ -19,7 +19,9 @@ interface PedidoItemGerarProps {
     itens_pedido: ItemPedido[];
 }
 
-export class PedidoItemGerarService {
+const codigoErro = "CIG";
+
+export class CobrancaItensGerarService {
     async execute({ telefone_empresa, telefone_cliente, nome_cliente, num_parcelas, itens_pedido }: PedidoItemGerarProps) {
         try {
             const empresa = await prismaClient.empresa.findUnique({
@@ -28,7 +30,7 @@ export class PedidoItemGerarService {
                 }
             });
 
-            if(!empresa) throwError("not_found:empresa");
+            if(!empresa) throwError("not_found:empresa", codigoErro);
 
             const cliente = await prismaClient.pessoa.findUnique({
                 where: {
@@ -63,7 +65,7 @@ export class PedidoItemGerarService {
                         }
                     });
     
-                    if(!produto_item) throwError("not_found:item_produto");
+                    if(!produto_item) throwError("not_found:item_produto", codigoErro);
     
                     const produto = await prismaClient.produto.findUnique({
                         where: {
@@ -71,7 +73,7 @@ export class PedidoItemGerarService {
                         }
                     });
     
-                    if(!produto) throwError("not_found:produto");
+                    if(!produto) throwError("not_found:produto", codigoErro);
     
                     let valorItemTotal = Number(produto_item.valor_item) * item.quantidade;
                     
@@ -102,7 +104,7 @@ export class PedidoItemGerarService {
                         }
                     });
 
-                    if(!produto_item) throwError("not_found:item_produto");
+                    if(!produto_item) throwError("not_found:item_produto", codigoErro);
 
                     const itens = await prisma.item_pedido.create({
                         data: {

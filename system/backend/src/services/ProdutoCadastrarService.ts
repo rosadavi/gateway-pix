@@ -10,6 +10,8 @@ interface ProdutoCadastrarProps {
     tipoProduto: string;
 }
 
+const codigoErro = "PCS";
+
 export class ProdutoCadastrarService {
     async execute({ nomeCategoria, cpf_cnpj, nomeProduto, valor, tipoProduto }: ProdutoCadastrarProps) {
         try {
@@ -19,7 +21,7 @@ export class ProdutoCadastrarService {
                 }
             });
 
-            if (!categoria) throwError("not_found:categoria");
+            if (!categoria) throwError("not_found:categoria", codigoErro);
 
             const empresa = await prismaClient.empresa.findFirst({
                 where: { 
@@ -27,7 +29,7 @@ export class ProdutoCadastrarService {
                 }
             });
 
-            if (!empresa) throwError("not_found:empresa"); 
+            if (!empresa) throwError("not_found:empresa", codigoErro); 
 
             const produto = await prismaClient.produto.findFirst({
                 where: {
@@ -37,7 +39,7 @@ export class ProdutoCadastrarService {
                 }
             });
 
-            if(produto) throwError("duplicate:produto");
+            if(produto) throwError("duplicate:produto", codigoErro);
 
             const transaction = await prismaClient.$transaction(async (prisma) => {
             const novoProduto = await prisma.produto.create({
