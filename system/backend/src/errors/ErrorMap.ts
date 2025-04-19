@@ -10,7 +10,8 @@ const ErrorMap = {
     "duplicate:item": () => new AppError("Item já cadastrado", 409),
     "duplicate:categoria": () => new AppError("Categoria já cadastrada", 409),
     "duplicate:produto": () => new AppError("Produto já cadastrada", 409),
-    "invalid:login": () => new AppError("Credenciais Inválidas", 401)
+    "invalid:login": () => new AppError("Credenciais Inválidas", 401),
+    "invalid:id": () => new AppError("Especifique o ID do pedido", 401)
 };
 
 export function throwError(code: keyof typeof ErrorMap): never {

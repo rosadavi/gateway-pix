@@ -4,11 +4,11 @@ import prismaClient from "../prisma";
 
 interface CriarExtratoDetalhadoProps {
     telefone_empresa: string;
-    total: number;
+    pedidoEspecifico: number | null;
 }
 
 export class CriarExtratoDetalhadoService {
-    async execute({ telefone_empresa, total }: CriarExtratoDetalhadoProps) {
+    async execute({ telefone_empresa, pedidoEspecifico }: CriarExtratoDetalhadoProps) {
         try {
             const empresa = await prismaClient.empresa.findUnique({
                 where: {
@@ -17,6 +17,7 @@ export class CriarExtratoDetalhadoService {
             });
 
             if(!empresa) throwError("not_found:empresa");
+            if(pedidoEspecifico == null) throwError("invalid:id");
 
             const totalPedidos = await prismaClient.pedido.count({
                 where: {
@@ -26,37 +27,33 @@ export class CriarExtratoDetalhadoService {
                 }
             });
 
-            const pedidos = await prismaClient.pedido.findMany({
+            const pedido = await prismaClient.pedido.findMany({
                 where: {
                     empresa: {
                         idEmpresa: empresa.idEmpresa
                     }
+                },
+                orderBy: {
+                    idPedido: "asc"
                 },
                 include: {
                     pagamento: true,
                     item_pedido: {
                         include: {
                             produto_item: {
-                                select: {
-                                    produto_idProduto: true,
-                                        
-                                                
-                                            }
-                                        }
-                                    }
+                                include: {
+                                    produto: true
                                 }
-                                
                             }
-                        
-                    
+                            
+                        }
+                    }
                 },
-                orderBy: {
-                    dataRegistro: "desc"
-                },
-                take: total
+                skip: pedidoEspecifico - 1,
+                take: 1,
             });
             
-            return { status: 200, data: { total_pedidos: totalPedidos, pedidos }};
+            return { status: 200, data: { total_pedidos: totalPedidos, pedido }};
         } catch (error: any) {
             console.error("Erro ao gerar extrato: ", error);
             if(error instanceof AppError) throw error;
