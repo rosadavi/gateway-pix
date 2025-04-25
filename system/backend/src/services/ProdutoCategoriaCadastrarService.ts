@@ -6,6 +6,8 @@ interface ProdutoCategoriaCadastrarProps {
     nomeCategoria: string;
 }
 
+const codigoErro = "PCCS";
+
 export class ProdutoCategoriaCadastrarService {
     async execute({ nomeCategoria }: ProdutoCategoriaCadastrarProps) {
         try {
@@ -15,7 +17,7 @@ export class ProdutoCategoriaCadastrarService {
                 }
             });
 
-            if(categoriaExistente) throwError("duplicate:categoria")
+            if(categoriaExistente) throwError("duplicate:categoria", codigoErro)
 
             const novaCategoria = await prismaClient.categoria.create({
                 data: {

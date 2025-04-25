@@ -7,6 +7,8 @@ interface ExtratoDetalhadoGerarProps {
     pedidoEspecifico: number | null;
 }
 
+const codigoErro = "EDGS";
+
 export class ExtratoDetalhadoGerarService {
     async execute({ telefone_empresa, pedidoEspecifico }: ExtratoDetalhadoGerarProps) {
         try {
@@ -16,8 +18,8 @@ export class ExtratoDetalhadoGerarService {
                 }
             });
 
-            if(!empresa) throwError("not_found:empresa");
-            if(pedidoEspecifico == null) throwError("invalid:id_pedido");
+            if(!empresa) throwError("not_found:empresa", codigoErro);
+            if(pedidoEspecifico == null) throwError("invalid:id_pedido", codigoErro);
 
             const totalPedidos = await prismaClient.pedido.count({
                 where: {
@@ -31,10 +33,8 @@ export class ExtratoDetalhadoGerarService {
                 where: {
                     empresa: {
                         idEmpresa: empresa.idEmpresa
-                    }
-                },
-                orderBy: {
-                    idPedido: "asc"
+                    },
+                    idPedido: pedidoEspecifico
                 },
                 include: {
                     pagamento: true,
@@ -48,9 +48,7 @@ export class ExtratoDetalhadoGerarService {
                             
                         }
                     }
-                },
-                skip: pedidoEspecifico - 1,
-                take: 1,
+                }
             });
             
             return { status: 200, data: { total_pedidos: totalPedidos, pedido }};
