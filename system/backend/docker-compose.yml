@@ -1,0 +1,20 @@
+services:
+  gateway-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: container-gateway
+    volumes:
+      - .:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+    restart: unless-stopped
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
