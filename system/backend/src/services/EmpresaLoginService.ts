@@ -43,7 +43,10 @@ export class EmpresaLoginService {
                         id_empresa: proprietarioExistente.idEmpresa ?? ''
                     });
                     
-                    return { status: 200, message: {token} };
+                    return { status: 200, message: {
+                        token,
+                        id: proprietarioExistente.idEmpresa
+                    } };
                 } else {
                     throwError("invalid:login", codigoErro);
                 }

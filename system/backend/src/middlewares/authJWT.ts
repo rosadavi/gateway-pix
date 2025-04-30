@@ -14,6 +14,8 @@ export function authMiddleware(req: Request, res: Response, next: NextFunction):
         return;
     }
 
+    if(!req.session.isAuthenticated) return res.status(401).json('Usuário não autenticado. Faça login.');
+
     try {
         const decodedToken = validateToken(token);
         if (!decodedToken) {
