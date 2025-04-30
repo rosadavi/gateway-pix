@@ -6,7 +6,7 @@ import { AppError } from "../errors/AppError";
 import { throwError } from "../errors/ErrorMap";
 
 interface EmpresaLoginProps {
-    cnpj_cpf: string;
+    telefone: string;
     senha: string;
 }
 
@@ -21,11 +21,11 @@ function createToken(dados: JwtPayload) {
 const codigoErro = "ELS";
 
 export class EmpresaLoginService {
-    async execute({ cnpj_cpf, senha }: EmpresaLoginProps) {
+    async execute({ telefone, senha }: EmpresaLoginProps) {
         try {
-            const proprietarioExistente = await prismaClient.empresa.findFirst({
+            const proprietarioExistente = await prismaClient.empresa.findUnique({
                 where: {
-                    empCpfCnpj: cnpj_cpf,
+                    telefoneEmpresa: telefone,
                 },
                 select: {
                     idEmpresa: true,

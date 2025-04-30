@@ -6,14 +6,14 @@ import { EmpresaLoginService } from "../services/EmpresaLoginService";
 export class EmpresaLoginController {
     async handle(req: Request, res: Response) {
         const { 
-            cnpj_cpf, 
+            telefone, 
             senha 
         } = req.body;
 
         const empresaLoginService = new EmpresaLoginService();
 
         try {
-            const token = await empresaLoginService.execute({ cnpj_cpf, senha });
+            const token = await empresaLoginService.execute({ telefone, senha });
 
             return res.status(token.status).json(token);   
         } catch (error) {
