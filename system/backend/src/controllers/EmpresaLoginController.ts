@@ -14,10 +14,10 @@ export class EmpresaLoginController {
         const empresaLoginService = new EmpresaLoginService();
 
         try {
-            const proprietaro = await empresaLoginService.execute({ telefone, senha });
-            const id = proprietaro?.message?.id;
-            await saveSession(req, id);
-            return res.status(proprietaro.status).json({token: proprietaro.message?.token});
+            const proprietario = await empresaLoginService.execute({ telefone, senha });
+            const id = proprietario?.message?.id;
+            await saveSession(req, id, proprietario.message!.token);
+            return res.status(proprietario.status).json({token: proprietario.message?.token});
         } catch (error) {
             console.error(`Erro ao realizar login ${error}`);
             if(error instanceof AppError) return res.status(error.statusCode).json({error: error.message});

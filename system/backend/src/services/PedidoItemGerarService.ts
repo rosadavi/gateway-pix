@@ -12,7 +12,7 @@ interface ItemPedido {
 }
 
 interface PedidoItemGerarProps {
-    telefone_empresa: String;
+    idEmpresa: number;
     telefone_cliente: String;
     nome_cliente: String;
     num_parcelas: number;
@@ -22,11 +22,11 @@ interface PedidoItemGerarProps {
 const codigoErro = "CIG";
 
 export class PedidoItemGerarService {
-    async execute({ telefone_empresa, telefone_cliente, nome_cliente, num_parcelas, itens_pedido }: PedidoItemGerarProps) {
+    async execute({ idEmpresa, telefone_cliente, nome_cliente, num_parcelas, itens_pedido }: PedidoItemGerarProps) {
         try {
             const empresa = await prismaClient.empresa.findUnique({
                 where: {
-                    telefoneEmpresa: telefone_empresa
+                    idEmpresa
                 }
             });
 
