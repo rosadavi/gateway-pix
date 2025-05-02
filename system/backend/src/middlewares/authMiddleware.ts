@@ -21,8 +21,18 @@ export function authMiddleware(req: Request, res: Response, next: NextFunction):
             return;
         }
 
+        const isAuthenticated = req.session?.loginHistory?.some(
+            (item: any) => item.token === token
+        );
+        
+        if (!isAuthenticated) {
+            return res.status(401).json('Usuário não autenticado. Faça login.');
+        }
+
         req.body.cpf_cnpj_empresa = decodedToken.hash.hash_cpf_cnpj;
         req.body.id_empresa = decodedToken.hash.hash_id;
+        req.body.token = token;
+        
         next();
     } catch (error: any) {
         if (error.message.includes("jwt expired")) {

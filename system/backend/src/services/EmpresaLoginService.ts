@@ -4,9 +4,10 @@ import { JwtPayload } from "../configs/token";
 import { compareHashSenha } from "../configs/bcrypt";
 import { AppError } from "../errors/AppError";
 import { throwError } from "../errors/ErrorMap";
+import { validarTelefone } from "../configs/validarTelefone";
 
 interface EmpresaLoginProps {
-    cnpj_cpf: string;
+    telefone: string;
     senha: string;
 }
 
@@ -21,11 +22,13 @@ function createToken(dados: JwtPayload) {
 const codigoErro = "ELS";
 
 export class EmpresaLoginService {
-    async execute({ cnpj_cpf, senha }: EmpresaLoginProps) {
+    async execute({ telefone, senha }: EmpresaLoginProps) {
         try {
-            const proprietarioExistente = await prismaClient.empresa.findFirst({
+            const numeroValidado = validarTelefone(telefone);
+            if(!numeroValidado) throwError("invalid:number");
+            const proprietarioExistente = await prismaClient.empresa.findUnique({
                 where: {
-                    empCpfCnpj: cnpj_cpf,
+                    telefoneEmpresa: telefone,
                 },
                 select: {
                     idEmpresa: true,
@@ -43,7 +46,10 @@ export class EmpresaLoginService {
                         id_empresa: proprietarioExistente.idEmpresa ?? ''
                     });
                     
-                    return { status: 200, message: {token} };
+                    return { status: 200, message: {
+                        token,
+                        id: proprietarioExistente.idEmpresa
+                    } };
                 } else {
                     throwError("invalid:login", codigoErro);
                 }

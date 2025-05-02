@@ -12,7 +12,7 @@ import { ProdutoItemCadastrarController } from './controllers/ProdutoItemCadastr
 import { ProdutoCategoriaCadastrarController } from './controllers/ProdutoCategoriaCadastrarController';
 import { TransacaoCadastrarController } from './controllers/TransacaoCadastrarController';
 
-import { authMiddleware } from './middlewares/authJWT';
+import { authMiddleware } from './middlewares/authMiddleware';
 import { VerificaCPFeCNPJController } from './controllers/VerificaCPFeCNPJController';
 
 const router = Router();

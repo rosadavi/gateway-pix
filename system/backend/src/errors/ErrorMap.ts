@@ -11,6 +11,7 @@ const ErrorMap = {
     "duplicate:categoria": (source?: string) => new AppError("Categoria já cadastrada", 409, source),
     "duplicate:produto": (source?: string) => new AppError("Produto já cadastrada", 409, source),
     "invalid:login": (source?: string) => new AppError("Credenciais Inválidas", 401, source),
+    "invalid:number": (source?: string) => new AppError("Valor de telefone inválido", 401, source),
     "invalid:id_pedido": (source?: string) => new AppError("ID do pedido inválido", 401, source),
     "internal_error:cobranca_pedido": (source?: string) => new AppError("Erro ao gerar um pedido em cobrança", 500, source)
 };

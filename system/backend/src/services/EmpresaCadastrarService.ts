@@ -1,3 +1,4 @@
+import { validarTelefone } from "../configs/validarTelefone";
 import { hashSenha } from "../configs/bcrypt";
 import { AppError } from "../errors/AppError";
 import { throwError } from "../errors/ErrorMap";
@@ -20,6 +21,8 @@ const codigoErro = "ECS";
 export class EmpresaCadastrarService {
     async execute({ nome, telefone, email, estado, cidade, tipo_pix, chave_pix, senha, cpf_cnpj }: EmpresaCadastrarProps) {
         try {
+            const numeroValidado = validarTelefone(telefone);
+            if(!numeroValidado) throwError("invalid:number");
             const empresa = await prismaClient.empresa.findUnique({
                 where: { telefoneEmpresa: telefone },
             });

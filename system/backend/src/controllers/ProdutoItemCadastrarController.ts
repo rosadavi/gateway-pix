@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
 import { AppError } from "../errors/AppError";
 import { ProdutoItemCadastrarService } from "../services/ProdutoItemCadastrarService";
+import { getUserIdFromToken } from "../configs/session";
 
 export class ProdutoItemCadastrarController {
     async handle(req: Request, res: Response) {
         const {
-            cnpj_cpf,
             descricao_item,
             valor_item,
             item_ativo,
@@ -15,7 +15,8 @@ export class ProdutoItemCadastrarController {
         const produtoItemCadastrarService = new ProdutoItemCadastrarService();
 
         try {
-            const item = await produtoItemCadastrarService.execute({ cnpj_cpf, descricao_item, valor_item, item_ativo, nomeProduto });
+            const idEmpresa = await getUserIdFromToken(req);
+            const item = await produtoItemCadastrarService.execute({ idEmpresa, descricao_item, valor_item, item_ativo, nomeProduto });
             return res.status(item.status).json(item);
         } catch (error: any) {
             console.error("Erro ao criar um item " + error);

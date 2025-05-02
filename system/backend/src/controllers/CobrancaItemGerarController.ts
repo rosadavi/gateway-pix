@@ -2,11 +2,11 @@ import { Request, Response } from 'express';
 
 import { CobrancaItemGerarService } from '../services/CobrancaItemGerarService';
 import { AppError } from '../errors/AppError';
+import { getUserIdFromToken } from '../configs/session';
 
 export class CobrancaItemGerarController {
     async handle(req: Request, res: Response) {
         const {
-            telefoneEmpresa,
             pag_tipo,
             pag_method,
             pag_descricao,
@@ -19,8 +19,9 @@ export class CobrancaItemGerarController {
         const cobrancaItemGerarService = new CobrancaItemGerarService();
 
         try {
+            const idEmpresa = await getUserIdFromToken(req);
             const cobranca = await cobrancaItemGerarService.execute({
-                telefoneEmpresa,
+                idEmpresa,
                 pag_tipo,
                 pag_method,
                 pag_descricao,
