@@ -47,12 +47,12 @@ npx prisma studio // Abre o prisma studio para visualizar o banco
 1. No diretorio ``` gateway-pix/system/backend ``` insira do .env a seguir:
    
 ```
-DATABASE_URL="mysql://wwtsco_app_gateway:OwHq7lKctityI9N@50.6.192.221:3306/wwtsco_fidelidade"
-JWT_SECRET = "senha_forte_12345"
-PORT = 3000
-GTW_ID_PESSOA_REGISTROU_COB = -3 #Pessoa padrão gateway
-GTW_STATUS_PEDIDO_CREATE = "A" #Aberto
-GTW_NOME_CLIENTE_DEFAULT = "CLIENTE NÃO CADASTRADO GTW" #Nome padrão para cliente não cadastrado
+DATABASE_URL="mysql://login:senha@endereco:porta/schema"
+JWT_SECRET = "senha"
+PORT = porta
+GTW_ID_PESSOA_REGISTROU_COB = id #Pessoa padrão gateway
+GTW_STATUS_PEDIDO_CREATE = "status" 
+GTW_NOME_CLIENTE_DEFAULT = "cliente" #Nome padrão para cliente não cadastrado
 
 ```
 
