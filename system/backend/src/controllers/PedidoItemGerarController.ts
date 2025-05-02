@@ -16,11 +16,8 @@ export class PedidoItemGerarController {
 
         try {
             const idEmpresa = await getUserIdFromToken(req);
-            const cobranca = await pedidoItemGerarService.execute({ idEmpresa, telefone_cliente, nome_cliente, num_parcelas, itens_pedido });
-            console.log("Sessão completa:", req.session);
-            console.log("Token recebido:", req.body.token);
-            console.log("ID Empresa resolvido:", idEmpresa);            
-            return res.json(cobranca);
+            const pedido = await pedidoItemGerarService.execute({ idEmpresa, telefone_cliente, nome_cliente, num_parcelas, itens_pedido });    
+            return res.json(pedido);
         } catch(error) {
             console.error("Erro ao criar uma cobranca com itens " + error);
             if(error instanceof AppError) return res.status(error.statusCode).json({error: error.message});

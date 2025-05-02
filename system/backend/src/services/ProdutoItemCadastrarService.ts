@@ -3,7 +3,7 @@ import { throwError } from "../errors/ErrorMap";
 import prismaClient from "../prisma";
 
 interface ProdutoItemCadastrarProps {
-    cnpj_cpf: string,
+    idEmpresa: number,
     descricao_item: string,
     valor_item: number,
     item_ativo: number,
@@ -13,11 +13,11 @@ interface ProdutoItemCadastrarProps {
 const codigoErro = "PICS";
 
 export class ProdutoItemCadastrarService {
-    async execute({ cnpj_cpf, descricao_item, valor_item, item_ativo, nomeProduto }: ProdutoItemCadastrarProps) {
+    async execute({ idEmpresa, descricao_item, valor_item, item_ativo, nomeProduto }: ProdutoItemCadastrarProps) {
         try {
-            const empresa = await prismaClient.empresa.findFirst({
+            const empresa = await prismaClient.empresa.findUnique({
                 where: {
-                    empCpfCnpj: cnpj_cpf
+                    idEmpresa
                 }
             });
 
@@ -25,7 +25,7 @@ export class ProdutoItemCadastrarService {
 
             const produto = await prismaClient.produto.findFirst({
                 where: {
-                    Empresa_idEmpresa: empresa.idEmpresa,
+                    Empresa_idEmpresa: idEmpresa,
                     nomeProduto
                 }
             });

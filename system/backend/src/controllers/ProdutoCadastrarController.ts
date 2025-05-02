@@ -1,20 +1,22 @@
 import { Request, Response } from "express";
 import { AppError } from "../errors/AppError";
 import { ProdutoCadastrarService } from "../services/ProdutoCadastrarService";
+import { getUserIdFromToken } from "../configs/session";
 
 export class ProdutoCadastrarController {
     async handle(req: Request, res: Response) {
         const {
-            nomeCategoria, 
-            cpf_cnpj, 
-            nomeProduto, valor, 
+            nomeCategoria,
+            nomeProduto, 
+            valor, 
             tipoProduto
         } = req.body;
 
         const produtoCadastrarService = new ProdutoCadastrarService();
 
         try {
-            const produto = await produtoCadastrarService.execute({ nomeCategoria, cpf_cnpj, nomeProduto, valor, tipoProduto });
+            const idEmpresa = await getUserIdFromToken(req);
+            const produto = await produtoCadastrarService.execute({ nomeCategoria, idEmpresa, nomeProduto, valor, tipoProduto });
 
             return res.status(produto.status).json(produto);
         } catch (error) {

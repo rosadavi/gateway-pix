@@ -1,3 +1,5 @@
+import { validarTelefone } from "../configs/validarTelefone";
+import { throwError } from "../errors/ErrorMap";
 import prismaClient from "../prisma";
 
 interface CobrancaGerarProps {
@@ -12,6 +14,8 @@ interface CobrancaGerarProps {
 export class CobrancaGerarService {
     async execute({ empresa_id_empresa, telefone_cliente, metodo_pagamento, valor_cobranca, descricao_cobranca, num_parcela, num_parcelas }: CobrancaGerarProps) {
         try {
+            const numeroValidado = validarTelefone(telefone_cliente);
+            if(!numeroValidado) throwError("invalid:number");
             const cliente = await prismaClient.pessoa.findFirst({
                 where: {
                     telefone: telefone_cliente

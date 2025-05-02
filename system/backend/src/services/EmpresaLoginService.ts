@@ -4,6 +4,7 @@ import { JwtPayload } from "../configs/token";
 import { compareHashSenha } from "../configs/bcrypt";
 import { AppError } from "../errors/AppError";
 import { throwError } from "../errors/ErrorMap";
+import { validarTelefone } from "../configs/validarTelefone";
 
 interface EmpresaLoginProps {
     telefone: string;
@@ -23,6 +24,8 @@ const codigoErro = "ELS";
 export class EmpresaLoginService {
     async execute({ telefone, senha }: EmpresaLoginProps) {
         try {
+            const numeroValidado = validarTelefone(telefone);
+            if(!numeroValidado) throwError("invalid:number");
             const proprietarioExistente = await prismaClient.empresa.findUnique({
                 where: {
                     telefoneEmpresa: telefone,

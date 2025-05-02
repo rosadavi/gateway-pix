@@ -3,18 +3,18 @@ import { throwError } from "../errors/ErrorMap";
 import prismaClient from "../prisma";
 
 interface ExtratoDetalhadoGerarProps {
-    telefone_empresa: string;
+    idEmpresa: number;
     pedidoEspecifico: number | null;
 }
 
 const codigoErro = "EDGS";
 
 export class ExtratoDetalhadoGerarService {
-    async execute({ telefone_empresa, pedidoEspecifico }: ExtratoDetalhadoGerarProps) {
+    async execute({ idEmpresa, pedidoEspecifico }: ExtratoDetalhadoGerarProps) {
         try {
             const empresa = await prismaClient.empresa.findUnique({
                 where: {
-                    telefoneEmpresa: telefone_empresa
+                    idEmpresa
                 }
             });
 

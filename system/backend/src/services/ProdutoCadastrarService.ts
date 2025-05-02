@@ -4,7 +4,7 @@ import { throwError } from "../errors/ErrorMap";
 
 interface ProdutoCadastrarProps {
     nomeCategoria: string;
-    cpf_cnpj: string;
+    idEmpresa: number;
     nomeProduto: string;
     valor: number;
     tipoProduto: string;
@@ -13,7 +13,7 @@ interface ProdutoCadastrarProps {
 const codigoErro = "PCS";
 
 export class ProdutoCadastrarService {
-    async execute({ nomeCategoria, cpf_cnpj, nomeProduto, valor, tipoProduto }: ProdutoCadastrarProps) {
+    async execute({ nomeCategoria, idEmpresa, nomeProduto, valor, tipoProduto }: ProdutoCadastrarProps) {
         try {
             const categoria = await prismaClient.categoria.findFirst({
                 where: {
@@ -25,7 +25,7 @@ export class ProdutoCadastrarService {
 
             const empresa = await prismaClient.empresa.findFirst({
                 where: { 
-                    empCpfCnpj: cpf_cnpj
+                    idEmpresa
                 }
             });
 

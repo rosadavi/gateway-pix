@@ -14,19 +14,19 @@ export function authMiddleware(req: Request, res: Response, next: NextFunction):
         return;
     }
 
-    const isAuthenticated = req.session?.loginHistory?.some(
-        (item: any) => item.token === token
-    );
-    
-    if (!isAuthenticated) {
-        return res.status(401).json('Usuário não autenticado. Faça login.');
-    }
-
     try {
         const decodedToken = validateToken(token);
         if (!decodedToken) {
             res.status(401).json({ message: "Token inválido" });
             return;
+        }
+
+        const isAuthenticated = req.session?.loginHistory?.some(
+            (item: any) => item.token === token
+        );
+        
+        if (!isAuthenticated) {
+            return res.status(401).json('Usuário não autenticado. Faça login.');
         }
 
         req.body.cpf_cnpj_empresa = decodedToken.hash.hash_cpf_cnpj;

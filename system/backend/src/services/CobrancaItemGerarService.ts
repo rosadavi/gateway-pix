@@ -1,3 +1,4 @@
+import { validarTelefone } from "../configs/validarTelefone";
 import { AppError } from "../errors/AppError";
 import { throwError } from "../errors/ErrorMap";
 import prismaClient from "../prisma";
@@ -12,19 +13,19 @@ interface ItemPedido {
 }
 
 interface CobrancaItemGerarProps {
-    telefoneEmpresa: String,
-    pag_tipo: String,
-    pag_method: String,
+    idEmpresa: number,
+    pag_tipo: string,
+    pag_method: string,
     pag_descricao: string,
-    telefone_cliente: String, 
-    nome_cliente: String,
+    telefone_cliente: string, 
+    nome_cliente: string,
     num_parcelas: number, 
     itens_pedido: ItemPedido[]
 }
 
 export class CobrancaItemGerarService {
     async execute({
-        telefoneEmpresa,
+        idEmpresa,
         pag_tipo,
         pag_method,
         pag_descricao,
@@ -34,12 +35,18 @@ export class CobrancaItemGerarService {
         itens_pedido
     }: CobrancaItemGerarProps) {
         try {
+            console.log(idEmpresa);
             const empresa = await prismaClient.empresa.findUnique({
-                where: { telefoneEmpresa },
+                where: { 
+                    idEmpresa
+                 },
             });
 
             if(!empresa) throwError("not_found:empresa");
 
+            const numeroValidado = validarTelefone(telefone_cliente);
+            if(!numeroValidado) throwError("invalid:number");
+            
             const cliente = await prismaClient.pessoa.findUnique({
                 where: {
                     telefone: telefone_cliente
@@ -66,8 +73,8 @@ export class CobrancaItemGerarService {
 
             const pedidoItemGerarService = new PedidoItemGerarService();
             const pedido = await pedidoItemGerarService.execute({
-                telefone_empresa: telefoneEmpresa, 
-                telefone_cliente: telefone_cliente,
+                idEmpresa, 
+                telefone_cliente,
                 nome_cliente, 
                 num_parcelas, 
                 itens_pedido

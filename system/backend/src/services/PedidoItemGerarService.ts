@@ -1,3 +1,4 @@
+import { validarTelefone } from "../configs/validarTelefone";
 import prismaClient from "../prisma";
 import dotenv from "dotenv";
 
@@ -7,14 +8,14 @@ import { AppError } from "../errors/AppError";
 dotenv.config();
 
 interface ItemPedido {
-    descricao_item: String;
+    descricao_item: string;
     quantidade: number;
 }
 
 interface PedidoItemGerarProps {
     idEmpresa: number;
-    telefone_cliente: String;
-    nome_cliente: String;
+    telefone_cliente: string;
+    nome_cliente: string;
     num_parcelas: number;
     itens_pedido: ItemPedido[];
 }
@@ -31,6 +32,9 @@ export class PedidoItemGerarService {
             });
 
             if(!empresa) throwError("not_found:empresa", codigoErro);
+
+            const numeroValidado = validarTelefone(telefone_cliente);
+            if(!numeroValidado) throwError("invalid:number");
 
             const cliente = await prismaClient.pessoa.findUnique({
                 where: {
